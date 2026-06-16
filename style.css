@@ -34,10 +34,11 @@ header h1{
     margin-bottom:15px;
 }
 
-header h2{
-    font-size:1.3rem;
-    color:#ffffff;
-    margin-bottom:10px;
+h2{
+    color:#fef8f8 !important;
+    margin-bottom:15px;
+    font-weight:bold;
+    text-shadow:0 0 5px rgba(229, 236, 238, 0.5);
 }
 
 header h3{
@@ -98,24 +99,25 @@ h2{
 }
 
 /* Párrafos */
-
 p{
     text-align:justify;
     line-height:1.8;
+    color:white;
 }
+
 
 /* =====================================
    IMÁGENES
 ===================================== */
 
 img{
-    
-}display:block;
+    display:block;
     margin:25px auto;
     width:400px;
     max-width:90%;
     border-radius:15px;
     box-shadow:0 0 20px rgba(0,191,255,0.35);
+}
 
 /* =====================================
    LISTAS DE PRODUCTOS
@@ -127,6 +129,8 @@ ul{
 
 li{
     margin:10px 0;
+    color:white !important;
+    font-size:18px;
 }
 
 /* =====================================
@@ -185,3 +189,85 @@ footer{
     margin-top:30px;
 }
 ```
+/* =====================================
+   CORRECCIÓN SERVICIOS O PRODUCTOS
+===================================== */
+
+li{
+    color:white !important;
+    margin:10px 0;
+}
+
+.card{
+    background:#1a1a1a;
+    color:white;
+    border:1px solid #00bfff;
+}
+
+.card-title{
+    color:#00bfff !important;
+}
+
+.card-text{
+    color:white !important;
+}
+
+#contacto h4{
+    color:white;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+#contacto p{
+    color:white;
+},
+
+/* =====================================
+   DISEÑO RESPONSIVO
+===================================== */
+
+@media (max-width: 768px){
+
+    header h1{
+        font-size: 2rem;
+    }
+
+    header h2{
+        font-size: 1rem;
+    }
+
+    iframe{
+        width:100%;
+        height:auto;
+    }
+
+    .card{
+        margin-bottom:15px;
+    }
+
+}
+form{
+    background:#1a1a1a;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,191,255,0.25);
+}
+
+.card{
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 20px rgba(0,191,255,0.4);
+}
+
+img{
+    display:block;
+    margin:25px auto;
+    width:100%;
+    max-width:500px;
+    height:auto;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(0,191,255,0.35);
+}

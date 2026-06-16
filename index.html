@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Figuras de Colección</title>
 <link rel="stylesheet" href="style.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -21,83 +22,284 @@
 
 </header>
 
-<nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
 
-    <a href="#inicio">Inicio</a>
+    <div class="container">
 
-    <a href="#quienes">Quiénes Somos</a>
+        <a class="navbar-brand" href="#">
+            Narvi Models
+        </a>
 
-    <a href="#productos">Productos</a>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu">
 
-    <a href="#contacto">Contacto</a>
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div class="collapse navbar-collapse" id="menu">
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#inicio">Inicio</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#quienes">Quiénes Somos</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#productos">Productos</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#contacto">Contacto</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
 
 </nav>
-
 <main>
 
+<```html
 <section id="inicio">
 
-    <h2>Inicio</h2>
+    <div class="container text-center py-5">
 
-    <p>
+        <h2 class="display-4 text-info mb-4">
+            Bienvenido a Narvi Collector Scale Models
+        </h2>
 
-        Bienvenido al Sistema de Gestión de Figuras de Colección, una plataforma diseñada para apoyar la administración de productos, clientes y ventas del emprendimiento Narvi Collector Scale Models. Este proyecto permite organizar información relacionada con figuras coleccionables, modelos a escala y artículos personalizados, facilitando la gestión y promoción de productos para los clientes.
+        <p class="lead">
+            Plataforma diseñada para administrar productos, clientes y ventas
+            de figuras coleccionables, modelos a escala e impresiones 3D
+            personalizadas.
+        </p>
 
-    </p>
+        <a href="#productos" class="btn btn-primary btn-lg m-2">
+            Ver Productos
+        </a>
+
+        <a href="#contacto" class="btn btn-outline-light btn-lg m-2">
+            Contactar
+        </a>
+
+    </div>
 
 </section>
+```
 
+
+```html
 <section id="quienes">
 
-    <h2>Quiénes Somos</h2>
+    <div class="container">
 
-    <p>
+        <h2 class="text-center mb-4">Quiénes Somos</h2>
 
-        Narvi Collector Scale Models es un emprendimiento dedicado al diseño, pintura y comercialización de figuras coleccionables, modelos a escala y creaciones personalizadas. Nuestro objetivo es ofrecer productos únicos para coleccionistas y aficionados al modelismo, garantizando calidad, creatividad y atención personalizada. Trabajamos con miniaturas, impresiones 3D, restauración de figuras y proyectos especiales elaborados cuidadosamente para satisfacer las necesidades de cada cliente. A través de nuestras redes sociales compartimos nuestros trabajos, promociones y nuevos lanzamientos, creando una comunidad apasionada por el coleccionismo. Este sistema web busca facilitar la administración de productos, clientes y ventas, contribuyendo al crecimiento del emprendimiento y mejorando la experiencia de quienes buscan piezas exclusivas para sus colecciones.
+        <div class="row align-items-center">
 
-    </p>
+            <div class="col-md-6">
 
-    <img src="img/narvi.jpg" alt="Narvi Collector Scale Models">
+                <img src="img/narvi.jpg"
+                     alt="Narvi Collector Scale Models"
+                     class="img-fluid rounded shadow">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <p>
+                    Narvi Collector Scale Models es un emprendimiento dedicado al diseño,
+                    pintura y comercialización de figuras coleccionables, modelos a escala
+                    y creaciones personalizadas. Nuestro objetivo es ofrecer productos únicos
+                    para coleccionistas y aficionados al modelismo, garantizando calidad,
+                    creatividad y atención personalizada. Trabajamos con miniaturas,
+                    impresiones 3D, restauración de figuras y proyectos especiales elaborados
+                    cuidadosamente para satisfacer las necesidades de cada cliente. A través
+                    de nuestras redes sociales compartimos nuestros trabajos, promociones y
+                    nuevos lanzamientos, creando una comunidad apasionada por el coleccionismo.
+                    Este sistema web busca facilitar la administración de productos, clientes
+                    y ventas, contribuyendo al crecimiento del emprendimiento y mejorando la
+                    experiencia de quienes buscan piezas exclusivas para sus colecciones.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </section>
-
+```
+```html
 <section id="productos">
 
-    <h2>Servicios o Productos</h2>
+    <div class="container">
 
-    <ul>
-        <li>Figuras coleccionables de anime.</li>
-        <li>Modelos militares a escala.</li>
-        <li>Impresiones 3D personalizadas.</li>
-        <li>Pintura profesional de miniaturas.</li>
-        <li>Restauración de figuras.</li>
-        <li>Artículos exclusivos para coleccionistas.</li>
-    </ul>
+        <h2 class="text-center mb-4">Servicios o Productos</h2>
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="card m-3 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Figuras Coleccionables</h5>
+                        <p class="card-text">
+                            Figuras de anime y personajes exclusivos para coleccionistas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card m-3 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Modelos a Escala</h5>
+                        <p class="card-text">
+                            Réplicas y modelos militares elaborados con gran detalle.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card m-3 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Impresiones 3D</h5>
+                        <p class="card-text">
+                            Diseños personalizados mediante tecnología de impresión 3D.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card m-3 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Pintura Profesional</h5>
+                        <p class="card-text">
+                            Acabados de alta calidad para miniaturas y colecciones.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card m-3 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Restauración</h5>
+                        <p class="card-text">
+                            Recuperación y mantenimiento de figuras coleccionables.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card m-3 shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Artículos Exclusivos</h5>
+                        <p class="card-text">
+                            Productos únicos para coleccionistas y aficionados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+```
+
+
 
 </section>
 
 <section id="contacto">
 
-    <h2>Contacto</h2>
+    <div class="container">
 
-    <p><strong>Correo:</strong> narvicollectors@gmail.com</p>
+        <h2 class="text-center mb-4">Contacto</h2>
 
-    <p><strong>Teléfono:</strong> +593 99 999 9999</p>
+        <div class="row">
 
-    <p><strong>Dirección:</strong> Quito, Ecuador</p>
+            <div class="col-md-6">
 
-    <div class="redes">
+                <h4>Información de Contacto</h4>
 
-        <a href="https://www.instagram.com/narvi_collectorscalemodels?igsh=eG9nd2NpY2x4dzNx&utm_source=qr" target="_blank">
-            Instagram
-        </a>
+                <p><strong>Correo:</strong> narvicollectors@gmail.com</p>
 
-        <a href="https://www.tiktok.com/@narvicollectors.e?_r=1&_t=ZS-973PpnEpKI1" target="_blank">
-            TikTok
-        </a>
+                <p><strong>Teléfono:</strong> +593 99 999 9999</p>
 
-        <a href="https://youtu.be/wJ9ELHI9PMA?si=pxgA4ZJp9eBcwF7G" target="_blank">
-            YouTube
-        </a>
+                <p><strong>Dirección:</strong> Quito, Ecuador</p>
+
+                <div class="redes">
+
+                    <a href="https://www.instagram.com/narvi_collectorscalemodels?igsh=eG9nd2NpY2x4dzNx&utm_source=qr"
+                       target="_blank"
+                       class="btn btn-primary m-2">
+                       Instagram
+                    </a>
+
+                    <a href="https://www.tiktok.com/@narvicollectors.e?_r=1&_t=ZS-973PpnEpKI1"
+                       target="_blank"
+                       class="btn btn-info m-2">
+                       TikTok
+                    </a>
+
+                    <a href="https://youtu.be/wJ9ELHI9PMA?si=pxgA4ZJp9eBcwF7G"
+                       target="_blank"
+                       class="btn btn-danger m-2">
+                       YouTube
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <form>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Asunto</label>
+                        <input type="text" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mensaje</label>
+                        <textarea class="form-control" rows="5"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">
+                        Enviar Mensaje
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -149,6 +351,7 @@
     <p><strong>Año:</strong> 2026</p>
 
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
