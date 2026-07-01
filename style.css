@@ -1,273 +1,384 @@
-```css
 /* =====================================
    CONFIGURACIÓN GENERAL DE LA PÁGINA
 ===================================== */
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-    scroll-behavior:smooth;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* scroll-behavior va en html, no en *, para que funcione
+   correctamente en todos los navegadores */
+html {
+    scroll-behavior: smooth;
 }
 
 /* Fondo general del sitio */
-
-body{
-    background:linear-gradient(to bottom,#0b0b0b,#161616,#202020);
-    color:white;
+body {
+    background: linear-gradient(to bottom, #0b0b0b, #161616, #202020);
+    color: white;
 }
 
 /* =====================================
    ENCABEZADO DEL SITIO
 ===================================== */
 
-header{
-    background:linear-gradient(90deg,#000000,#0d1f3c,#004aad);
-    text-align:center;
-    padding:50px;
+header {
+    background: linear-gradient(90deg, #000000, #0d1f3c, #004aad);
+    text-align: center;
+    padding: 50px 20px; /* padding lateral agregado para móvil */
 }
 
-header h1{
-    font-size:2.8rem;
-    color:#00bfff;
-    margin-bottom:15px;
+header h1 {
+    font-size: 2.8rem;
+    color: #00bfff;
+    margin-bottom: 15px;
 }
 
-h2{
-    color:#fef8f8 !important;
-    margin-bottom:15px;
-    font-weight:bold;
-    text-shadow:0 0 5px rgba(229, 236, 238, 0.5);
+/* CORRECCIÓN: h2 tenía dos reglas contradictorias en el CSS original
+   (color: #fef8f8 y color: #00bfff). Se unifica aquí. */
+h2 {
+    color: #00bfff;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 191, 255, 0.3);
 }
 
-header h3{
-    color:#d6d6d6;
+header h2 {
+    color: #fef8f8; /* en el header el h2 sigue siendo blanco */
+    font-size: 1.3rem;
+}
+
+header h3 {
+    color: #d6d6d6;
+    font-size: 1rem;
 }
 
 /* =====================================
    MENÚ DE NAVEGACIÓN
 ===================================== */
 
-nav{
-    background:#111;
-    padding:18px;
-    text-align:center;
-    position:sticky;
-    top:0;
+/* NOTA: Bootstrap ya maneja el nav con navbar-dark bg-dark.
+   Estos estilos complementan sin sobreescribir Bootstrap. */
+nav a {
+    transition: color 0.3s;
 }
 
-nav a{
-    color:white;
-    text-decoration:none;
-    margin:15px;
-    font-weight:bold;
-    transition:0.3s;
-}
-
-nav a:hover{
-    color:#00bfff;
+nav a:hover {
+    color: #00bfff !important;
 }
 
 /* =====================================
    CONTENIDO PRINCIPAL
 ===================================== */
 
-main{
-    width:90%;
-    margin:auto;
-    padding:20px;
+main {
+    width: 100%; /* CORRECCIÓN: era 90% fijo, lo que cortaba el diseño en móvil.
+                    Bootstrap maneja el ancho con container. */
+    padding: 10px 0;
 }
 
-/* Secciones principales */
-
+/* Secciones, artículo y aside */
 section,
-article,
-aside{
-    background:#1a1a1a;
-    margin:25px 0;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 15px rgba(0,191,255,0.15);
-}
-
-/* Títulos secundarios */
-
-h2{
-    color:#00bfff;
-    margin-bottom:15px;
-}
-
-/* Párrafos */
-p{
-    text-align:justify;
-    line-height:1.8;
-    color:white;
-}
-
-
-/* =====================================
-   IMÁGENES
-===================================== */
-
-img{
-    display:block;
-    margin:25px auto;
-    width:400px;
-    max-width:90%;
-    border-radius:15px;
-    box-shadow:0 0 20px rgba(0,191,255,0.35);
+article {
+    margin: 0; /* Bootstrap padding py-5 ya da el espaciado vertical */
 }
 
 /* =====================================
-   LISTAS DE PRODUCTOS
+   TARJETAS DE PRODUCTOS
 ===================================== */
 
-ul{
-    margin-left:25px;
+.card {
+    background: #1a1a1a;
+    color: white;
+    border: 1px solid #00bfff;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-li{
-    margin:10px 0;
-    color:white !important;
-    font-size:18px;
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.45);
+}
+
+.card-title {
+    color: #00bfff !important;
+}
+
+.card-text {
+    color: #cccccc !important; /* MEJORA: blanco puro sobre fondo oscuro cansa la vista;
+                                   un gris claro es más agradable y legible */
+}
+
+/* =====================================
+   SECCIÓN GESTIÓN — Formulario dinámico
+===================================== */
+
+/* Tarjeta del formulario de gestión */
+#gestion .card {
+    background: #1e1e1e;
+    border: 1px solid #00bfff;
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.2);
+}
+
+/* Etiquetas del formulario */
+#gestion .form-label {
+    color: #00bfff;
+    font-weight: 600;
+}
+
+/* Inputs, textareas y selects */
+#gestion .form-control,
+#gestion .form-select {
+    background: #111111;
+    color: white;
+    border: 1px solid #334;
+}
+
+#gestion .form-control::placeholder {
+    color: #666;
+}
+
+/* Al hacer foco, borde azul neón */
+#gestion .form-control:focus,
+#gestion .form-select:focus {
+    background: #111111;
+    color: white;
+    border-color: #00bfff;
+    box-shadow: 0 0 8px rgba(0, 191, 255, 0.35);
+}
+
+/* Texto del contador de caracteres */
+#gestion .form-text {
+    color: #888;
+}
+
+/* Bloque del contador de registros */
+#bloque-contador {
+    background: #0d1f3c;
+    border: 1px solid #00bfff;
+    color: white;
+    border-radius: 10px;
+}
+
+/* Tarjetas de productos registrados dinámicamente */
+#lista-productos .card {
+    background: #1a2a3a;
+    border-left: 4px solid #00bfff;
+    border-top: 1px solid #223;
+    border-right: 1px solid #223;
+    border-bottom: 1px solid #223;
+}
+
+#lista-productos .card-title {
+    color: #00bfff !important;
+}
+
+#lista-productos .card-text {
+    color: #cccccc !important;
+}
+
+/* =====================================
+   SECCIÓN CONTACTO
+===================================== */
+
+#contacto h4 {
+    color: #00bfff;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+#contacto p {
+    color: #dddddd;
+}
+
+/* Formulario de contacto */
+#formulario-contacto .form-control,
+#formulario-contacto textarea {
+    background: #111111;
+    color: white;
+    border: 1px solid #334;
+}
+
+#formulario-contacto .form-control::placeholder,
+#formulario-contacto textarea::placeholder {
+    color: #666;
+}
+
+#formulario-contacto .form-control:focus,
+#formulario-contacto textarea:focus {
+    background: #111111;
+    color: white;
+    border-color: #00bfff;
+    box-shadow: 0 0 8px rgba(0, 191, 255, 0.35);
+}
+
+#formulario-contacto .form-label {
+    color: #bbbbbb;
 }
 
 /* =====================================
    REDES SOCIALES
 ===================================== */
 
-.redes{
-    text-align:center;
-    margin-top:20px;
+.redes {
+    text-align: center;
+    margin-top: 20px;
 }
 
-.redes a{
-    display:inline-block;
-    background:#004aad;
-    color:white;
-    text-decoration:none;
-    padding:12px 20px;
-    margin:10px;
-    border-radius:8px;
-    transition:0.3s;
-}
-
-.redes a:hover{
-    background:#00bfff;
-    color:black;
+/* CORRECCIÓN: los botones de Bootstrap ya tienen estilos propios;
+   solo se agrega el hover personalizado sin sobreescribir Bootstrap */
+.redes a:hover {
+    opacity: 0.85;
+    transform: translateY(-2px);
+    transition: all 0.3s;
 }
 
 /* =====================================
    VIDEO
 ===================================== */
 
-iframe{
-    display:block;
-    margin:auto;
-    border-radius:10px;
-    max-width:100%;
+/* Bootstrap ratio ratio-16x9 ya maneja el iframe;
+   solo se estiliza el borde */
+iframe {
+    border-radius: 10px;
+    border: 2px solid #00bfff;
 }
 
 /* =====================================
-   INFORMACIÓN COMPLEMENTARIA
+   ASIDE — Información Complementaria
 ===================================== */
 
-aside{
-    background:#002f61;
-    text-align:center;
+aside {
+    background: #002f61;
+    text-align: center;
+    padding: 30px 20px;
+}
+
+aside h2 {
+    color: #00bfff;
+}
+
+aside p {
+    color: #cccccc;
+    margin-bottom: 10px;
 }
 
 /* =====================================
    PIE DE PÁGINA
 ===================================== */
 
-footer{
-    background:black;
-    text-align:center;
-    padding:25px;
-    margin-top:30px;
+footer {
+    background: black;
+    text-align: center;
+    padding: 25px;
+    margin-top: 30px;
+    border-top: 1px solid #00bfff33;
 }
-```
+
+footer p {
+    color: #aaaaaa;
+    margin-bottom: 5px;
+}
+
 /* =====================================
-   CORRECCIÓN SERVICIOS O PRODUCTOS
+   IMÁGENES
 ===================================== */
 
-li{
-    color:white !important;
-    margin:10px 0;
+img {
+    display: block;
+    margin: 25px auto;
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.35);
 }
 
-.card{
-    background:#1a1a1a;
-    color:white;
-    border:1px solid #00bfff;
+/* =====================================
+   LISTAS
+===================================== */
+
+ul {
+    margin-left: 25px;
 }
 
-.card-title{
-    color:#00bfff !important;
+li {
+    margin: 10px 0;
+    color: white;
+    font-size: 18px;
 }
 
-.card-text{
-    color:white !important;
-}
+/* =====================================
+   PÁRRAFOS GENERALES
+===================================== */
 
-#contacto h4{
-    color:white;
-    font-weight:bold;
-    margin-bottom:20px;
+p {
+    line-height: 1.8;
+    color: #dddddd; /* MEJORA: blanco puro (#fff) sobre fondo muy oscuro
+                       produce demasiado contraste y cansa la vista.
+                       Un blanco suave (#ddd) es más confortable. */
 }
-
-#contacto p{
-    color:white;
-},
 
 /* =====================================
    DISEÑO RESPONSIVO
 ===================================== */
 
-@media (max-width: 768px){
-
-    header h1{
+@media (max-width: 991px) {
+    /* Tablet */
+    header h1 {
         font-size: 2rem;
     }
 
-    header h2{
+    header h2 {
         font-size: 1rem;
     }
+}
 
-    iframe{
-        width:100%;
-        height:auto;
+@media (max-width: 768px) {
+    /* Móvil */
+    header h1 {
+        font-size: 1.6rem;
     }
 
-    .card{
-        margin-bottom:15px;
+    header h2 {
+        font-size: 0.9rem;
     }
 
-}
-form{
-    background:#1a1a1a;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 15px rgba(0,191,255,0.25);
+    header h3 {
+        font-size: 0.85rem;
+    }
+
+    /* CORRECCIÓN: iframe con width/height fijos rompía el layout en móvil.
+       Bootstrap ratio ya lo soluciona; esto es respaldo. */
+    iframe {
+        width: 100%;
+        height: auto;
+    }
+
+    .card {
+        margin-bottom: 15px;
+    }
+
+    /* El formulario ocupa todo el ancho en móvil */
+    #gestion .col-lg-8 {
+        padding: 0 10px;
+    }
 }
 
-.card{
-    transition:0.3s;
-}
+@media (max-width: 480px) {
+    /* Pantallas muy pequeñas */
+    header {
+        padding: 30px 15px;
+    }
 
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 0 20px rgba(0,191,255,0.4);
-}
+    header h1 {
+        font-size: 1.3rem;
+    }
 
-img{
-    display:block;
-    margin:25px auto;
-    width:100%;
-    max-width:500px;
-    height:auto;
-    border-radius:15px;
-    box-shadow:0 0 20px rgba(0,191,255,0.35);
+    .btn {
+        font-size: 0.85rem;
+        padding: 8px 14px;
+    }
 }

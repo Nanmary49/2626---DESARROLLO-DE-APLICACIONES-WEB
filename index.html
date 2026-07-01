@@ -5,18 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Gestión de Figuras de Colección</title>
+    <!-- Hoja de estilos personalizada -->
     <link rel="stylesheet" href="style.css">
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
 
+    <!-- ============================================================
+         ENCABEZADO PRINCIPAL
+    ============================================================ -->
     <header class="text-center py-4">
         <h1>Sistema de Gestión de Figuras de Colección</h1>
         <h2>Plataforma para administrar productos, clientes y ventas en línea</h2>
         <h3>Desarrollado por Nancy Campos Basurto</h3>
     </header>
 
+    <!-- ============================================================
+         BARRA DE NAVEGACIÓN RESPONSIVA (Bootstrap)
+    ============================================================ -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#">Narvi Models</a>
@@ -42,7 +50,9 @@
 
     <main>
 
-        <!-- SECCIÓN INICIO -->
+        <!-- ============================================================
+             SECCIÓN: INICIO / HERO
+        ============================================================ -->
         <section id="inicio" class="py-5 bg-dark text-white">
             <div class="container text-center">
                 <h2 class="display-4 text-info mb-4">Bienvenido a Narvi Collector Scale Models</h2>
@@ -55,7 +65,9 @@
             </div>
         </section>
 
-        <!-- SECCIÓN QUIÉNES SOMOS -->
+        <!-- ============================================================
+             SECCIÓN: QUIÉNES SOMOS
+        ============================================================ -->
         <section id="quienes" class="py-5">
             <div class="container">
                 <h2 class="text-center mb-4">Quiénes Somos</h2>
@@ -80,7 +92,9 @@
             </div>
         </section>
 
-        <!-- SECCIÓN PRODUCTOS -->
+        <!-- ============================================================
+             SECCIÓN: CATÁLOGO DE PRODUCTOS / SERVICIOS
+        ============================================================ -->
         <section id="productos" class="py-5 bg-light">
             <div class="container">
                 <h2 class="text-center mb-4">Servicios o Productos</h2>
@@ -144,42 +158,74 @@
             </div>
         </section>
 
-        <!-- SECCIÓN GESTIÓN DINÁMICA (NUEVA) -->
+        <!-- ============================================================
+             SECCIÓN: GESTIÓN DINÁMICA DE PRODUCTOS
+             - Formulario con validaciones en tiempo real
+             - Lista dinámica con contador
+        ============================================================ -->
         <section id="gestion" class="py-5">
             <div class="container">
-                <h2 class="text-center mb-4">Gestión de Productos</h2>
+                <h2 class="text-center mb-2">Gestión de Productos</h2>
                 <p class="text-center text-muted mb-4">
                     Registra, visualiza y elimina productos del catálogo de forma dinámica.
                 </p>
 
-                <!-- Formulario de registro -->
                 <div class="row justify-content-center">
-                    <div class="col-md-8">
+                    <div class="col-lg-8 col-md-10">
+
+                        <!-- Tarjeta del formulario -->
                         <div class="card shadow p-4 mb-4">
-                            <h5 class="mb-3">Registrar nuevo producto</h5>
+                            <h5 class="mb-3 fw-bold">Registrar nuevo producto</h5>
 
-                            <div id="mensaje-validacion" class="alert d-none" role="alert"></div>
+                            <!-- Mensaje global de éxito o error (submit) -->
+                            <div id="alerta-global" class="alert d-none" role="alert"></div>
 
-                            <form id="formulario-producto" novalidate onsubmit="return registrarProducto();">
+                            <!--
+                                FORMULARIO DE GESTIÓN
+                                - novalidate: desactiva validación nativa del navegador
+                                - Las validaciones las maneja script.js
+                            -->
+                            <form id="formulario-producto" novalidate>
 
+                                <!-- CAMPO: Nombre del producto -->
                                 <div class="mb-3">
-                                    <label for="campo-nombre" class="form-label fw-semibold">Nombre del producto</label>
+                                    <label for="campo-nombre" class="form-label fw-semibold">
+                                        Nombre del producto <span class="text-danger">*</span>
+                                    </label>
                                     <input type="text"
                                            id="campo-nombre"
                                            class="form-control"
-                                           placeholder="Ej: Figura Goku Ultra Instinto">
+                                           placeholder="Mínimo 3 caracteres. Ej: Figura Goku Ultra Instinto"
+                                           maxlength="100">
+                                    <!-- Mensaje de error específico del campo nombre -->
+                                    <div id="error-nombre" class="invalid-feedback"></div>
+                                    <!-- Mensaje de éxito específico del campo nombre -->
+                                    <div id="ok-nombre" class="valid-feedback"></div>
                                 </div>
 
+                                <!-- CAMPO: Descripción -->
                                 <div class="mb-3">
-                                    <label for="campo-descripcion" class="form-label fw-semibold">Descripción</label>
+                                    <label for="campo-descripcion" class="form-label fw-semibold">
+                                        Descripción <span class="text-danger">*</span>
+                                    </label>
                                     <textarea id="campo-descripcion"
                                               class="form-control"
                                               rows="3"
-                                              placeholder="Ej: Figura de resina pintada a mano, 30 cm de altura."></textarea>
+                                              placeholder="Mínimo 10 caracteres. Ej: Figura de resina pintada a mano, 30 cm de altura."
+                                              maxlength="300"></textarea>
+                                    <!-- Contador de caracteres en tiempo real -->
+                                    <div class="form-text text-end">
+                                        <span id="contador-caracteres">0</span>/300 caracteres
+                                    </div>
+                                    <div id="error-descripcion" class="invalid-feedback"></div>
+                                    <div id="ok-descripcion" class="valid-feedback"></div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="campo-categoria" class="form-label fw-semibold">Categoría / Tipo</label>
+                                <!-- CAMPO: Categoría / Tipo -->
+                                <div class="mb-4">
+                                    <label for="campo-categoria" class="form-label fw-semibold">
+                                        Categoría / Tipo <span class="text-danger">*</span>
+                                    </label>
                                     <select id="campo-categoria" class="form-select">
                                         <option value="">-- Selecciona una categoría --</option>
                                         <option value="Figuras Coleccionables">Figuras Coleccionables</option>
@@ -189,34 +235,41 @@
                                         <option value="Restauración">Restauración</option>
                                         <option value="Artículos Exclusivos">Artículos Exclusivos</option>
                                     </select>
+                                    <div id="error-categoria" class="invalid-feedback"></div>
+                                    <div id="ok-categoria" class="valid-feedback"></div>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary w-100">
-                                    Agregar Producto
+                                <!-- Botón de registro -->
+                                <button type="submit" id="btn-registrar" class="btn btn-primary w-100 py-2 fw-semibold">
+                                    ➕ Agregar Producto
                                 </button>
 
                             </form>
                         </div>
 
-                        <!-- Contador de registros -->
-                        <div class="alert alert-info text-center fw-semibold" id="contador-registros">
-                            Total de productos registrados: <span id="numero-registros">0</span>
+                        <!-- Contador de registros dinámico -->
+                        <div class="alert alert-info text-center fw-semibold fs-5" id="bloque-contador">
+                            Total de productos registrados:
+                            <span id="numero-registros" class="badge bg-primary ms-1 fs-5">0</span>
                         </div>
 
-                        <!-- Lista dinámica de productos -->
-                        <div id="lista-productos"></div>
+                        <!-- Contenedor donde se insertan las tarjetas de productos -->
+                        <div id="lista-productos" class="row mt-3"></div>
 
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN CONTACTO -->
+        <!-- ============================================================
+             SECCIÓN: CONTACTO
+        ============================================================ -->
         <section id="contacto" class="py-5 bg-light">
             <div class="container">
                 <h2 class="text-center mb-4">Contacto</h2>
                 <div class="row">
 
+                    <!-- Información de contacto -->
                     <div class="col-md-6 mb-4">
                         <h4>Información de Contacto</h4>
                         <p><strong>Correo:</strong> narvicollectors@gmail.com</p>
@@ -235,29 +288,35 @@
                         </div>
                     </div>
 
+                    <!-- Formulario de contacto con validaciones -->
                     <div class="col-md-6">
-                        <form id="formulario-contacto" novalidate onsubmit="return enviarContacto();">
+                        <form id="formulario-contacto" novalidate>
 
-                            <div id="mensaje-contacto" class="alert d-none" role="alert"></div>
+                            <!-- Mensaje global del formulario de contacto -->
+                            <div id="alerta-contacto" class="alert d-none" role="alert"></div>
 
                             <div class="mb-3">
-                                <label for="contacto-nombre" class="form-label">Nombre</label>
+                                <label for="contacto-nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
                                 <input type="text" id="contacto-nombre" class="form-control" placeholder="Tu nombre completo">
+                                <div id="error-contacto-nombre" class="invalid-feedback"></div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="contacto-correo" class="form-label">Correo Electrónico</label>
+                                <label for="contacto-correo" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
                                 <input type="email" id="contacto-correo" class="form-control" placeholder="ejemplo@correo.com">
+                                <div id="error-contacto-correo" class="invalid-feedback"></div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="contacto-asunto" class="form-label">Asunto</label>
+                                <label for="contacto-asunto" class="form-label">Asunto <span class="text-danger">*</span></label>
                                 <input type="text" id="contacto-asunto" class="form-control" placeholder="¿En qué podemos ayudarte?">
+                                <div id="error-contacto-asunto" class="invalid-feedback"></div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="contacto-mensaje" class="form-label">Mensaje</label>
+                                <label for="contacto-mensaje" class="form-label">Mensaje <span class="text-danger">*</span></label>
                                 <textarea id="contacto-mensaje" class="form-control" rows="5" placeholder="Escribe tu mensaje aquí..."></textarea>
+                                <div id="error-contacto-mensaje" class="invalid-feedback"></div>
                             </div>
 
                             <button type="submit" class="btn btn-success w-100">
@@ -271,7 +330,9 @@
             </div>
         </section>
 
-        <!-- ARTÍCULO: VIDEO -->
+        <!-- ============================================================
+             ARTÍCULO: VIDEO RELACIONADO
+        ============================================================ -->
         <article class="py-5 text-center">
             <div class="container">
                 <h2 class="mb-3">Video Relacionado</h2>
@@ -284,7 +345,9 @@
             </div>
         </article>
 
-        <!-- ASIDE: INFORMACIÓN COMPLEMENTARIA -->
+        <!-- ============================================================
+             ASIDE: INFORMACIÓN COMPLEMENTARIA
+        ============================================================ -->
         <aside class="py-4 bg-dark text-white text-center">
             <div class="container">
                 <h2 class="mb-3">Información Complementaria</h2>
@@ -296,13 +359,19 @@
 
     </main>
 
+    <!-- ============================================================
+         PIE DE PÁGINA
+    ============================================================ -->
     <footer class="text-center py-4">
         <p><strong>Estudiante:</strong> Nancy Campos Basurto</p>
         <p><strong>Asignatura:</strong> Desarrollo de Aplicaciones Web</p>
         <p><strong>Año:</strong> 2026</p>
     </footer>
 
+    <!-- Bootstrap JS (al final del body, antes de script.js) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Archivo JavaScript externo (siempre al final, después de Bootstrap) -->
     <script src="script.js"></script>
 
 </body>
