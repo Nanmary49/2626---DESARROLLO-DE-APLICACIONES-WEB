@@ -1,7 +1,13 @@
-/* =====================================
-   CONFIGURACIÓN GENERAL DE LA PÁGINA
-===================================== */
+/* ================================================================
+   style.css — Narvi Collector Scale Models
+   Semana 7: Estilos organizados por sección
+   Estudiante: Nancy Campos Basurto
+================================================================ */
 
+/* ================================================================
+   RESET Y CONFIGURACIÓN GLOBAL
+   scroll-behavior en html (no en *) para compatibilidad total.
+================================================================ */
 * {
     margin: 0;
     padding: 0;
@@ -9,376 +15,336 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* scroll-behavior va en html, no en *, para que funcione
-   correctamente en todos los navegadores */
 html {
     scroll-behavior: smooth;
 }
 
-/* Fondo general del sitio */
 body {
     background: linear-gradient(to bottom, #0b0b0b, #161616, #202020);
-    color: white;
-}
-
-/* =====================================
-   ENCABEZADO DEL SITIO
-===================================== */
-
-header {
-    background: linear-gradient(90deg, #000000, #0d1f3c, #004aad);
-    text-align: center;
-    padding: 50px 20px; /* padding lateral agregado para móvil */
-}
-
-header h1 {
-    font-size: 2.8rem;
-    color: #00bfff;
-    margin-bottom: 15px;
-}
-
-/* CORRECCIÓN: h2 tenía dos reglas contradictorias en el CSS original
-   (color: #fef8f8 y color: #00bfff). Se unifica aquí. */
-h2 {
-    color: #00bfff;
-    margin-bottom: 15px;
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(0, 191, 255, 0.3);
-}
-
-header h2 {
-    color: #fef8f8; /* en el header el h2 sigue siendo blanco */
-    font-size: 1.3rem;
-}
-
-header h3 {
-    color: #d6d6d6;
-    font-size: 1rem;
-}
-
-/* =====================================
-   MENÚ DE NAVEGACIÓN
-===================================== */
-
-/* NOTA: Bootstrap ya maneja el nav con navbar-dark bg-dark.
-   Estos estilos complementan sin sobreescribir Bootstrap. */
-nav a {
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: #00bfff !important;
-}
-
-/* =====================================
-   CONTENIDO PRINCIPAL
-===================================== */
-
-main {
-    width: 100%; /* CORRECCIÓN: era 90% fijo, lo que cortaba el diseño en móvil.
-                    Bootstrap maneja el ancho con container. */
-    padding: 10px 0;
-}
-
-/* Secciones, artículo y aside */
-section,
-article {
-    margin: 0; /* Bootstrap padding py-5 ya da el espaciado vertical */
-}
-
-/* =====================================
-   TARJETAS DE PRODUCTOS
-===================================== */
-
-.card {
-    background: #1a1a1a;
-    color: white;
-    border: 1px solid #00bfff;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.45);
-}
-
-.card-title {
-    color: #00bfff !important;
-}
-
-.card-text {
-    color: #cccccc !important; /* MEJORA: blanco puro sobre fondo oscuro cansa la vista;
-                                   un gris claro es más agradable y legible */
-}
-
-/* =====================================
-   SECCIÓN GESTIÓN — Formulario dinámico
-===================================== */
-
-/* Tarjeta del formulario de gestión */
-#gestion .card {
-    background: #1e1e1e;
-    border: 1px solid #00bfff;
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.2);
-}
-
-/* Etiquetas del formulario */
-#gestion .form-label {
-    color: #00bfff;
-    font-weight: 600;
-}
-
-/* Inputs, textareas y selects */
-#gestion .form-control,
-#gestion .form-select {
-    background: #111111;
-    color: white;
-    border: 1px solid #334;
-}
-
-#gestion .form-control::placeholder {
-    color: #666;
-}
-
-/* Al hacer foco, borde azul neón */
-#gestion .form-control:focus,
-#gestion .form-select:focus {
-    background: #111111;
-    color: white;
-    border-color: #00bfff;
-    box-shadow: 0 0 8px rgba(0, 191, 255, 0.35);
-}
-
-/* Texto del contador de caracteres */
-#gestion .form-text {
-    color: #888;
-}
-
-/* Bloque del contador de registros */
-#bloque-contador {
-    background: #0d1f3c;
-    border: 1px solid #00bfff;
-    color: white;
-    border-radius: 10px;
-}
-
-/* Tarjetas de productos registrados dinámicamente */
-#lista-productos .card {
-    background: #1a2a3a;
-    border-left: 4px solid #00bfff;
-    border-top: 1px solid #223;
-    border-right: 1px solid #223;
-    border-bottom: 1px solid #223;
-}
-
-#lista-productos .card-title {
-    color: #00bfff !important;
-}
-
-#lista-productos .card-text {
-    color: #cccccc !important;
-}
-
-/* =====================================
-   SECCIÓN CONTACTO
-===================================== */
-
-#contacto h4 {
-    color: #00bfff;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-#contacto p {
     color: #dddddd;
 }
 
-/* Formulario de contacto */
-#formulario-contacto .form-control,
-#formulario-contacto textarea {
+/* ================================================================
+   ENCABEZADO
+================================================================ */
+header {
+    background: linear-gradient(90deg, #000000, #0d1f3c, #004aad);
+    text-align: center;
+    padding: 50px 20px;
+}
+
+header h1 {
+    font-size: 2.6rem;
+    color: #00bfff;
+    margin-bottom: 12px;
+}
+
+header h2 {
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+    font-weight: normal;
+}
+
+header h3 {
+    font-size: 1rem;
+    color: #aaaaaa;
+    font-weight: normal;
+}
+
+/* ================================================================
+   TÍTULOS SECUNDARIOS (h2 dentro del contenido)
+================================================================ */
+h2 {
+    color: #00bfff;
+    font-weight: bold;
+}
+
+/* ================================================================
+   BARRA DE NAVEGACIÓN (Bootstrap la maneja; solo se personaliza hover)
+================================================================ */
+.navbar-nav .nav-link:hover {
+    color: #00bfff !important;
+    transition: color 0.3s;
+}
+
+/* ================================================================
+   SECCIÓN HERO (Inicio)
+================================================================ */
+.seccion-hero {
+    background: radial-gradient(ellipse at center, #0d1f3c 0%, #0b0b0b 100%);
+    border-bottom: 1px solid #00bfff33;
+}
+
+/* ================================================================
+   SECCIÓN CON FONDO OSCURO ALTERNADO
+================================================================ */
+.seccion-oscura {
     background: #111111;
-    color: white;
-    border: 1px solid #334;
+    border-top: 1px solid #00bfff22;
+    border-bottom: 1px solid #00bfff22;
 }
 
-#formulario-contacto .form-control::placeholder,
-#formulario-contacto textarea::placeholder {
-    color: #666;
+/* ================================================================
+   PÁRRAFOS
+================================================================ */
+p {
+    line-height: 1.8;
+    color: #cccccc;
 }
 
-#formulario-contacto .form-control:focus,
-#formulario-contacto textarea:focus {
-    background: #111111;
-    color: white;
-    border-color: #00bfff;
-    box-shadow: 0 0 8px rgba(0, 191, 255, 0.35);
+/* ================================================================
+   IMAGEN DEL EMPRENDIMIENTO
+================================================================ */
+img {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0, 191, 255, 0.3);
+    margin: 0 auto;
 }
 
-#formulario-contacto .form-label {
+/* ================================================================
+   TARJETAS — CATÁLOGO DE SERVICIOS (generadas desde JS)
+================================================================ */
+.card-catalogo {
+    background: #1a1a2e;
+    color: #dddddd;
+    border: 1px solid #00bfff44;
+    border-radius: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-catalogo:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+}
+
+.card-catalogo .card-title {
+    color: #00bfff;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.card-catalogo .card-text {
+    color: #bbbbbb;
+    font-size: 0.88rem;
+}
+
+/* ================================================================
+   FORMULARIOS — Contenedor con estilo oscuro
+================================================================ */
+.card-formulario {
+    background: #1e1e1e;
+    border: 1px solid #00bfff44;
+    border-radius: 12px;
+    box-shadow: 0 0 18px rgba(0, 191, 255, 0.15);
+}
+
+/* Labels de los formularios */
+.card-formulario .form-label {
+    color: #00bfff;
+    font-size: 0.9rem;
+}
+
+/* Inputs, textareas y selects con fondo oscuro */
+.campo-oscuro {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border: 1px solid #334455;
+}
+
+.campo-oscuro::placeholder {
+    color: #555555;
+}
+
+/* Foco: borde azul neón */
+.campo-oscuro:focus {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border-color: #00bfff !important;
+    box-shadow: 0 0 8px rgba(0, 191, 255, 0.35) !important;
+    outline: none;
+}
+
+/* Foco en estado válido */
+.campo-oscuro.is-valid:focus {
+    border-color: #198754 !important;
+    box-shadow: 0 0 6px rgba(25, 135, 84, 0.4) !important;
+}
+
+/* Foco en estado inválido */
+.campo-oscuro.is-invalid:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 6px rgba(220, 53, 69, 0.4) !important;
+}
+
+/* Texto auxiliar del contador de caracteres */
+.texto-gris {
+    color: #777777;
+    font-size: 0.8rem;
+}
+
+/* ================================================================
+   CONTADOR DE REGISTROS
+================================================================ */
+.bloque-contador {
+    background: #0d1f3c;
+    border: 1px solid #00bfff55;
+    color: #ffffff;
+}
+
+/* ================================================================
+   TABLA DE PRODUCTOS REGISTRADOS
+================================================================ */
+.tabla-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #00bfff33;
+}
+
+.table-dark {
+    --bs-table-bg: #141414;
+    --bs-table-hover-bg: #1a2a3a;
+    font-size: 0.9rem;
+}
+
+.table-dark thead tr th {
+    border-bottom: 2px solid #00bfff55;
+}
+
+/* ================================================================
+   TARJETAS DE DETALLE DE PRODUCTOS REGISTRADOS
+================================================================ */
+.card-producto {
+    background: #1a2a3a;
+    border: 1px solid #00bfff33;
+    border-left: 4px solid #00bfff;
+    border-radius: 8px;
+    color: #dddddd;
+}
+
+.card-producto .card-title {
+    color: #00bfff;
+}
+
+.card-producto .card-text {
     color: #bbbbbb;
 }
 
-/* =====================================
-   REDES SOCIALES
-===================================== */
-
-.redes {
-    text-align: center;
-    margin-top: 20px;
+/* ================================================================
+   SECCIÓN CONTACTO
+================================================================ */
+#contacto h4 {
+    color: #00bfff;
 }
 
-/* CORRECCIÓN: los botones de Bootstrap ya tienen estilos propios;
-   solo se agrega el hover personalizado sin sobreescribir Bootstrap */
+#contacto p {
+    color: #cccccc;
+    margin-bottom: 6px;
+}
+
+/* ================================================================
+   REDES SOCIALES
+================================================================ */
+.redes a {
+    transition: transform 0.3s, opacity 0.3s;
+}
+
 .redes a:hover {
     opacity: 0.85;
     transform: translateY(-2px);
-    transition: all 0.3s;
 }
 
-/* =====================================
-   VIDEO
-===================================== */
-
-/* Bootstrap ratio ratio-16x9 ya maneja el iframe;
-   solo se estiliza el borde */
+/* ================================================================
+   IFRAME — VIDEO
+================================================================ */
 iframe {
     border-radius: 10px;
-    border: 2px solid #00bfff;
+    border: 2px solid #00bfff55;
 }
 
-/* =====================================
-   ASIDE — Información Complementaria
-===================================== */
-
+/* ================================================================
+   ASIDE — INFORMACIÓN COMPLEMENTARIA
+================================================================ */
 aside {
-    background: #002f61;
-    text-align: center;
-    padding: 30px 20px;
+    background: #0d1f3c;
+    border-top: 1px solid #00bfff33;
+    border-bottom: 1px solid #00bfff33;
 }
 
 aside h2 {
     color: #00bfff;
+    margin-bottom: 20px;
 }
 
-aside p {
+/* Chips de información */
+.info-chip {
+    background: #1a2a3a;
+    border: 1px solid #00bfff44;
+    border-radius: 30px;
+    padding: 10px 20px;
     color: #cccccc;
-    margin-bottom: 10px;
+    font-size: 0.9rem;
 }
 
-/* =====================================
+/* ================================================================
    PIE DE PÁGINA
-===================================== */
-
+================================================================ */
 footer {
-    background: black;
+    background: #000000;
     text-align: center;
     padding: 25px;
-    margin-top: 30px;
     border-top: 1px solid #00bfff33;
 }
 
 footer p {
-    color: #aaaaaa;
-    margin-bottom: 5px;
+    color: #888888;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
 }
 
-/* =====================================
-   IMÁGENES
-===================================== */
-
-img {
-    display: block;
-    margin: 25px auto;
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.35);
-}
-
-/* =====================================
-   LISTAS
-===================================== */
-
+/* ================================================================
+   LISTAS (nav ul se maneja con Bootstrap)
+================================================================ */
 ul {
-    margin-left: 25px;
+    margin-left: 20px;
 }
 
 li {
-    margin: 10px 0;
-    color: white;
-    font-size: 18px;
+    margin: 8px 0;
+    color: #cccccc;
 }
 
-/* =====================================
-   PÁRRAFOS GENERALES
-===================================== */
-
-p {
-    line-height: 1.8;
-    color: #dddddd; /* MEJORA: blanco puro (#fff) sobre fondo muy oscuro
-                       produce demasiado contraste y cansa la vista.
-                       Un blanco suave (#ddd) es más confortable. */
-}
-
-/* =====================================
+/* ================================================================
    DISEÑO RESPONSIVO
-===================================== */
+================================================================ */
 
+/* Tablet grande */
 @media (max-width: 991px) {
-    /* Tablet */
-    header h1 {
-        font-size: 2rem;
-    }
-
-    header h2 {
-        font-size: 1rem;
-    }
+    header h1 { font-size: 2rem; }
+    header h2 { font-size: 1rem; }
 }
 
+/* Tablet / móvil */
 @media (max-width: 768px) {
-    /* Móvil */
-    header h1 {
-        font-size: 1.6rem;
-    }
+    header h1 { font-size: 1.6rem; }
+    header h2 { font-size: 0.9rem; }
+    header h3 { font-size: 0.8rem; }
 
-    header h2 {
-        font-size: 0.9rem;
-    }
+    .card-catalogo { margin-bottom: 12px; }
 
-    header h3 {
-        font-size: 0.85rem;
-    }
-
-    /* CORRECCIÓN: iframe con width/height fijos rompía el layout en móvil.
-       Bootstrap ratio ya lo soluciona; esto es respaldo. */
-    iframe {
-        width: 100%;
-        height: auto;
-    }
-
-    .card {
-        margin-bottom: 15px;
-    }
-
-    /* El formulario ocupa todo el ancho en móvil */
-    #gestion .col-lg-8 {
-        padding: 0 10px;
-    }
+    iframe { width: 100%; height: auto; }
 }
 
+/* Móvil pequeño */
 @media (max-width: 480px) {
-    /* Pantallas muy pequeñas */
-    header {
-        padding: 30px 15px;
-    }
+    header { padding: 30px 15px; }
+    header h1 { font-size: 1.3rem; }
 
-    header h1 {
-        font-size: 1.3rem;
-    }
+    .btn { font-size: 0.82rem; padding: 7px 12px; }
 
-    .btn {
-        font-size: 0.85rem;
-        padding: 8px 14px;
-    }
+    .card-formulario { padding: 16px !important; }
 }

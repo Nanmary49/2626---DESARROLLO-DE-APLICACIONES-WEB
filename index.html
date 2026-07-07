@@ -1,378 +1,445 @@
 <!DOCTYPE html>
+<!--
+    ================================================================
+    PLANTILLA BASE — base.html (simulación)
+    Este archivo representa la estructura principal del sitio.
+    En un framework como Django o Flask, este bloque se
+    convertiría en base.html con etiquetas {% block content %}.
+    ================================================================
+    BLOQUES IDENTIFICADOS PARA PLANTILLA:
+      - {% block head %}       → <head> con meta, CSS y título
+      - {% block header %}     → Encabezado del sitio
+      - {% block navbar %}     → Barra de navegación
+      - {% block content %}    → Contenido principal (cambia por página)
+      - {% block footer %}     → Pie de página
+    ================================================================
+-->
 <html lang="es">
 
+<!-- ================================================================
+     {% block head %} — Cabecera de la plantilla base
+     Contiene: charset, viewport, título y hojas de estilo
+================================================================ -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión de Figuras de Colección</title>
-    <!-- Hoja de estilos personalizada -->
+    <title>Narvi Collector Scale Models — Sistema de Gestión</title>
+    <!-- Hoja de estilos personalizada (style.css) -->
     <link rel="stylesheet" href="style.css">
-    <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap 5.3 — Framework CSS responsivo -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<!-- {% endblock head %} -->
 
 <body>
 
-    <!-- ============================================================
-         ENCABEZADO PRINCIPAL
-    ============================================================ -->
-    <header class="text-center py-4">
-        <h1>Sistema de Gestión de Figuras de Colección</h1>
-        <h2>Plataforma para administrar productos, clientes y ventas en línea</h2>
-        <h3>Desarrollado por Nancy Campos Basurto</h3>
-    </header>
+<!-- ================================================================
+     {% block header %} — ENCABEZADO PRINCIPAL
+     Parte repetitiva: aparece igual en todas las páginas del sitio.
+     En base.html sería un componente fijo heredado por las sub-páginas.
+================================================================ -->
+<header class="text-center py-4">
+    <h1>Sistema de Gestión de Figuras de Colección</h1>
+    <h2>Plataforma para administrar productos, clientes y ventas en línea</h2>
+    <h3>Desarrollado por Nancy Campos Basurto</h3>
+</header>
+<!-- {% endblock header %} -->
+
+
+<!-- ================================================================
+     {% block navbar %} — BARRA DE NAVEGACIÓN RESPONSIVA
+     Parte repetitiva: sticky-top, colapsa en móvil con Bootstrap.
+     En base.html sería un include o bloque heredado.
+================================================================ -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">🎨 Narvi Models</a>
+
+        <!-- Botón hamburguesa para móvil -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu"
+                aria-controls="menu"
+                aria-expanded="false"
+                aria-label="Abrir menú de navegación">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menú de navegación colapsable -->
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="#quienes">Quiénes Somos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#catalogo">Catálogo</a></li>
+                <li class="nav-item"><a class="nav-link" href="#gestion">Gestión</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- {% endblock navbar %} -->
+
+
+<!-- ================================================================
+     {% block content %} — CONTENIDO PRINCIPAL
+     Esta es la única parte que cambia entre páginas en base.html.
+     Todo lo que está dentro de <main> sería el bloque dinámico.
+================================================================ -->
+<main>
 
     <!-- ============================================================
-         BARRA DE NAVEGACIÓN RESPONSIVA (Bootstrap)
+         SECCIÓN: INICIO / HERO BANNER
+         Presentación del emprendimiento con llamado a la acción.
     ============================================================ -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <section id="inicio" class="py-5 seccion-hero">
+        <div class="container text-center">
+            <h2 class="display-4 text-info mb-3">Bienvenido a Narvi Collector Scale Models</h2>
+            <p class="lead mb-4">
+                Plataforma diseñada para administrar productos, clientes y ventas
+                de figuras coleccionables, modelos a escala e impresiones 3D personalizadas.
+            </p>
+            <a href="#catalogo" class="btn btn-primary btn-lg m-2">🗂 Ver Catálogo</a>
+            <a href="#gestion"  class="btn btn-outline-info btn-lg m-2">➕ Gestionar Productos</a>
+            <a href="#contacto" class="btn btn-outline-light btn-lg m-2">✉ Contactar</a>
+        </div>
+    </section>
+
+
+    <!-- ============================================================
+         SECCIÓN: QUIÉNES SOMOS
+         Descripción del emprendimiento con imagen.
+    ============================================================ -->
+    <section id="quienes" class="py-5">
         <div class="container">
-            <a class="navbar-brand" href="#">Narvi Models</a>
-            <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#menu"
-                    aria-controls="menu"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="menu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#quienes">Quiénes Somos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#productos">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#gestion">Gestión</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
-                </ul>
+            <h2 class="text-center mb-4">Quiénes Somos</h2>
+            <div class="row align-items-center g-4">
+                <div class="col-md-5 text-center">
+                    <img src="img/narvi.jpg"
+                         alt="Narvi Collector Scale Models — taller de pintura y modelismo"
+                         class="img-fluid rounded shadow-lg">
+                </div>
+                <div class="col-md-7">
+                    <p>
+                        <strong>Narvi Collector Scale Models</strong> es un emprendimiento dedicado al diseño,
+                        pintura y comercialización de figuras coleccionables, modelos a escala y creaciones
+                        personalizadas. Nuestro objetivo es ofrecer productos únicos para coleccionistas y
+                        aficionados al modelismo, garantizando calidad, creatividad y atención personalizada.
+                    </p>
+                    <p class="mt-3">
+                        Trabajamos con miniaturas, impresiones 3D, restauración de figuras y proyectos especiales
+                        elaborados cuidadosamente para satisfacer las necesidades de cada cliente. A través de
+                        nuestras redes sociales compartimos trabajos, promociones y nuevos lanzamientos.
+                    </p>
+                </div>
             </div>
         </div>
-    </nav>
+    </section>
 
-    <main>
 
-        <!-- ============================================================
-             SECCIÓN: INICIO / HERO
-        ============================================================ -->
-        <section id="inicio" class="py-5 bg-dark text-white">
-            <div class="container text-center">
-                <h2 class="display-4 text-info mb-4">Bienvenido a Narvi Collector Scale Models</h2>
-                <p class="lead">
-                    Plataforma diseñada para administrar productos, clientes y ventas
-                    de figuras coleccionables, modelos a escala e impresiones 3D personalizadas.
-                </p>
-                <a href="#productos" class="btn btn-primary btn-lg m-2">Ver Productos</a>
-                <a href="#contacto" class="btn btn-outline-light btn-lg m-2">Contactar</a>
+    <!-- ============================================================
+         SECCIÓN: CATÁLOGO DE SERVICIOS (RENDERIZADO DINÁMICO)
+         ↓ NUEVO: Las tarjetas se generan desde un arreglo en script.js.
+         El HTML solo contiene el contenedor vacío #contenedor-catalogo.
+         JavaScript itera el arreglo "catalogoServicios" y renderiza
+         cada tarjeta con createElement + appendChild (bucle forEach).
+    ============================================================ -->
+    <section id="catalogo" class="py-5 seccion-oscura">
+        <div class="container">
+            <h2 class="text-center mb-2">Catálogo de Servicios</h2>
+            <p class="text-center text-secondary mb-4">
+                Servicios y productos disponibles en el emprendimiento.
+            </p>
+
+            <!-- CONDICIÓN VISUAL: Si no hay servicios, script.js muestra mensaje.
+                 Si hay servicios, renderiza las tarjetas automáticamente. -->
+            <div id="contenedor-catalogo" class="row g-3">
+                <!-- Las tarjetas del catálogo se insertan aquí desde JavaScript -->
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- ============================================================
-             SECCIÓN: QUIÉNES SOMOS
-        ============================================================ -->
-        <section id="quienes" class="py-5">
-            <div class="container">
-                <h2 class="text-center mb-4">Quiénes Somos</h2>
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-3">
-                        <img src="img/narvi.jpg"
-                             alt="Narvi Collector Scale Models"
-                             class="img-fluid rounded shadow">
-                    </div>
-                    <div class="col-md-6">
-                        <p>
-                            Narvi Collector Scale Models es un emprendimiento dedicado al diseño,
-                            pintura y comercialización de figuras coleccionables, modelos a escala
-                            y creaciones personalizadas. Nuestro objetivo es ofrecer productos únicos
-                            para coleccionistas y aficionados al modelismo, garantizando calidad,
-                            creatividad y atención personalizada. Trabajamos con miniaturas,
-                            impresiones 3D, restauración de figuras y proyectos especiales elaborados
-                            cuidadosamente para satisfacer las necesidades de cada cliente.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- ============================================================
-             SECCIÓN: CATÁLOGO DE PRODUCTOS / SERVICIOS
-        ============================================================ -->
-        <section id="productos" class="py-5 bg-light">
-            <div class="container">
-                <h2 class="text-center mb-4">Servicios o Productos</h2>
-                <div class="row">
+    <!-- ============================================================
+         SECCIÓN: GESTIÓN DINÁMICA DE PRODUCTOS
+         Formulario con validaciones (Semana 6, conservadas).
+         Los productos registrados se muestran en #lista-productos.
+         Un arreglo "productosRegistrados" almacena los datos.
+    ============================================================ -->
+    <section id="gestion" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-2">Gestión de Productos</h2>
+            <p class="text-center text-secondary mb-4">
+                Registra, visualiza y elimina productos del catálogo de forma dinámica.
+            </p>
 
-                    <div class="col-md-4">
-                        <div class="card m-3 shadow">
-                            <div class="card-body">
-                                <h5 class="card-title">Figuras Coleccionables</h5>
-                                <p class="card-text">Figuras de anime y personajes exclusivos para coleccionistas.</p>
+            <div class="row justify-content-center g-4">
+
+                <!-- Columna izquierda: formulario de registro -->
+                <div class="col-lg-5 col-md-6">
+                    <div class="card-formulario p-4">
+                        <h5 class="mb-3 fw-bold text-info">➕ Registrar nuevo producto</h5>
+
+                        <!-- Alerta global de éxito o error al hacer submit -->
+                        <div id="alerta-global" class="alert d-none" role="alert"></div>
+
+                        <!--
+                            FORMULARIO DE GESTIÓN
+                            novalidate → desactiva validación nativa del navegador.
+                            Toda la validación la hace script.js con eventos
+                            input, blur y submit + preventDefault().
+                        -->
+                        <form id="formulario-producto" novalidate>
+
+                            <!-- Campo: Nombre del producto (mínimo 3 caracteres) -->
+                            <div class="mb-3">
+                                <label for="campo-nombre" class="form-label fw-semibold">
+                                    Nombre del producto <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       id="campo-nombre"
+                                       class="form-control campo-oscuro"
+                                       placeholder="Ej: Figura Goku Ultra Instinto"
+                                       maxlength="100"
+                                       autocomplete="off">
+                                <div id="error-nombre" class="invalid-feedback"></div>
+                                <div id="ok-nombre"    class="valid-feedback"></div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-4">
-                        <div class="card m-3 shadow">
-                            <div class="card-body">
-                                <h5 class="card-title">Modelos a Escala</h5>
-                                <p class="card-text">Réplicas y modelos militares elaborados con gran detalle.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card m-3 shadow">
-                            <div class="card-body">
-                                <h5 class="card-title">Impresiones 3D</h5>
-                                <p class="card-text">Diseños personalizados mediante tecnología de impresión 3D.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card m-3 shadow">
-                            <div class="card-body">
-                                <h5 class="card-title">Pintura Profesional</h5>
-                                <p class="card-text">Acabados de alta calidad para miniaturas y colecciones.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card m-3 shadow">
-                            <div class="card-body">
-                                <h5 class="card-title">Restauración</h5>
-                                <p class="card-text">Recuperación y mantenimiento de figuras coleccionables.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card m-3 shadow">
-                            <div class="card-body">
-                                <h5 class="card-title">Artículos Exclusivos</h5>
-                                <p class="card-text">Productos únicos para coleccionistas y aficionados.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================
-             SECCIÓN: GESTIÓN DINÁMICA DE PRODUCTOS
-             - Formulario con validaciones en tiempo real
-             - Lista dinámica con contador
-        ============================================================ -->
-        <section id="gestion" class="py-5">
-            <div class="container">
-                <h2 class="text-center mb-2">Gestión de Productos</h2>
-                <p class="text-center text-muted mb-4">
-                    Registra, visualiza y elimina productos del catálogo de forma dinámica.
-                </p>
-
-                <div class="row justify-content-center">
-                    <div class="col-lg-8 col-md-10">
-
-                        <!-- Tarjeta del formulario -->
-                        <div class="card shadow p-4 mb-4">
-                            <h5 class="mb-3 fw-bold">Registrar nuevo producto</h5>
-
-                            <!-- Mensaje global de éxito o error (submit) -->
-                            <div id="alerta-global" class="alert d-none" role="alert"></div>
-
-                            <!--
-                                FORMULARIO DE GESTIÓN
-                                - novalidate: desactiva validación nativa del navegador
-                                - Las validaciones las maneja script.js
-                            -->
-                            <form id="formulario-producto" novalidate>
-
-                                <!-- CAMPO: Nombre del producto -->
-                                <div class="mb-3">
-                                    <label for="campo-nombre" class="form-label fw-semibold">
-                                        Nombre del producto <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text"
-                                           id="campo-nombre"
-                                           class="form-control"
-                                           placeholder="Mínimo 3 caracteres. Ej: Figura Goku Ultra Instinto"
-                                           maxlength="100">
-                                    <!-- Mensaje de error específico del campo nombre -->
-                                    <div id="error-nombre" class="invalid-feedback"></div>
-                                    <!-- Mensaje de éxito específico del campo nombre -->
-                                    <div id="ok-nombre" class="valid-feedback"></div>
+                            <!-- Campo: Descripción (mínimo 10 caracteres) -->
+                            <div class="mb-3">
+                                <label for="campo-descripcion" class="form-label fw-semibold">
+                                    Descripción <span class="text-danger">*</span>
+                                </label>
+                                <textarea id="campo-descripcion"
+                                          class="form-control campo-oscuro"
+                                          rows="3"
+                                          placeholder="Ej: Figura de resina pintada a mano, 30 cm."
+                                          maxlength="300"></textarea>
+                                <!-- Contador de caracteres actualizado en tiempo real (evento input) -->
+                                <div class="form-text text-end texto-gris">
+                                    <span id="contador-caracteres">0</span>/300 caracteres
                                 </div>
-
-                                <!-- CAMPO: Descripción -->
-                                <div class="mb-3">
-                                    <label for="campo-descripcion" class="form-label fw-semibold">
-                                        Descripción <span class="text-danger">*</span>
-                                    </label>
-                                    <textarea id="campo-descripcion"
-                                              class="form-control"
-                                              rows="3"
-                                              placeholder="Mínimo 10 caracteres. Ej: Figura de resina pintada a mano, 30 cm de altura."
-                                              maxlength="300"></textarea>
-                                    <!-- Contador de caracteres en tiempo real -->
-                                    <div class="form-text text-end">
-                                        <span id="contador-caracteres">0</span>/300 caracteres
-                                    </div>
-                                    <div id="error-descripcion" class="invalid-feedback"></div>
-                                    <div id="ok-descripcion" class="valid-feedback"></div>
-                                </div>
-
-                                <!-- CAMPO: Categoría / Tipo -->
-                                <div class="mb-4">
-                                    <label for="campo-categoria" class="form-label fw-semibold">
-                                        Categoría / Tipo <span class="text-danger">*</span>
-                                    </label>
-                                    <select id="campo-categoria" class="form-select">
-                                        <option value="">-- Selecciona una categoría --</option>
-                                        <option value="Figuras Coleccionables">Figuras Coleccionables</option>
-                                        <option value="Modelos a Escala">Modelos a Escala</option>
-                                        <option value="Impresiones 3D">Impresiones 3D</option>
-                                        <option value="Pintura Profesional">Pintura Profesional</option>
-                                        <option value="Restauración">Restauración</option>
-                                        <option value="Artículos Exclusivos">Artículos Exclusivos</option>
-                                    </select>
-                                    <div id="error-categoria" class="invalid-feedback"></div>
-                                    <div id="ok-categoria" class="valid-feedback"></div>
-                                </div>
-
-                                <!-- Botón de registro -->
-                                <button type="submit" id="btn-registrar" class="btn btn-primary w-100 py-2 fw-semibold">
-                                    ➕ Agregar Producto
-                                </button>
-
-                            </form>
-                        </div>
-
-                        <!-- Contador de registros dinámico -->
-                        <div class="alert alert-info text-center fw-semibold fs-5" id="bloque-contador">
-                            Total de productos registrados:
-                            <span id="numero-registros" class="badge bg-primary ms-1 fs-5">0</span>
-                        </div>
-
-                        <!-- Contenedor donde se insertan las tarjetas de productos -->
-                        <div id="lista-productos" class="row mt-3"></div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ============================================================
-             SECCIÓN: CONTACTO
-        ============================================================ -->
-        <section id="contacto" class="py-5 bg-light">
-            <div class="container">
-                <h2 class="text-center mb-4">Contacto</h2>
-                <div class="row">
-
-                    <!-- Información de contacto -->
-                    <div class="col-md-6 mb-4">
-                        <h4>Información de Contacto</h4>
-                        <p><strong>Correo:</strong> narvicollectors@gmail.com</p>
-                        <p><strong>Teléfono:</strong> +593 99 999 9999</p>
-                        <p><strong>Dirección:</strong> Quito, Ecuador</p>
-                        <div class="redes mt-3">
-                            <a href="https://www.instagram.com/narvi_collectorscalemodels?igsh=eG9nd2NpY2x4dzNx&utm_source=qr"
-                               target="_blank" rel="noopener noreferrer"
-                               class="btn btn-primary m-2">Instagram</a>
-                            <a href="https://www.tiktok.com/@narvicollectors.e?_r=1&_t=ZS-973PpnEpKI1"
-                               target="_blank" rel="noopener noreferrer"
-                               class="btn btn-info m-2">TikTok</a>
-                            <a href="https://youtu.be/wJ9ELHI9PMA?si=pxgA4ZJp9eBcwF7G"
-                               target="_blank" rel="noopener noreferrer"
-                               class="btn btn-danger m-2">YouTube</a>
-                        </div>
-                    </div>
-
-                    <!-- Formulario de contacto con validaciones -->
-                    <div class="col-md-6">
-                        <form id="formulario-contacto" novalidate>
-
-                            <!-- Mensaje global del formulario de contacto -->
-                            <div id="alerta-contacto" class="alert d-none" role="alert"></div>
-
-                            <div class="mb-3">
-                                <label for="contacto-nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
-                                <input type="text" id="contacto-nombre" class="form-control" placeholder="Tu nombre completo">
-                                <div id="error-contacto-nombre" class="invalid-feedback"></div>
+                                <div id="error-descripcion" class="invalid-feedback"></div>
+                                <div id="ok-descripcion"    class="valid-feedback"></div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="contacto-correo" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
-                                <input type="email" id="contacto-correo" class="form-control" placeholder="ejemplo@correo.com">
-                                <div id="error-contacto-correo" class="invalid-feedback"></div>
+                            <!-- Campo: Categoría (debe seleccionarse una opción válida) -->
+                            <div class="mb-4">
+                                <label for="campo-categoria" class="form-label fw-semibold">
+                                    Categoría / Tipo <span class="text-danger">*</span>
+                                </label>
+                                <select id="campo-categoria" class="form-select campo-oscuro">
+                                    <option value="">-- Selecciona una categoría --</option>
+                                    <option value="Figuras Coleccionables">Figuras Coleccionables</option>
+                                    <option value="Modelos a Escala">Modelos a Escala</option>
+                                    <option value="Impresiones 3D">Impresiones 3D</option>
+                                    <option value="Pintura Profesional">Pintura Profesional</option>
+                                    <option value="Restauración">Restauración</option>
+                                    <option value="Artículos Exclusivos">Artículos Exclusivos</option>
+                                </select>
+                                <div id="error-categoria" class="invalid-feedback"></div>
+                                <div id="ok-categoria"    class="valid-feedback"></div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="contacto-asunto" class="form-label">Asunto <span class="text-danger">*</span></label>
-                                <input type="text" id="contacto-asunto" class="form-control" placeholder="¿En qué podemos ayudarte?">
-                                <div id="error-contacto-asunto" class="invalid-feedback"></div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="contacto-mensaje" class="form-label">Mensaje <span class="text-danger">*</span></label>
-                                <textarea id="contacto-mensaje" class="form-control" rows="5" placeholder="Escribe tu mensaje aquí..."></textarea>
-                                <div id="error-contacto-mensaje" class="invalid-feedback"></div>
-                            </div>
-
-                            <button type="submit" class="btn btn-success w-100">
-                                Enviar Mensaje
+                            <button type="submit" id="btn-registrar"
+                                    class="btn btn-primary w-100 py-2 fw-semibold">
+                                ➕ Agregar Producto
                             </button>
 
                         </form>
                     </div>
+                </div>
+
+                <!-- Columna derecha: contador + lista de productos registrados -->
+                <div class="col-lg-7 col-md-6">
+
+                    <!-- Badge con el total de productos registrados -->
+                    <div class="bloque-contador text-center mb-3 py-3 rounded">
+                        <span class="fw-semibold fs-5">Total de productos registrados:</span>
+                        <span id="numero-registros" class="badge bg-primary ms-2 fs-5">0</span>
+                    </div>
+
+                    <!-- Tabla resumen de productos (NUEVA — Semana 7)
+                         Se genera dinámicamente con forEach desde el arreglo productosRegistrados.
+                         Condición: si no hay productos, muestra fila con mensaje. -->
+                    <div class="tabla-wrapper mb-4">
+                        <table class="table table-dark table-hover table-bordered mb-0">
+                            <thead>
+                                <tr class="text-info">
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <!-- Las filas se generan dinámicamente desde script.js -->
+                            <tbody id="tabla-cuerpo"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tarjetas de detalle de cada producto registrado -->
+                    <div id="lista-productos" class="row g-3"></div>
 
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- ============================================================
-             ARTÍCULO: VIDEO RELACIONADO
-        ============================================================ -->
-        <article class="py-5 text-center">
-            <div class="container">
-                <h2 class="mb-3">Video Relacionado</h2>
-                <p class="mb-4">Conoce más sobre el emprendimiento a través del siguiente video.</p>
-                <div class="ratio ratio-16x9 mx-auto" style="max-width: 700px;">
-                    <iframe src="https://www.youtube.com/embed/wJ9ELHI9PMA"
-                            title="Narvi Collector Scale Models"
-                            allowfullscreen></iframe>
-                </div>
-            </div>
-        </article>
-
-        <!-- ============================================================
-             ASIDE: INFORMACIÓN COMPLEMENTARIA
-        ============================================================ -->
-        <aside class="py-4 bg-dark text-white text-center">
-            <div class="container">
-                <h2 class="mb-3">Información Complementaria</h2>
-                <p>Horario de atención: Lunes a Sábado de 09:00 a 18:00.</p>
-                <p>Promociones especiales para clientes frecuentes.</p>
-                <p>Disponibilidad de envíos a nivel nacional.</p>
-            </div>
-        </aside>
-
-    </main>
 
     <!-- ============================================================
-         PIE DE PÁGINA
+         SECCIÓN: CONTACTO
+         Información de contacto + formulario con validaciones blur/submit.
     ============================================================ -->
-    <footer class="text-center py-4">
-        <p><strong>Estudiante:</strong> Nancy Campos Basurto</p>
-        <p><strong>Asignatura:</strong> Desarrollo de Aplicaciones Web</p>
-        <p><strong>Año:</strong> 2026</p>
-    </footer>
+    <section id="contacto" class="py-5 seccion-oscura">
+        <div class="container">
+            <h2 class="text-center mb-4">Contacto</h2>
+            <div class="row g-4">
 
-    <!-- Bootstrap JS (al final del body, antes de script.js) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+                <!-- Información de contacto y redes sociales -->
+                <div class="col-md-5">
+                    <h4 class="text-info mb-3">Información de Contacto</h4>
+                    <p>📧 <strong>Correo:</strong> narvicollectors@gmail.com</p>
+                    <p>📞 <strong>Teléfono:</strong> +593 99 999 9999</p>
+                    <p>📍 <strong>Dirección:</strong> Quito, Ecuador</p>
+                    <p>🕐 <strong>Horario:</strong> Lunes a Sábado, 09:00 – 18:00</p>
 
-    <!-- Archivo JavaScript externo (siempre al final, después de Bootstrap) -->
-    <script src="script.js"></script>
+                    <div class="redes mt-4">
+                        <a href="https://www.instagram.com/narvi_collectorscalemodels?igsh=eG9nd2NpY2x4dzNx&utm_source=qr"
+                           target="_blank" rel="noopener noreferrer"
+                           class="btn btn-primary m-1">📷 Instagram</a>
+                        <a href="https://www.tiktok.com/@narvicollectors.e?_r=1&_t=ZS-973PpnEpKI1"
+                           target="_blank" rel="noopener noreferrer"
+                           class="btn btn-info m-1">🎵 TikTok</a>
+                        <a href="https://youtu.be/wJ9ELHI9PMA?si=pxgA4ZJp9eBcwF7G"
+                           target="_blank" rel="noopener noreferrer"
+                           class="btn btn-danger m-1">▶ YouTube</a>
+                    </div>
+                </div>
+
+                <!-- Formulario de contacto con validaciones -->
+                <div class="col-md-7">
+                    <div class="card-formulario p-4">
+                        <h5 class="text-info mb-3">✉ Envíanos un mensaje</h5>
+
+                        <!-- Alerta global del formulario de contacto -->
+                        <div id="alerta-contacto" class="alert d-none" role="alert"></div>
+
+                        <form id="formulario-contacto" novalidate>
+
+                            <div class="mb-3">
+                                <label for="contacto-nombre" class="form-label">
+                                    Nombre <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" id="contacto-nombre"
+                                       class="form-control campo-oscuro"
+                                       placeholder="Tu nombre completo">
+                                <div id="error-contacto-nombre" class="invalid-feedback"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contacto-correo" class="form-label">
+                                    Correo Electrónico <span class="text-danger">*</span>
+                                </label>
+                                <input type="email" id="contacto-correo"
+                                       class="form-control campo-oscuro"
+                                       placeholder="ejemplo@correo.com">
+                                <div id="error-contacto-correo" class="invalid-feedback"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contacto-asunto" class="form-label">
+                                    Asunto <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" id="contacto-asunto"
+                                       class="form-control campo-oscuro"
+                                       placeholder="¿En qué podemos ayudarte?">
+                                <div id="error-contacto-asunto" class="invalid-feedback"></div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contacto-mensaje" class="form-label">
+                                    Mensaje <span class="text-danger">*</span>
+                                </label>
+                                <textarea id="contacto-mensaje"
+                                          class="form-control campo-oscuro"
+                                          rows="4"
+                                          placeholder="Escribe tu mensaje aquí..."></textarea>
+                                <div id="error-contacto-mensaje" class="invalid-feedback"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 fw-semibold">
+                                ✉ Enviar Mensaje
+                            </button>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================================
+         ARTÍCULO: VIDEO RELACIONADO
+         Bootstrap ratio-16x9 garantiza responsividad del iframe.
+    ============================================================ -->
+    <article class="py-5 text-center">
+        <div class="container">
+            <h2 class="mb-3">Video Relacionado</h2>
+            <p class="mb-4 text-secondary">Conoce más sobre el emprendimiento a través del siguiente video.</p>
+            <div class="ratio ratio-16x9 mx-auto" style="max-width: 700px;">
+                <iframe src="https://www.youtube.com/embed/wJ9ELHI9PMA"
+                        title="Narvi Collector Scale Models — Video del emprendimiento"
+                        allowfullscreen></iframe>
+            </div>
+        </div>
+    </article>
+
+
+    <!-- ============================================================
+         ASIDE: INFORMACIÓN COMPLEMENTARIA
+         Datos adicionales del negocio.
+    ============================================================ -->
+    <aside class="py-4 text-center">
+        <div class="container">
+            <h2 class="mb-3">Información Complementaria</h2>
+            <div class="row justify-content-center g-3">
+                <div class="col-md-3">
+                    <div class="info-chip">🕐 Lunes a Sábado · 09:00–18:00</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-chip">🎁 Promociones para clientes frecuentes</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="info-chip">🚚 Envíos a nivel nacional</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+</main>
+<!-- {% endblock content %} -->
+
+
+<!-- ================================================================
+     {% block footer %} — PIE DE PÁGINA
+     Parte repetitiva: aparece igual en todas las páginas.
+     En base.html sería un bloque heredado o include fijo.
+================================================================ -->
+<footer class="text-center py-4">
+    <p><strong>Estudiante:</strong> Nancy Campos Basurto</p>
+    <p><strong>Asignatura:</strong> Desarrollo de Aplicaciones Web</p>
+    <p><strong>Año:</strong> 2026</p>
+</footer>
+<!-- {% endblock footer %} -->
+
+
+<!-- Bootstrap JS — necesario para navbar colapsable y componentes -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Archivo JavaScript externo con toda la lógica dinámica -->
+<script src="script.js"></script>
 
 </body>
 </html>
