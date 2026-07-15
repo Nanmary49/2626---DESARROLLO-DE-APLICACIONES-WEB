@@ -1,158 +1,141 @@
 // ================================================================
 // script.js — Narvi Collector Scale Models
-// Semana 7: Arreglos, renderizado dinámico y estructura de plantilla
-// Conserva todas las validaciones de Semana 6
+// Semana 8: Bootstrap modales, spinner, alertas + toda la lógica anterior
+// Semana 7: Arreglos, renderizado dinámico, forEach, condiciones
+// Semana 6: Validaciones input/blur/submit, is-valid/is-invalid
 // Estudiante: Nancy Campos Basurto
 // ================================================================
 
 
 // ================================================================
-// 1. ARREGLO DE DATOS — Catálogo de servicios del emprendimiento
-//    Representa los datos del proyecto como objetos dentro de un arreglo.
-//    Cada objeto tiene: id, icono, titulo, descripcion y color del badge.
-//    Este arreglo evita repetir manualmente bloques HTML en el index.html.
+// ARREGLO 1 — Catálogo de servicios del emprendimiento
+// Datos representados como objetos dentro de un arreglo.
+// Se renderiza dinámicamente con forEach (estructura repetitiva).
 // ================================================================
 var catalogoServicios = [
-    {
-        id: 1,
-        icono: '🎭',
-        titulo: 'Figuras Coleccionables',
-        descripcion: 'Figuras de anime y personajes exclusivos pintadas a mano para coleccionistas exigentes.',
-        badge: 'bg-primary'
-    },
-    {
-        id: 2,
-        icono: '🪖',
-        titulo: 'Modelos a Escala',
-        descripcion: 'Réplicas y modelos militares elaborados con gran detalle y precisión histórica.',
-        badge: 'bg-success'
-    },
-    {
-        id: 3,
-        icono: '🖨️',
-        titulo: 'Impresiones 3D',
-        descripcion: 'Diseños personalizados mediante tecnología de impresión 3D de alta resolución.',
-        badge: 'bg-warning text-dark'
-    },
-    {
-        id: 4,
-        icono: '🎨',
-        titulo: 'Pintura Profesional',
-        descripcion: 'Acabados de alta calidad con aerógrafo y pintura acrílica para miniaturas.',
-        badge: 'bg-danger'
-    },
-    {
-        id: 5,
-        icono: '🔧',
-        titulo: 'Restauración',
-        descripcion: 'Recuperación y mantenimiento especializado de figuras coleccionables dañadas.',
-        badge: 'bg-info text-dark'
-    },
-    {
-        id: 6,
-        icono: '⭐',
-        titulo: 'Artículos Exclusivos',
-        descripcion: 'Piezas únicas de edición limitada para coleccionistas y aficionados al modelismo.',
-        badge: 'bg-secondary'
-    }
+    { id:1, icono:'🎭', titulo:'Figuras Coleccionables',
+      descripcion:'Figuras de anime y personajes exclusivos pintadas a mano para coleccionistas exigentes.',
+      badge:'bg-primary' },
+    { id:2, icono:'🪖', titulo:'Modelos a Escala',
+      descripcion:'Réplicas y modelos militares elaborados con gran detalle y precisión histórica.',
+      badge:'bg-success' },
+    { id:3, icono:'🖨️', titulo:'Impresiones 3D',
+      descripcion:'Diseños personalizados mediante tecnología de impresión 3D de alta resolución.',
+      badge:'bg-warning text-dark' },
+    { id:4, icono:'🎨', titulo:'Pintura Profesional',
+      descripcion:'Acabados de alta calidad con aerógrafo y pintura acrílica para miniaturas.',
+      badge:'bg-danger' },
+    { id:5, icono:'🔧', titulo:'Restauración',
+      descripcion:'Recuperación y mantenimiento especializado de figuras coleccionables dañadas.',
+      badge:'bg-info text-dark' },
+    { id:6, icono:'⭐', titulo:'Artículos Exclusivos',
+      descripcion:'Piezas únicas de edición limitada para coleccionistas y aficionados al modelismo.',
+      badge:'bg-secondary' }
 ];
 
 
 // ================================================================
-// 2. ARREGLO DE PRODUCTOS REGISTRADOS
-//    Almacena dinámicamente los productos que el usuario agrega.
-//    Cada vez que se registra un producto se hace push() al arreglo.
-//    Cuando se elimina, se filtra con splice().
+// ARREGLO 2 — Productos registrados por el usuario
+// Crece con push() al registrar y se filtra con splice() al eliminar.
 // ================================================================
 var productosRegistrados = [];
 
 
 // ================================================================
-// 3. CONTADOR GLOBAL de productos registrados
+// Variable global: índice del producto pendiente de eliminar.
+// Lo usa el modal de confirmación para saber cuál eliminar.
+// ================================================================
+var indiceAEliminar = -1;
+
+
+// ================================================================
+// Variable global: contador total de productos registrados
 // ================================================================
 var totalRegistros = 0;
 
 
 // ================================================================
-// 4. ESPERAR A QUE EL DOM ESTÉ CARGADO COMPLETAMENTE
-//    DOMContentLoaded garantiza que todos los elementos HTML existen
-//    antes de que JavaScript intente acceder a ellos.
+// ESPERAR A QUE EL DOM ESTÉ COMPLETAMENTE CARGADO
+// DOMContentLoaded garantiza que todos los elementos existen
+// antes de que JavaScript intente acceder a ellos.
 // ================================================================
 document.addEventListener('DOMContentLoaded', function () {
 
     // ------------------------------------------------------------
     // Referencias a elementos del formulario de gestión
     // ------------------------------------------------------------
-    var formularioProducto  = document.getElementById('formulario-producto');
-    var campoNombre         = document.getElementById('campo-nombre');
-    var campoDescripcion    = document.getElementById('campo-descripcion');
-    var campoCategoria      = document.getElementById('campo-categoria');
-    var alertaGlobal        = document.getElementById('alerta-global');
-    var listaProductos      = document.getElementById('lista-productos');
-    var tablaCuerpo         = document.getElementById('tabla-cuerpo');
-    var numeroRegistros     = document.getElementById('numero-registros');
-    var contadorCaracteres  = document.getElementById('contador-caracteres');
+    var formularioProducto = document.getElementById('formulario-producto');
+    var campoNombre        = document.getElementById('campo-nombre');
+    var campoDescripcion   = document.getElementById('campo-descripcion');
+    var campoCategoria     = document.getElementById('campo-categoria');
+    var alertaGlobal       = document.getElementById('alerta-global');
+    var spinnerRegistro    = document.getElementById('spinner-registro');
+    var listaProductos     = document.getElementById('lista-productos');
+    var tablaCuerpo        = document.getElementById('tabla-cuerpo');
+    var numeroRegistros    = document.getElementById('numero-registros');
+    var contadorCaracteres = document.getElementById('contador-caracteres');
 
     // Referencias a elementos del formulario de contacto
-    var formularioContacto  = document.getElementById('formulario-contacto');
-    var contactoNombre      = document.getElementById('contacto-nombre');
-    var contactoCorreo      = document.getElementById('contacto-correo');
-    var contactoAsunto      = document.getElementById('contacto-asunto');
-    var contactoMensaje     = document.getElementById('contacto-mensaje');
-    var alertaContacto      = document.getElementById('alerta-contacto');
+    var formularioContacto = document.getElementById('formulario-contacto');
+    var contactoNombre     = document.getElementById('contacto-nombre');
+    var contactoCorreo     = document.getElementById('contacto-correo');
+    var contactoAsunto     = document.getElementById('contacto-asunto');
+    var contactoMensaje    = document.getElementById('contacto-mensaje');
+    var alertaContacto     = document.getElementById('alerta-contacto');
+
+    // Referencias a los modales Bootstrap (se instancian con bootstrap.Modal)
+    var modalDetalle   = new bootstrap.Modal(document.getElementById('modalDetalleProducto'));
+    var modalEliminar  = new bootstrap.Modal(document.getElementById('modalConfirmarEliminar'));
+
+    // Botón de confirmación dentro del modal de eliminación
+    var btnConfirmarEliminar = document.getElementById('btn-confirmar-eliminar');
 
 
     // ============================================================
-    // 5. RENDERIZAR CATÁLOGO DESDE EL ARREGLO catalogoServicios
-    //    Se usa forEach() para iterar el arreglo y crear una tarjeta
-    //    por cada servicio con createElement + appendChild.
-    //    CONDICIÓN: si el arreglo está vacío, muestra un mensaje.
+    // FUNCIÓN: renderizarCatalogo()
+    // Itera el arreglo catalogoServicios con forEach y crea
+    // tarjetas Bootstrap con createElement + appendChild.
+    // CONDICIÓN: si el arreglo está vacío muestra mensaje de aviso.
     // ============================================================
     function renderizarCatalogo() {
         var contenedor = document.getElementById('contenedor-catalogo');
-        contenedor.innerHTML = ''; // Limpiar antes de renderizar
+        contenedor.innerHTML = '';
 
-        // CONDICIÓN: verificar si hay servicios disponibles en el arreglo
+        // CONDICIÓN: catálogo vacío → mensaje de advertencia
         if (catalogoServicios.length === 0) {
-            // Si no hay datos, mostrar mensaje condicional
-            var msgVacio = document.createElement('p');
-            msgVacio.className = 'text-center text-warning';
-            msgVacio.textContent = '⚠️ No hay servicios disponibles en este momento.';
-            contenedor.appendChild(msgVacio);
-            return; // Salir de la función
+            var aviso = document.createElement('p');
+            aviso.className = 'text-center text-warning col-12';
+            aviso.textContent = '⚠️ No hay servicios disponibles en este momento.';
+            contenedor.appendChild(aviso);
+            return;
         }
 
-        // Estructura repetitiva: forEach itera cada servicio del arreglo
+        // ESTRUCTURA REPETITIVA: forEach genera una tarjeta Bootstrap por servicio
         catalogoServicios.forEach(function (servicio) {
 
-            // Crear columna responsiva Bootstrap
             var col = document.createElement('div');
             col.className = 'col-md-4 col-sm-6';
 
-            // Crear tarjeta del servicio
-            var card = document.createElement('div');
+            // Tarjeta Bootstrap con clases card, card-body, card-title, card-text
+            var card     = document.createElement('div');
             card.className = 'card h-100 shadow-sm card-catalogo';
 
-            // Cuerpo de la tarjeta
             var cardBody = document.createElement('div');
-            cardBody.className = 'card-body';
+            cardBody.className = 'card-body d-flex flex-column';
 
-            // Icono + título
             var titulo = document.createElement('h5');
             titulo.className = 'card-title';
             titulo.textContent = servicio.icono + ' ' + servicio.titulo;
 
-            // Descripción del servicio
             var descripcion = document.createElement('p');
-            descripcion.className = 'card-text small';
+            descripcion.className = 'card-text small flex-grow-1';
             descripcion.textContent = servicio.descripcion;
 
-            // Badge con color según categoría
+            // Badge Bootstrap con color dinámico desde el arreglo
             var badge = document.createElement('span');
-            badge.className = 'badge ' + servicio.badge + ' mt-2';
+            badge.className = 'badge ' + servicio.badge + ' mt-auto';
             badge.textContent = 'Servicio #' + servicio.id;
 
-            // Ensamblar tarjeta con appendChild
             cardBody.appendChild(titulo);
             cardBody.appendChild(descripcion);
             cardBody.appendChild(badge);
@@ -162,13 +145,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Llamar a la función al cargar la página para mostrar el catálogo
+    // Renderizar catálogo al cargar la página
     renderizarCatalogo();
 
 
     // ============================================================
-    // 6. ACTUALIZAR CONTADOR DE PRODUCTOS
-    //    Muestra el total actual en el badge #numero-registros.
+    // FUNCIÓN: actualizarContador()
+    // Muestra el total actual de productos en el badge Bootstrap.
     // ============================================================
     function actualizarContador() {
         numeroRegistros.textContent = totalRegistros;
@@ -176,76 +159,100 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // ============================================================
-    // 7. RENDERIZAR TABLA Y TARJETAS DESDE EL ARREGLO productosRegistrados
-    //    Estructura repetitiva: forEach recorre el arreglo completo
-    //    y reconstruye la tabla y las tarjetas cada vez que hay un cambio.
-    //    CONDICIÓN: si no hay productos, muestra una fila de aviso.
+    // FUNCIÓN: renderizarProductos()
+    // Reconstruye la tabla Bootstrap y las tarjetas de detalle
+    // leyendo el arreglo productosRegistrados con forEach.
+    // CONDICIÓN: arreglo vacío → fila de aviso en la tabla.
     // ============================================================
     function renderizarProductos() {
 
-        // --- Reconstruir tabla ---
+        // --- Reconstruir tabla Bootstrap ---
         tablaCuerpo.innerHTML = '';
 
-        // CONDICIÓN: si el arreglo está vacío, mostrar fila de aviso
+        // CONDICIÓN: sin productos → fila de aviso Bootstrap
         if (productosRegistrados.length === 0) {
-            var filaVacia = document.createElement('tr');
-            var celdaVacia = document.createElement('td');
-            celdaVacia.colSpan = 4;
-            celdaVacia.className = 'text-center text-secondary fst-italic';
-            celdaVacia.textContent = 'No hay productos registrados aún. Usa el formulario para agregar.';
-            filaVacia.appendChild(celdaVacia);
-            tablaCuerpo.appendChild(filaVacia);
+            var fila  = document.createElement('tr');
+            var celda = document.createElement('td');
+            celda.colSpan = 4;
+            celda.className = 'text-center text-secondary fst-italic py-3';
+            celda.textContent = 'No hay productos registrados. Usa el formulario para agregar.';
+            fila.appendChild(celda);
+            tablaCuerpo.appendChild(fila);
         } else {
-            // Estructura repetitiva: recorrer el arreglo para crear filas
+            // ESTRUCTURA REPETITIVA: forEach crea una fila por producto
             productosRegistrados.forEach(function (producto, indice) {
+
                 var fila = document.createElement('tr');
 
                 // Celda: número de orden
-                var celdaNum = document.createElement('td');
-                celdaNum.textContent = indice + 1;
+                var cNum = document.createElement('td');
+                cNum.className = 'text-center fw-bold text-info';
+                cNum.textContent = indice + 1;
 
                 // Celda: nombre del producto
-                var celdaNombre = document.createElement('td');
-                celdaNombre.textContent = producto.nombre;
+                var cNombre = document.createElement('td');
+                cNombre.textContent = producto.nombre;
 
-                // Celda: categoría con badge
-                var celdaCategoria = document.createElement('td');
+                // Celda: badge Bootstrap con la categoría
+                var cCat   = document.createElement('td');
                 var badgeCat = document.createElement('span');
                 badgeCat.className = 'badge bg-secondary';
                 badgeCat.textContent = producto.categoria;
-                celdaCategoria.appendChild(badgeCat);
+                cCat.appendChild(badgeCat);
 
-                // Celda: botón eliminar de la tabla
-                var celdaAccion = document.createElement('td');
-                var btnEliminarFila = document.createElement('button');
-                btnEliminarFila.type = 'button';
-                btnEliminarFila.className = 'btn btn-outline-danger btn-sm';
-                btnEliminarFila.textContent = '🗑 Eliminar';
+                // Celda: botones Detalles y Eliminar (Bootstrap btn btn-info / btn-danger)
+                var cAccion = document.createElement('td');
+                cAccion.className = 'text-center';
 
-                // Evento click: eliminar del arreglo por índice y re-renderizar
-                btnEliminarFila.addEventListener('click', function () {
-                    eliminarProducto(indice);
+                // Botón "Detalles" — abre modalDetalleProducto con los datos del producto
+                var btnDetalle = document.createElement('button');
+                btnDetalle.type      = 'button';
+                btnDetalle.className = 'btn btn-info btn-sm text-dark me-1';
+                btnDetalle.textContent = '🔍 Detalles';
+
+                // Al hacer clic llena el modal Bootstrap con los datos y lo abre
+                btnDetalle.addEventListener('click', function () {
+                    document.getElementById('modal-nombre-producto').textContent    = producto.nombre;
+                    document.getElementById('modal-descripcion-producto').textContent = producto.descripcion;
+                    document.getElementById('modal-categoria-producto').textContent = producto.categoria;
+                    modalDetalle.show();
                 });
 
-                celdaAccion.appendChild(btnEliminarFila);
-                fila.appendChild(celdaNum);
-                fila.appendChild(celdaNombre);
-                fila.appendChild(celdaCategoria);
-                fila.appendChild(celdaAccion);
+                // Botón "Eliminar" — abre modalConfirmarEliminar Bootstrap
+                var btnEliminar = document.createElement('button');
+                btnEliminar.type      = 'button';
+                btnEliminar.className = 'btn btn-danger btn-sm';
+                btnEliminar.textContent = '🗑 Eliminar';
+
+                // Guarda el índice y el nombre en el modal y lo abre
+                btnEliminar.addEventListener('click', function () {
+                    indiceAEliminar = indice;
+                    document.getElementById('modal-nombre-eliminar').textContent = producto.nombre;
+                    modalEliminar.show();
+                });
+
+                cAccion.appendChild(btnDetalle);
+                cAccion.appendChild(btnEliminar);
+
+                fila.appendChild(cNum);
+                fila.appendChild(cNombre);
+                fila.appendChild(cCat);
+                fila.appendChild(cAccion);
                 tablaCuerpo.appendChild(fila);
             });
         }
 
-        // --- Reconstruir tarjetas de detalle ---
+        // --- Reconstruir tarjetas Bootstrap de detalle ---
         listaProductos.innerHTML = '';
 
-        // Estructura repetitiva: forEach para tarjetas de detalle
+        // ESTRUCTURA REPETITIVA: forEach crea una card Bootstrap por producto
         productosRegistrados.forEach(function (producto, indice) {
 
             var col = document.createElement('div');
             col.className = 'col-12';
 
-            var card = document.createElement('div');
+            // Card Bootstrap: card card-producto shadow-sm
+            var card     = document.createElement('div');
             card.className = 'card card-producto shadow-sm';
 
             var cardBody = document.createElement('div');
@@ -256,72 +263,91 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var titulo = document.createElement('h6');
             titulo.className = 'card-title mb-1 text-info fw-bold';
-            titulo.textContent = producto.nombre;
+            titulo.textContent = '📦 ' + producto.nombre;
 
             var desc = document.createElement('p');
             desc.className = 'card-text small mb-2';
             desc.textContent = producto.descripcion;
 
-            var badge = document.createElement('span');
-            badge.className = 'badge bg-secondary me-2';
-            badge.textContent = producto.categoria;
+            var badgeCat = document.createElement('span');
+            badgeCat.className = 'badge bg-secondary me-2';
+            badgeCat.textContent = producto.categoria;
 
-            // CONDICIÓN: mostrar etiqueta especial si la descripción es larga
+            textoDiv.appendChild(titulo);
+            textoDiv.appendChild(desc);
+            textoDiv.appendChild(badgeCat);
+
+            // CONDICIÓN: descripción larga → badge "Descripción detallada"
             if (producto.descripcion.length > 80) {
-                var etiquetaDetalle = document.createElement('span');
-                etiquetaDetalle.className = 'badge bg-info text-dark';
-                etiquetaDetalle.textContent = '✔ Descripción detallada';
-                textoDiv.appendChild(titulo);
-                textoDiv.appendChild(desc);
-                textoDiv.appendChild(badge);
-                textoDiv.appendChild(etiquetaDetalle);
-            } else {
-                textoDiv.appendChild(titulo);
-                textoDiv.appendChild(desc);
-                textoDiv.appendChild(badge);
+                var etiqueta = document.createElement('span');
+                etiqueta.className = 'badge bg-info text-dark';
+                etiqueta.textContent = '✔ Descripción detallada';
+                textoDiv.appendChild(etiqueta);
             }
 
-            // Botón eliminar de la tarjeta
-            var btnEliminar = document.createElement('button');
-            btnEliminar.type = 'button';
-            btnEliminar.className = 'btn btn-outline-danger btn-sm align-self-center';
-            btnEliminar.textContent = '🗑 Eliminar';
+            // Botones Bootstrap en la tarjeta
+            var btnsDiv = document.createElement('div');
+            btnsDiv.className = 'd-flex flex-column gap-2 align-self-center';
 
-            // Evento click: eliminar por índice y re-renderizar todo
-            btnEliminar.addEventListener('click', function () {
-                eliminarProducto(indice);
+            // Botón Detalles de la tarjeta
+            var btnDetalleTarjeta = document.createElement('button');
+            btnDetalleTarjeta.type      = 'button';
+            btnDetalleTarjeta.className = 'btn btn-outline-info btn-sm';
+            btnDetalleTarjeta.textContent = '🔍 Ver';
+            btnDetalleTarjeta.addEventListener('click', function () {
+                document.getElementById('modal-nombre-producto').textContent     = producto.nombre;
+                document.getElementById('modal-descripcion-producto').textContent = producto.descripcion;
+                document.getElementById('modal-categoria-producto').textContent  = producto.categoria;
+                modalDetalle.show();
             });
 
+            // Botón Eliminar de la tarjeta (abre modal de confirmación)
+            var btnEliminarTarjeta = document.createElement('button');
+            btnEliminarTarjeta.type      = 'button';
+            btnEliminarTarjeta.className = 'btn btn-outline-danger btn-sm';
+            btnEliminarTarjeta.textContent = '🗑 Eliminar';
+            btnEliminarTarjeta.addEventListener('click', function () {
+                indiceAEliminar = indice;
+                document.getElementById('modal-nombre-eliminar').textContent = producto.nombre;
+                modalEliminar.show();
+            });
+
+            btnsDiv.appendChild(btnDetalleTarjeta);
+            btnsDiv.appendChild(btnEliminarTarjeta);
             cardBody.appendChild(textoDiv);
-            cardBody.appendChild(btnEliminar);
+            cardBody.appendChild(btnsDiv);
             card.appendChild(cardBody);
             col.appendChild(card);
             listaProductos.appendChild(col);
         });
     }
 
-    // Llamar al cargar para mostrar el estado inicial (tabla vacía con aviso)
+    // Mostrar tabla inicial con fila de aviso (arreglo vacío)
     renderizarProductos();
 
 
     // ============================================================
-    // 8. ELIMINAR PRODUCTO DEL ARREGLO
-    //    Se usa splice() para quitar el elemento en el índice dado,
-    //    luego se actualiza el contador y se re-renderiza todo.
+    // EVENTO: Confirmar eliminación desde el modal Bootstrap
+    // Al hacer clic en "Sí, eliminar" se usa splice() sobre el arreglo,
+    // se actualiza el contador y se re-renderiza todo.
     // ============================================================
-    function eliminarProducto(indice) {
-        productosRegistrados.splice(indice, 1);
-        totalRegistros = productosRegistrados.length;
-        actualizarContador();
-        renderizarProductos(); // Re-renderizar tabla y tarjetas
-    }
+    btnConfirmarEliminar.addEventListener('click', function () {
+        if (indiceAEliminar >= 0) {
+            productosRegistrados.splice(indiceAEliminar, 1);  // Eliminar del arreglo
+            indiceAEliminar  = -1;                            // Resetear índice
+            totalRegistros   = productosRegistrados.length;
+            actualizarContador();
+            renderizarProductos();  // Re-renderizar tabla y tarjetas
+            modalEliminar.hide();   // Cerrar modal Bootstrap
+        }
+    });
 
 
     // ============================================================
-    // SEMANA 6 — FUNCIONES DE VALIDACIÓN (se conservan íntegras)
+    // SEMANA 6 — FUNCIONES DE VALIDACIÓN (conservadas íntegras)
     // ============================================================
 
-    // Aplica clase is-valid + muestra mensaje de éxito
+    // Aplica clase Bootstrap is-valid + muestra mensaje de éxito
     function marcarValido(campo, idOk, mensaje) {
         campo.classList.remove('is-invalid');
         campo.classList.add('is-valid');
@@ -331,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Aplica clase is-invalid + muestra mensaje de error
+    // Aplica clase Bootstrap is-invalid + muestra mensaje de error
     function marcarInvalido(campo, idError, mensaje) {
         campo.classList.remove('is-valid');
         campo.classList.add('is-invalid');
@@ -346,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function () {
         campo.classList.remove('is-valid', 'is-invalid');
     }
 
-    // Muestra alerta Bootstrap global y la oculta a los 5 segundos
+    // Muestra alerta Bootstrap y la oculta automáticamente a los 5 segundos
     function mostrarAlertaGlobal(divAlerta, tipo, texto) {
         divAlerta.className = 'alert alert-' + tipo;
         divAlerta.textContent = texto;
@@ -356,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 
-    // Valida campo nombre: obligatorio + mínimo 3 caracteres
+    // Valida nombre: obligatorio + mínimo 3 caracteres
     function validarNombre() {
         var valor = campoNombre.value.trim();
         if (valor === '') {
@@ -399,77 +425,80 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // ============================================================
-    // SEMANA 6 — EVENTOS EN TIEMPO REAL (input) Y BLUR
+    // SEMANA 6 — EVENTOS input Y blur (tiempo real)
     // ============================================================
 
-    // Evento input: validar mientras el usuario escribe
-    campoNombre.addEventListener('input', function () { validarNombre(); });
-
-    // Evento input: actualizar contador de caracteres + validar descripción
+    // Evento input: valida mientras el usuario escribe
+    campoNombre.addEventListener('input',      function () { validarNombre();      });
+    campoCategoria.addEventListener('input',   function () { validarCategoria();   });
     campoDescripcion.addEventListener('input', function () {
         contadorCaracteres.textContent = campoDescripcion.value.length;
         validarDescripcion();
     });
 
-    // Evento input: validar categoría al cambiar selección
-    campoCategoria.addEventListener('input', function () { validarCategoria(); });
-
-    // Evento blur: validar al salir de cada campo sin completarlo
-    campoNombre.addEventListener('blur',      function () { validarNombre(); });
-    campoDescripcion.addEventListener('blur', function () { validarDescripcion(); });
-    campoCategoria.addEventListener('blur',   function () { validarCategoria(); });
+    // Evento blur: valida al salir del campo sin completarlo
+    campoNombre.addEventListener('blur',       function () { validarNombre();      });
+    campoDescripcion.addEventListener('blur',  function () { validarDescripcion(); });
+    campoCategoria.addEventListener('blur',    function () { validarCategoria();   });
 
 
     // ============================================================
-    // EVENTO SUBMIT — Formulario de gestión de productos
-    //    preventDefault() evita la recarga de la página.
-    //    Solo se registra si las 3 validaciones son correctas.
-    //    El nuevo producto se agrega al arreglo con push().
+    // EVENTO SUBMIT — Formulario de gestión
+    // preventDefault() evita la recarga de la página.
+    // Solo registra si las 3 validaciones son correctas.
+    // Muestra spinner Bootstrap, luego alerta Bootstrap de éxito.
     // ============================================================
     formularioProducto.addEventListener('submit', function (evento) {
-        evento.preventDefault(); // Evitar recarga de la página
+        evento.preventDefault();  // Evitar recarga de la página
 
-        // Ejecutar todas las validaciones
         var nombreValido      = validarNombre();
         var descripcionValida = validarDescripcion();
         var categoriaValida   = validarCategoria();
 
-        // CONDICIÓN: solo registrar si todos los campos son válidos
+        // CONDICIÓN: todos los campos válidos → registrar
         if (nombreValido && descripcionValida && categoriaValida) {
 
-            // Crear objeto con los datos del nuevo producto
             var nuevoProducto = {
                 nombre:      campoNombre.value.trim(),
                 descripcion: campoDescripcion.value.trim(),
                 categoria:   campoCategoria.value
             };
 
-            // Agregar el objeto al arreglo productosRegistrados
-            productosRegistrados.push(nuevoProducto);
+            // Deshabilitar botón y mostrar SPINNER Bootstrap (proceso simulado)
+            document.getElementById('btn-registrar').disabled = true;
+            spinnerRegistro.classList.remove('d-none');
 
-            // Actualizar el contador total
-            totalRegistros = productosRegistrados.length;
-            actualizarContador();
+            // Simular proceso de 1.2 segundos (carga) antes de registrar
+            setTimeout(function () {
 
-            // Re-renderizar tabla y tarjetas con el nuevo dato
-            renderizarProductos();
+                // Agregar objeto al arreglo
+                productosRegistrados.push(nuevoProducto);
+                totalRegistros = productosRegistrados.length;
+                actualizarContador();
+                renderizarProductos();
 
-            // Mostrar alerta de éxito
-            mostrarAlertaGlobal(
-                alertaGlobal,
-                'success',
-                '✅ Producto "' + nuevoProducto.nombre + '" registrado. Total: ' + totalRegistros
-            );
+                // Ocultar spinner Bootstrap y rehabilitar botón
+                spinnerRegistro.classList.add('d-none');
+                document.getElementById('btn-registrar').disabled = false;
 
-            // Limpiar formulario y estados de validación
-            formularioProducto.reset();
-            limpiarEstado(campoNombre);
-            limpiarEstado(campoDescripcion);
-            limpiarEstado(campoCategoria);
-            contadorCaracteres.textContent = '0';
+                // Mostrar ALERTA Bootstrap de éxito (alert-success)
+                mostrarAlertaGlobal(
+                    alertaGlobal,
+                    'success',
+                    '✅ Producto "' + nuevoProducto.nombre + '" registrado. Total: ' + totalRegistros
+                );
+
+                // Limpiar formulario y estados de validación
+                formularioProducto.reset();
+                limpiarEstado(campoNombre);
+                limpiarEstado(campoDescripcion);
+                limpiarEstado(campoCategoria);
+                contadorCaracteres.textContent = '0';
+
+            }, 1200); // 1.2 segundos de proceso simulado
 
         } else {
-            // CONDICIÓN: hay errores → mostrar alerta de error
+            // CONDICIÓN: hay errores → alerta Bootstrap de error (alert-danger)
             mostrarAlertaGlobal(
                 alertaGlobal,
                 'danger',
@@ -481,59 +510,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ============================================================
     // SEMANA 6 — EVENTO SUBMIT del formulario de contacto
-    //    preventDefault() + validaciones + alerta de resultado.
+    // preventDefault() + validaciones + alerta Bootstrap
     // ============================================================
     formularioContacto.addEventListener('submit', function (evento) {
         evento.preventDefault();
 
-        var nombre  = contactoNombre.value.trim();
-        var correo  = contactoCorreo.value.trim();
-        var asunto  = contactoAsunto.value.trim();
-        var mensaje = contactoMensaje.value.trim();
+        var nombre   = contactoNombre.value.trim();
+        var correo   = contactoCorreo.value.trim();
+        var asunto   = contactoAsunto.value.trim();
+        var mensaje  = contactoMensaje.value.trim();
         var hayError = false;
 
-        var formatoCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var reCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        // Validar nombre
         if (nombre === '') {
             marcarInvalido(contactoNombre, 'error-contacto-nombre', 'El nombre es obligatorio.');
             hayError = true;
-        } else {
-            marcarValido(contactoNombre, null, '');
-        }
+        } else { marcarValido(contactoNombre, null, ''); }
 
-        // Validar correo con expresión regular
         if (correo === '') {
             marcarInvalido(contactoCorreo, 'error-contacto-correo', 'El correo es obligatorio.');
             hayError = true;
-        } else if (!formatoCorreo.test(correo)) {
+        } else if (!reCorreo.test(correo)) {
             marcarInvalido(contactoCorreo, 'error-contacto-correo', 'Ingresa un correo electrónico válido.');
             hayError = true;
-        } else {
-            marcarValido(contactoCorreo, null, '');
-        }
+        } else { marcarValido(contactoCorreo, null, ''); }
 
-        // Validar asunto
         if (asunto === '') {
             marcarInvalido(contactoAsunto, 'error-contacto-asunto', 'El asunto es obligatorio.');
             hayError = true;
-        } else {
-            marcarValido(contactoAsunto, null, '');
-        }
+        } else { marcarValido(contactoAsunto, null, ''); }
 
-        // Validar mensaje
         if (mensaje === '') {
             marcarInvalido(contactoMensaje, 'error-contacto-mensaje', 'El mensaje es obligatorio.');
             hayError = true;
-        } else {
-            marcarValido(contactoMensaje, null, '');
-        }
+        } else { marcarValido(contactoMensaje, null, ''); }
 
-        // CONDICIÓN: sin errores → éxito; con errores → alerta de error
         if (!hayError) {
+            // Alerta Bootstrap alert-success
             mostrarAlertaGlobal(
-                alertaContacto,
-                'success',
+                alertaContacto, 'success',
                 '✅ Mensaje enviado. ¡Gracias, ' + nombre + '! Te contactaremos pronto.'
             );
             formularioContacto.reset();
@@ -542,27 +558,28 @@ document.addEventListener('DOMContentLoaded', function () {
             limpiarEstado(contactoAsunto);
             limpiarEstado(contactoMensaje);
         } else {
+            // Alerta Bootstrap alert-danger
             mostrarAlertaGlobal(
-                alertaContacto,
-                'danger',
+                alertaContacto, 'danger',
                 '⚠️ Por favor completa correctamente todos los campos.'
             );
         }
     });
 
-    // Validaciones blur para el formulario de contacto (Semana 6)
+    // Validaciones blur del formulario de contacto (Semana 6)
+    var reCorreoBlur = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     contactoNombre.addEventListener('blur', function () {
         if (contactoNombre.value.trim() === '') {
             marcarInvalido(contactoNombre, 'error-contacto-nombre', 'El nombre es obligatorio.');
         } else { marcarValido(contactoNombre, null, ''); }
     });
 
-    var reCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     contactoCorreo.addEventListener('blur', function () {
         var val = contactoCorreo.value.trim();
         if (val === '') {
             marcarInvalido(contactoCorreo, 'error-contacto-correo', 'El correo es obligatorio.');
-        } else if (!reCorreo.test(val)) {
+        } else if (!reCorreoBlur.test(val)) {
             marcarInvalido(contactoCorreo, 'error-contacto-correo', 'Ingresa un correo válido.');
         } else { marcarValido(contactoCorreo, null, ''); }
     });

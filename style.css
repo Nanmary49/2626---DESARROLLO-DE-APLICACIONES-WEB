@@ -1,12 +1,12 @@
 /* ================================================================
-   style.css — Narvi Collector Scale Models
-   Semana 7: Estilos organizados por sección
+   style.css — Narvi Collector Scale Models — Semana 8
+   Bootstrap 5.3 via CDN + estilos personalizados de tema oscuro
    Estudiante: Nancy Campos Basurto
 ================================================================ */
 
 /* ================================================================
-   RESET Y CONFIGURACIÓN GLOBAL
-   scroll-behavior en html (no en *) para compatibilidad total.
+   RESET Y BASE GLOBAL
+   scroll-behavior en html (no en *) para compatibilidad completa
 ================================================================ */
 * {
     margin: 0;
@@ -14,10 +14,7 @@
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
 }
-
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
     background: linear-gradient(to bottom, #0b0b0b, #161616, #202020);
@@ -31,235 +28,192 @@ header {
     background: linear-gradient(90deg, #000000, #0d1f3c, #004aad);
     text-align: center;
     padding: 50px 20px;
+    border-bottom: 2px solid #00bfff44;
 }
-
-header h1 {
-    font-size: 2.6rem;
-    color: #00bfff;
-    margin-bottom: 12px;
-}
-
-header h2 {
-    font-size: 1.2rem;
-    color: #e0e0e0;
-    margin-bottom: 8px;
-    font-weight: normal;
-}
-
-header h3 {
-    font-size: 1rem;
-    color: #aaaaaa;
-    font-weight: normal;
-}
+header h1 { font-size: 2.5rem;  color: #00bfff; margin-bottom: 10px; }
+header h2 { font-size: 1.15rem; color: #dddddd; font-weight: normal; margin-bottom: 6px; }
+header h3 { font-size: 0.95rem; color: #aaaaaa; font-weight: normal; }
 
 /* ================================================================
-   TÍTULOS SECUNDARIOS (h2 dentro del contenido)
+   TÍTULOS h2 DEL CONTENIDO
 ================================================================ */
-h2 {
-    color: #00bfff;
-    font-weight: bold;
-}
+h2 { color: #00bfff; font-weight: bold; }
 
 /* ================================================================
-   BARRA DE NAVEGACIÓN (Bootstrap la maneja; solo se personaliza hover)
+   NAVBAR — solo personalización de hover
+   (Bootstrap ya maneja bg-dark, sticky-top, collapse, etc.)
 ================================================================ */
-.navbar-nav .nav-link:hover {
-    color: #00bfff !important;
-    transition: color 0.3s;
-}
+.navbar-nav .nav-link:hover { color: #00bfff !important; transition: color 0.25s; }
+.navbar-brand { letter-spacing: 0.5px; }
 
 /* ================================================================
-   SECCIÓN HERO (Inicio)
+   SECCIÓN HERO
 ================================================================ */
 .seccion-hero {
     background: radial-gradient(ellipse at center, #0d1f3c 0%, #0b0b0b 100%);
     border-bottom: 1px solid #00bfff33;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
 }
 
 /* ================================================================
-   SECCIÓN CON FONDO OSCURO ALTERNADO
+   SECCIONES CON FONDO OSCURO ALTERNADO
 ================================================================ */
 .seccion-oscura {
     background: #111111;
-    border-top: 1px solid #00bfff22;
+    border-top:    1px solid #00bfff22;
     border-bottom: 1px solid #00bfff22;
 }
 
 /* ================================================================
    PÁRRAFOS
 ================================================================ */
-p {
-    line-height: 1.8;
-    color: #cccccc;
-}
+p { line-height: 1.8; color: #cccccc; }
 
 /* ================================================================
    IMAGEN DEL EMPRENDIMIENTO
 ================================================================ */
-img {
-    display: block;
+.img-narvi {
+    max-width: 420px;
     width: 100%;
-    max-width: 480px;
-    height: auto;
     border-radius: 12px;
-    box-shadow: 0 0 25px rgba(0, 191, 255, 0.3);
-    margin: 0 auto;
+    box-shadow: 0 0 30px rgba(0,191,255,0.3);
 }
 
 /* ================================================================
-   TARJETAS — CATÁLOGO DE SERVICIOS (generadas desde JS)
+   TARJETAS DEL CATÁLOGO (generadas dinámicamente por JS)
+   Clases Bootstrap que se personalizan: card, card-body, card-title
 ================================================================ */
 .card-catalogo {
     background: #1a1a2e;
-    color: #dddddd;
     border: 1px solid #00bfff44;
     border-radius: 10px;
     transition: transform 0.3s, box-shadow 0.3s;
+    color: #dddddd;
 }
-
 .card-catalogo:hover {
     transform: translateY(-6px);
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+    box-shadow: 0 0 22px rgba(0,191,255,0.4);
 }
-
-.card-catalogo .card-title {
-    color: #00bfff;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.card-catalogo .card-text {
-    color: #bbbbbb;
-    font-size: 0.88rem;
-}
+.card-catalogo .card-title { color: #00bfff; font-size: 1rem; font-weight: bold; }
+.card-catalogo .card-text  { color: #bbbbbb; font-size: 0.87rem; }
 
 /* ================================================================
-   FORMULARIOS — Contenedor con estilo oscuro
+   FORMULARIOS — contenedor con estilo oscuro
 ================================================================ */
 .card-formulario {
     background: #1e1e1e;
-    border: 1px solid #00bfff44;
+    border:        1px solid #00bfff44;
     border-radius: 12px;
-    box-shadow: 0 0 18px rgba(0, 191, 255, 0.15);
+    box-shadow:    0 0 18px rgba(0,191,255,0.15);
 }
+.card-formulario .form-label { color: #00bfff; font-size: 0.9rem; }
 
-/* Labels de los formularios */
-.card-formulario .form-label {
-    color: #00bfff;
-    font-size: 0.9rem;
-}
-
-/* Inputs, textareas y selects con fondo oscuro */
+/* Inputs/textareas/selects de fondo oscuro (clase .campo-oscuro) */
 .campo-oscuro {
     background-color: #111111 !important;
-    color: #ffffff !important;
-    border: 1px solid #334455;
+    color:            #ffffff !important;
+    border:           1px solid #334455;
 }
-
-.campo-oscuro::placeholder {
-    color: #555555;
-}
+.campo-oscuro::placeholder { color: #555555; }
 
 /* Foco: borde azul neón */
 .campo-oscuro:focus {
     background-color: #111111 !important;
-    color: #ffffff !important;
-    border-color: #00bfff !important;
-    box-shadow: 0 0 8px rgba(0, 191, 255, 0.35) !important;
+    color:            #ffffff !important;
+    border-color:     #00bfff !important;
+    box-shadow:       0 0 8px rgba(0,191,255,0.35) !important;
     outline: none;
 }
-
-/* Foco en estado válido */
+/* Foco en campo válido */
 .campo-oscuro.is-valid:focus {
     border-color: #198754 !important;
-    box-shadow: 0 0 6px rgba(25, 135, 84, 0.4) !important;
+    box-shadow:   0 0 6px rgba(25,135,84,0.4) !important;
 }
-
-/* Foco en estado inválido */
+/* Foco en campo inválido */
 .campo-oscuro.is-invalid:focus {
     border-color: #dc3545 !important;
-    box-shadow: 0 0 6px rgba(220, 53, 69, 0.4) !important;
+    box-shadow:   0 0 6px rgba(220,53,69,0.4) !important;
 }
-
-/* Texto auxiliar del contador de caracteres */
-.texto-gris {
-    color: #777777;
-    font-size: 0.8rem;
-}
+/* Texto auxiliar del contador */
+.texto-gris { color: #777777; font-size: 0.8rem; }
 
 /* ================================================================
    CONTADOR DE REGISTROS
 ================================================================ */
 .bloque-contador {
     background: #0d1f3c;
-    border: 1px solid #00bfff55;
-    color: #ffffff;
+    border:     1px solid #00bfff55;
+    color:      #ffffff;
 }
 
 /* ================================================================
-   TABLA DE PRODUCTOS REGISTRADOS
+   TABLA BOOTSTRAP PERSONALIZADA
+   Bootstrap provee: table-dark, table-hover, table-bordered
 ================================================================ */
 .tabla-wrapper {
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid #00bfff33;
 }
-
 .table-dark {
-    --bs-table-bg: #141414;
+    --bs-table-bg:       #141414;
     --bs-table-hover-bg: #1a2a3a;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
 }
-
-.table-dark thead tr th {
-    border-bottom: 2px solid #00bfff55;
-}
+.table-dark thead tr th { border-bottom: 2px solid #00bfff55; }
 
 /* ================================================================
-   TARJETAS DE DETALLE DE PRODUCTOS REGISTRADOS
+   TARJETAS DE PRODUCTOS REGISTRADOS (generadas por JS)
 ================================================================ */
 .card-producto {
-    background: #1a2a3a;
-    border: 1px solid #00bfff33;
-    border-left: 4px solid #00bfff;
+    background:   #1a2a3a;
+    border:       1px solid #00bfff33;
+    border-left:  4px solid #00bfff;
     border-radius: 8px;
-    color: #dddddd;
+    color:        #dddddd;
 }
+.card-producto .card-title { color: #00bfff; }
+.card-producto .card-text  { color: #bbbbbb; font-size: 0.88rem; }
 
-.card-producto .card-title {
-    color: #00bfff;
+/* ================================================================
+   MODALES Bootstrap — tema oscuro personalizado
+   Bootstrap provee: modal, modal-dialog, modal-content, modal-header, etc.
+================================================================ */
+.modal-oscuro {
+    background:    #1e1e1e;
+    border:        1px solid #00bfff44;
+    border-radius: 12px;
+    color:         #dddddd;
 }
+.modal-oscuro .modal-header { border-bottom-color: #00bfff44; }
+.modal-oscuro .modal-footer { border-top-color:    #00bfff44; }
+.modal-oscuro .modal-title  { font-weight: bold; }
 
-.card-producto .card-text {
-    color: #bbbbbb;
-}
+/* ================================================================
+   SPINNER Bootstrap — solo se ajusta el margen
+   Bootstrap provee: spinner-border, text-info, visually-hidden
+================================================================ */
+#spinner-registro { padding-top: 8px; }
 
 /* ================================================================
    SECCIÓN CONTACTO
 ================================================================ */
-#contacto h4 {
-    color: #00bfff;
-}
-
-#contacto p {
-    color: #cccccc;
-    margin-bottom: 6px;
-}
+#contacto h4 { color: #00bfff; }
+#contacto p  { color: #cccccc; margin-bottom: 6px; }
 
 /* ================================================================
-   REDES SOCIALES
+   REDES SOCIALES — hover suave
 ================================================================ */
 .redes a {
     transition: transform 0.3s, opacity 0.3s;
+    text-decoration: none;
 }
-
-.redes a:hover {
-    opacity: 0.85;
-    transform: translateY(-2px);
-}
+.redes a:hover { opacity: 0.85; transform: translateY(-2px); }
 
 /* ================================================================
-   IFRAME — VIDEO
+   IFRAME (VIDEO) — Bootstrap ratio-16x9 lo hace responsivo
 ================================================================ */
 iframe {
     border-radius: 10px;
@@ -267,84 +221,58 @@ iframe {
 }
 
 /* ================================================================
-   ASIDE — INFORMACIÓN COMPLEMENTARIA
+   ASIDE — Información complementaria
 ================================================================ */
 aside {
-    background: #0d1f3c;
-    border-top: 1px solid #00bfff33;
+    background:    #0d1f3c;
+    border-top:    1px solid #00bfff33;
     border-bottom: 1px solid #00bfff33;
 }
-
-aside h2 {
-    color: #00bfff;
-    margin-bottom: 20px;
-}
-
-/* Chips de información */
+aside h2  { color: #00bfff; margin-bottom: 20px; }
 .info-chip {
-    background: #1a2a3a;
-    border: 1px solid #00bfff44;
+    background:    #1a2a3a;
+    border:        1px solid #00bfff44;
     border-radius: 30px;
-    padding: 10px 20px;
-    color: #cccccc;
-    font-size: 0.9rem;
+    padding:       10px 20px;
+    color:         #cccccc;
+    font-size:     0.9rem;
 }
 
 /* ================================================================
    PIE DE PÁGINA
 ================================================================ */
 footer {
-    background: #000000;
-    text-align: center;
-    padding: 25px;
-    border-top: 1px solid #00bfff33;
+    background:  #000000;
+    border-top:  1px solid #00bfff33;
+    padding:     25px;
+    text-align:  center;
 }
-
-footer p {
-    color: #888888;
-    margin-bottom: 4px;
-    font-size: 0.9rem;
-}
+footer p { color: #888888; font-size: 0.88rem; margin-bottom: 3px; }
 
 /* ================================================================
-   LISTAS (nav ul se maneja con Bootstrap)
+   LISTAS
 ================================================================ */
-ul {
-    margin-left: 20px;
-}
-
-li {
-    margin: 8px 0;
-    color: #cccccc;
-}
+li { margin: 8px 0; color: #cccccc; }
 
 /* ================================================================
    DISEÑO RESPONSIVO
+   Bootstrap ya maneja el grid; estos breakpoints ajustan tipografía
 ================================================================ */
-
-/* Tablet grande */
 @media (max-width: 991px) {
     header h1 { font-size: 2rem; }
     header h2 { font-size: 1rem; }
 }
-
-/* Tablet / móvil */
 @media (max-width: 768px) {
     header h1 { font-size: 1.6rem; }
-    header h2 { font-size: 0.9rem; }
+    header h2 { font-size: 0.88rem; }
     header h3 { font-size: 0.8rem; }
-
-    .card-catalogo { margin-bottom: 12px; }
-
-    iframe { width: 100%; height: auto; }
+    iframe     { width: 100%; height: auto; }
+    .card-catalogo { margin-bottom: 10px; }
 }
-
-/* Móvil pequeño */
 @media (max-width: 480px) {
-    header { padding: 30px 15px; }
-    header h1 { font-size: 1.3rem; }
-
-    .btn { font-size: 0.82rem; padding: 7px 12px; }
-
+    header         { padding: 28px 15px; }
+    header h1      { font-size: 1.25rem; }
+    .btn           { font-size: 0.82rem; padding: 7px 12px; }
     .card-formulario { padding: 16px !important; }
+    .bloque-contador { font-size: 0.9rem; }
 }

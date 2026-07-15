@@ -1,73 +1,70 @@
 <!DOCTYPE html>
 <!--
     ================================================================
-    PLANTILLA BASE — base.html (simulación)
-    Este archivo representa la estructura principal del sitio.
-    En un framework como Django o Flask, este bloque se
-    convertiría en base.html con etiquetas {% block content %}.
+    PLANTILLA BASE — base.html (simulación Django/Flask)
     ================================================================
-    BLOQUES IDENTIFICADOS PARA PLANTILLA:
-      - {% block head %}       → <head> con meta, CSS y título
-      - {% block header %}     → Encabezado del sitio
-      - {% block navbar %}     → Barra de navegación
-      - {% block content %}    → Contenido principal (cambia por página)
-      - {% block footer %}     → Pie de página
+    BLOQUES IDENTIFICADOS:
+      {% block head %}    → <head>: meta, CSS, título
+      {% block header %}  → Encabezado del sitio
+      {% block navbar %}  → Navbar Bootstrap (sticky-top)
+      {% block content %} → Contenido dinámico (cambia por página)
+      {% block footer %}  → Pie de página
     ================================================================
 -->
 <html lang="es">
 
-<!-- ================================================================
-     {% block head %} — Cabecera de la plantilla base
-     Contiene: charset, viewport, título y hojas de estilo
-================================================================ -->
+<!-- ===== {% block head %} ===== -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Narvi Collector Scale Models — Sistema de Gestión</title>
-    <!-- Hoja de estilos personalizada (style.css) -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Bootstrap 5.3 — Framework CSS responsivo -->
+
+    <!-- Bootstrap 5.3 CSS (CDN) — Framework responsivo -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Hoja de estilos personalizada (siempre después de Bootstrap para sobrescribir) -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<!-- {% endblock head %} -->
+<!-- ===== {% endblock head %} ===== -->
 
 <body>
 
-<!-- ================================================================
-     {% block header %} — ENCABEZADO PRINCIPAL
-     Parte repetitiva: aparece igual en todas las páginas del sitio.
-     En base.html sería un componente fijo heredado por las sub-páginas.
-================================================================ -->
+<!-- ===== {% block header %} — Encabezado, parte fija repetitiva ===== -->
 <header class="text-center py-4">
     <h1>Sistema de Gestión de Figuras de Colección</h1>
     <h2>Plataforma para administrar productos, clientes y ventas en línea</h2>
     <h3>Desarrollado por Nancy Campos Basurto</h3>
 </header>
-<!-- {% endblock header %} -->
+<!-- ===== {% endblock header %} ===== -->
 
 
-<!-- ================================================================
-     {% block navbar %} — BARRA DE NAVEGACIÓN RESPONSIVA
-     Parte repetitiva: sticky-top, colapsa en móvil con Bootstrap.
-     En base.html sería un include o bloque heredado.
-================================================================ -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+<!-- ===== {% block navbar %} — Navbar Bootstrap, parte fija repetitiva ===== -->
+<!--
+     NAVBAR BOOTSTRAP:
+     - navbar-expand-lg  → colapsa en pantallas menores a lg (992px)
+     - navbar-dark       → texto/iconos claros para fondos oscuros
+     - bg-dark           → fondo negro
+     - sticky-top        → se queda fija al hacer scroll
+-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#">🎨 Narvi Models</a>
 
-        <!-- Botón hamburguesa para móvil -->
+        <!-- Marca / logo del sitio -->
+        <a class="navbar-brand fw-bold text-info" href="#">🎨 Narvi Models</a>
+
+        <!-- Botón hamburguesa — visible solo en móvil/tablet -->
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#menu"
-                aria-controls="menu"
+                data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal"
                 aria-expanded="false"
                 aria-label="Abrir menú de navegación">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Menú de navegación colapsable -->
-        <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav ms-auto">
+        <!-- Menú colapsable — enlazado con data-bs-target="#menuPrincipal" -->
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav ms-auto gap-1">
                 <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link" href="#quienes">Quiénes Somos</a></li>
                 <li class="nav-item"><a class="nav-link" href="#catalogo">Catálogo</a></li>
@@ -75,31 +72,31 @@
                 <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
             </ul>
         </div>
+
     </div>
 </nav>
-<!-- {% endblock navbar %} -->
+<!-- ===== {% endblock navbar %} ===== -->
 
 
-<!-- ================================================================
-     {% block content %} — CONTENIDO PRINCIPAL
-     Esta es la única parte que cambia entre páginas en base.html.
-     Todo lo que está dentro de <main> sería el bloque dinámico.
-================================================================ -->
+<!-- ===== {% block content %} — Contenido dinámico, cambia por página ===== -->
 <main>
 
     <!-- ============================================================
          SECCIÓN: INICIO / HERO BANNER
-         Presentación del emprendimiento con llamado a la acción.
+         Presentación del emprendimiento con botones Bootstrap.
     ============================================================ -->
     <section id="inicio" class="py-5 seccion-hero">
         <div class="container text-center">
-            <h2 class="display-4 text-info mb-3">Bienvenido a Narvi Collector Scale Models</h2>
+            <h2 class="display-4 text-info fw-bold mb-3">
+                Bienvenido a Narvi Collector Scale Models
+            </h2>
             <p class="lead mb-4">
                 Plataforma diseñada para administrar productos, clientes y ventas
                 de figuras coleccionables, modelos a escala e impresiones 3D personalizadas.
             </p>
-            <a href="#catalogo" class="btn btn-primary btn-lg m-2">🗂 Ver Catálogo</a>
-            <a href="#gestion"  class="btn btn-outline-info btn-lg m-2">➕ Gestionar Productos</a>
+            <!-- Botones Bootstrap: btn btn-primary / btn-outline-info / btn-outline-light -->
+            <a href="#catalogo" class="btn btn-primary    btn-lg m-2">🗂 Ver Catálogo</a>
+            <a href="#gestion"  class="btn btn-outline-info  btn-lg m-2">➕ Gestionar</a>
             <a href="#contacto" class="btn btn-outline-light btn-lg m-2">✉ Contactar</a>
         </div>
     </section>
@@ -107,29 +104,38 @@
 
     <!-- ============================================================
          SECCIÓN: QUIÉNES SOMOS
-         Descripción del emprendimiento con imagen.
+         Sistema de rejilla Bootstrap: row + col-md-5 / col-md-7
     ============================================================ -->
     <section id="quienes" class="py-5">
         <div class="container">
             <h2 class="text-center mb-4">Quiénes Somos</h2>
+
+            <!-- REJILLA Bootstrap: imagen izq. (5 cols) | texto der. (7 cols) -->
             <div class="row align-items-center g-4">
                 <div class="col-md-5 text-center">
                     <img src="img/narvi.jpg"
                          alt="Narvi Collector Scale Models — taller de pintura y modelismo"
-                         class="img-fluid rounded shadow-lg">
+                         class="img-fluid rounded shadow-lg img-narvi">
                 </div>
                 <div class="col-md-7">
                     <p>
-                        <strong>Narvi Collector Scale Models</strong> es un emprendimiento dedicado al diseño,
-                        pintura y comercialización de figuras coleccionables, modelos a escala y creaciones
-                        personalizadas. Nuestro objetivo es ofrecer productos únicos para coleccionistas y
-                        aficionados al modelismo, garantizando calidad, creatividad y atención personalizada.
+                        <strong class="text-info">Narvi Collector Scale Models</strong>
+                        es un emprendimiento dedicado al diseño, pintura y comercialización
+                        de figuras coleccionables, modelos a escala y creaciones personalizadas.
+                        Ofrecemos productos únicos para coleccionistas y aficionados al modelismo,
+                        garantizando calidad, creatividad y atención personalizada.
                     </p>
                     <p class="mt-3">
-                        Trabajamos con miniaturas, impresiones 3D, restauración de figuras y proyectos especiales
-                        elaborados cuidadosamente para satisfacer las necesidades de cada cliente. A través de
-                        nuestras redes sociales compartimos trabajos, promociones y nuevos lanzamientos.
+                        Trabajamos con miniaturas, impresiones 3D, restauración de figuras y
+                        proyectos especiales elaborados cuidadosamente para cada cliente.
                     </p>
+                    <!-- Botón que abre el MODAL de información adicional -->
+                    <button type="button"
+                            class="btn btn-outline-info mt-3"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalSobreNosotros">
+                        📋 Ver más información
+                    </button>
                 </div>
             </div>
         </div>
@@ -137,11 +143,9 @@
 
 
     <!-- ============================================================
-         SECCIÓN: CATÁLOGO DE SERVICIOS (RENDERIZADO DINÁMICO)
-         ↓ NUEVO: Las tarjetas se generan desde un arreglo en script.js.
-         El HTML solo contiene el contenedor vacío #contenedor-catalogo.
-         JavaScript itera el arreglo "catalogoServicios" y renderiza
-         cada tarjeta con createElement + appendChild (bucle forEach).
+         SECCIÓN: CATÁLOGO DE SERVICIOS
+         Las tarjetas Bootstrap se generan dinámicamente desde script.js.
+         El HTML solo tiene el contenedor vacío #contenedor-catalogo.
     ============================================================ -->
     <section id="catalogo" class="py-5 seccion-oscura">
         <div class="container">
@@ -150,20 +154,21 @@
                 Servicios y productos disponibles en el emprendimiento.
             </p>
 
-            <!-- CONDICIÓN VISUAL: Si no hay servicios, script.js muestra mensaje.
-                 Si hay servicios, renderiza las tarjetas automáticamente. -->
+            <!-- Contenedor donde script.js inserta tarjetas Bootstrap con forEach -->
             <div id="contenedor-catalogo" class="row g-3">
-                <!-- Las tarjetas del catálogo se insertan aquí desde JavaScript -->
+                <!-- Tarjetas generadas dinámicamente desde catalogoServicios[] -->
             </div>
         </div>
     </section>
 
 
     <!-- ============================================================
-         SECCIÓN: GESTIÓN DINÁMICA DE PRODUCTOS
-         Formulario con validaciones (Semana 6, conservadas).
-         Los productos registrados se muestran en #lista-productos.
-         Un arreglo "productosRegistrados" almacena los datos.
+         SECCIÓN: GESTIÓN DINÁMICA DE PRODUCTOS (Semanas 6, 7 y 8)
+         - Formulario Bootstrap con form-label, form-control, row, col
+         - Spinner Bootstrap para simular proceso de registro
+         - Alerta Bootstrap de éxito/error
+         - Tabla Bootstrap con datos del arreglo productosRegistrados[]
+         - Modal Bootstrap para ver detalles de un producto
     ============================================================ -->
     <section id="gestion" class="py-5">
         <div class="container">
@@ -172,25 +177,30 @@
                 Registra, visualiza y elimina productos del catálogo de forma dinámica.
             </p>
 
+            <!-- REJILLA Bootstrap: formulario (col-lg-5) | tabla+tarjetas (col-lg-7) -->
             <div class="row justify-content-center g-4">
 
-                <!-- Columna izquierda: formulario de registro -->
+                <!-- ================================================
+                     COLUMNA IZQUIERDA: Formulario de registro
+                ================================================ -->
                 <div class="col-lg-5 col-md-6">
                     <div class="card-formulario p-4">
                         <h5 class="mb-3 fw-bold text-info">➕ Registrar nuevo producto</h5>
 
-                        <!-- Alerta global de éxito o error al hacer submit -->
+                        <!--
+                            ALERTA Bootstrap — éxito o error al hacer submit.
+                            Clases usadas: alert alert-success / alert-danger / d-none
+                        -->
                         <div id="alerta-global" class="alert d-none" role="alert"></div>
 
                         <!--
-                            FORMULARIO DE GESTIÓN
-                            novalidate → desactiva validación nativa del navegador.
-                            Toda la validación la hace script.js con eventos
-                            input, blur y submit + preventDefault().
+                            FORMULARIO con clases Bootstrap:
+                            form-label, form-control, form-select, row, col
+                            novalidate → desactiva validación nativa; la maneja script.js
                         -->
                         <form id="formulario-producto" novalidate>
 
-                            <!-- Campo: Nombre del producto (mínimo 3 caracteres) -->
+                            <!-- Campo nombre: form-label + form-control (Semana 6: min 3 chars) -->
                             <div class="mb-3">
                                 <label for="campo-nombre" class="form-label fw-semibold">
                                     Nombre del producto <span class="text-danger">*</span>
@@ -205,7 +215,7 @@
                                 <div id="ok-nombre"    class="valid-feedback"></div>
                             </div>
 
-                            <!-- Campo: Descripción (mínimo 10 caracteres) -->
+                            <!-- Campo descripción + contador de caracteres en tiempo real -->
                             <div class="mb-3">
                                 <label for="campo-descripcion" class="form-label fw-semibold">
                                     Descripción <span class="text-danger">*</span>
@@ -215,7 +225,6 @@
                                           rows="3"
                                           placeholder="Ej: Figura de resina pintada a mano, 30 cm."
                                           maxlength="300"></textarea>
-                                <!-- Contador de caracteres actualizado en tiempo real (evento input) -->
                                 <div class="form-text text-end texto-gris">
                                     <span id="contador-caracteres">0</span>/300 caracteres
                                 </div>
@@ -223,61 +232,82 @@
                                 <div id="ok-descripcion"    class="valid-feedback"></div>
                             </div>
 
-                            <!-- Campo: Categoría (debe seleccionarse una opción válida) -->
-                            <div class="mb-4">
-                                <label for="campo-categoria" class="form-label fw-semibold">
-                                    Categoría / Tipo <span class="text-danger">*</span>
-                                </label>
-                                <select id="campo-categoria" class="form-select campo-oscuro">
-                                    <option value="">-- Selecciona una categoría --</option>
-                                    <option value="Figuras Coleccionables">Figuras Coleccionables</option>
-                                    <option value="Modelos a Escala">Modelos a Escala</option>
-                                    <option value="Impresiones 3D">Impresiones 3D</option>
-                                    <option value="Pintura Profesional">Pintura Profesional</option>
-                                    <option value="Restauración">Restauración</option>
-                                    <option value="Artículos Exclusivos">Artículos Exclusivos</option>
-                                </select>
-                                <div id="error-categoria" class="invalid-feedback"></div>
-                                <div id="ok-categoria"    class="valid-feedback"></div>
+                            <!-- Campo categoría: form-select — REJILLA Bootstrap row+col -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <label for="campo-categoria" class="form-label fw-semibold">
+                                        Categoría / Tipo <span class="text-danger">*</span>
+                                    </label>
+                                    <select id="campo-categoria" class="form-select campo-oscuro">
+                                        <option value="">-- Selecciona una categoría --</option>
+                                        <option value="Figuras Coleccionables">Figuras Coleccionables</option>
+                                        <option value="Modelos a Escala">Modelos a Escala</option>
+                                        <option value="Impresiones 3D">Impresiones 3D</option>
+                                        <option value="Pintura Profesional">Pintura Profesional</option>
+                                        <option value="Restauración">Restauración</option>
+                                        <option value="Artículos Exclusivos">Artículos Exclusivos</option>
+                                    </select>
+                                    <div id="error-categoria" class="invalid-feedback"></div>
+                                    <div id="ok-categoria"    class="valid-feedback"></div>
+                                </div>
                             </div>
 
-                            <button type="submit" id="btn-registrar"
-                                    class="btn btn-primary w-100 py-2 fw-semibold">
-                                ➕ Agregar Producto
-                            </button>
+                            <!-- Botón Bootstrap btn btn-primary para registrar -->
+                            <div class="d-grid">
+                                <button type="submit" id="btn-registrar"
+                                        class="btn btn-primary py-2 fw-semibold">
+                                    ➕ Agregar Producto
+                                </button>
+                            </div>
 
                         </form>
+
+                        <!-- ==========================================
+                             SPINNER Bootstrap — aparece al registrar,
+                             simula un proceso de carga (1.2 seg).
+                             Manejado desde script.js con classList.
+                        ========================================== -->
+                        <div id="spinner-registro"
+                             class="text-center mt-3 d-none">
+                            <div class="spinner-border text-info" role="status">
+                                <span class="visually-hidden">Procesando...</span>
+                            </div>
+                            <p class="text-info small mt-1">Registrando producto...</p>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Columna derecha: contador + lista de productos registrados -->
+                <!-- ================================================
+                     COLUMNA DERECHA: Contador + Tabla + Tarjetas
+                ================================================ -->
                 <div class="col-lg-7 col-md-6">
 
-                    <!-- Badge con el total de productos registrados -->
+                    <!-- Badge Bootstrap con el total de registros -->
                     <div class="bloque-contador text-center mb-3 py-3 rounded">
                         <span class="fw-semibold fs-5">Total de productos registrados:</span>
                         <span id="numero-registros" class="badge bg-primary ms-2 fs-5">0</span>
                     </div>
 
-                    <!-- Tabla resumen de productos (NUEVA — Semana 7)
-                         Se genera dinámicamente con forEach desde el arreglo productosRegistrados.
-                         Condición: si no hay productos, muestra fila con mensaje. -->
+                    <!-- TABLA Bootstrap: table-dark + table-hover + table-bordered
+                         Las filas se generan dinámicamente con forEach desde script.js.
+                         Condición: si está vacía muestra fila con aviso. -->
                     <div class="tabla-wrapper mb-4">
-                        <table class="table table-dark table-hover table-bordered mb-0">
+                        <table class="table table-dark table-hover table-bordered mb-0 align-middle">
                             <thead>
-                                <tr class="text-info">
+                                <tr class="text-info text-center">
                                     <th>#</th>
                                     <th>Nombre</th>
                                     <th>Categoría</th>
-                                    <th>Acción</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <!-- Las filas se generan dinámicamente desde script.js -->
+                            <!-- Las filas con botones Detalles/Eliminar las genera script.js -->
                             <tbody id="tabla-cuerpo"></tbody>
                         </table>
                     </div>
 
-                    <!-- Tarjetas de detalle de cada producto registrado -->
+                    <!-- Tarjetas Bootstrap de detalle (generadas por script.js) -->
                     <div id="lista-productos" class="row g-3"></div>
 
                 </div>
@@ -288,62 +318,67 @@
 
     <!-- ============================================================
          SECCIÓN: CONTACTO
-         Información de contacto + formulario con validaciones blur/submit.
+         Formulario Bootstrap con form-label, form-control, btn btn-success
     ============================================================ -->
     <section id="contacto" class="py-5 seccion-oscura">
         <div class="container">
             <h2 class="text-center mb-4">Contacto</h2>
+
+            <!-- REJILLA Bootstrap: info (col-md-5) | formulario (col-md-7) -->
             <div class="row g-4">
 
-                <!-- Información de contacto y redes sociales -->
+                <!-- Información de contacto -->
                 <div class="col-md-5">
                     <h4 class="text-info mb-3">Información de Contacto</h4>
                     <p>📧 <strong>Correo:</strong> narvicollectors@gmail.com</p>
                     <p>📞 <strong>Teléfono:</strong> +593 99 999 9999</p>
                     <p>📍 <strong>Dirección:</strong> Quito, Ecuador</p>
-                    <p>🕐 <strong>Horario:</strong> Lunes a Sábado, 09:00 – 18:00</p>
+                    <p>🕐 <strong>Horario:</strong> Lunes a Sábado, 09:00–18:00</p>
 
-                    <div class="redes mt-4">
+                    <!-- Botones Bootstrap btn btn-primary / btn-info / btn-danger -->
+                    <div class="redes mt-4 d-flex flex-wrap gap-2">
                         <a href="https://www.instagram.com/narvi_collectorscalemodels?igsh=eG9nd2NpY2x4dzNx&utm_source=qr"
                            target="_blank" rel="noopener noreferrer"
-                           class="btn btn-primary m-1">📷 Instagram</a>
+                           class="btn btn-primary">📷 Instagram</a>
                         <a href="https://www.tiktok.com/@narvicollectors.e?_r=1&_t=ZS-973PpnEpKI1"
                            target="_blank" rel="noopener noreferrer"
-                           class="btn btn-info m-1">🎵 TikTok</a>
+                           class="btn btn-info text-dark">🎵 TikTok</a>
                         <a href="https://youtu.be/wJ9ELHI9PMA?si=pxgA4ZJp9eBcwF7G"
                            target="_blank" rel="noopener noreferrer"
-                           class="btn btn-danger m-1">▶ YouTube</a>
+                           class="btn btn-danger">▶ YouTube</a>
                     </div>
                 </div>
 
-                <!-- Formulario de contacto con validaciones -->
+                <!-- Formulario de contacto -->
                 <div class="col-md-7">
                     <div class="card-formulario p-4">
                         <h5 class="text-info mb-3">✉ Envíanos un mensaje</h5>
 
-                        <!-- Alerta global del formulario de contacto -->
+                        <!-- Alerta Bootstrap para el formulario de contacto -->
                         <div id="alerta-contacto" class="alert d-none" role="alert"></div>
 
                         <form id="formulario-contacto" novalidate>
 
-                            <div class="mb-3">
-                                <label for="contacto-nombre" class="form-label">
-                                    Nombre <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" id="contacto-nombre"
-                                       class="form-control campo-oscuro"
-                                       placeholder="Tu nombre completo">
-                                <div id="error-contacto-nombre" class="invalid-feedback"></div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="contacto-correo" class="form-label">
-                                    Correo Electrónico <span class="text-danger">*</span>
-                                </label>
-                                <input type="email" id="contacto-correo"
-                                       class="form-control campo-oscuro"
-                                       placeholder="ejemplo@correo.com">
-                                <div id="error-contacto-correo" class="invalid-feedback"></div>
+                            <!-- REJILLA: nombre y correo en la misma fila (col-md-6 c/u) -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="contacto-nombre" class="form-label">
+                                        Nombre <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" id="contacto-nombre"
+                                           class="form-control campo-oscuro"
+                                           placeholder="Tu nombre completo">
+                                    <div id="error-contacto-nombre" class="invalid-feedback"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="contacto-correo" class="form-label">
+                                        Correo <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" id="contacto-correo"
+                                           class="form-control campo-oscuro"
+                                           placeholder="ejemplo@correo.com">
+                                    <div id="error-contacto-correo" class="invalid-feedback"></div>
+                                </div>
                             </div>
 
                             <div class="mb-3">
@@ -367,9 +402,12 @@
                                 <div id="error-contacto-mensaje" class="invalid-feedback"></div>
                             </div>
 
-                            <button type="submit" class="btn btn-success w-100 fw-semibold">
-                                ✉ Enviar Mensaje
-                            </button>
+                            <!-- Botón Bootstrap btn btn-success -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success fw-semibold">
+                                    ✉ Enviar Mensaje
+                                </button>
+                            </div>
 
                         </form>
                     </div>
@@ -382,15 +420,17 @@
 
     <!-- ============================================================
          ARTÍCULO: VIDEO RELACIONADO
-         Bootstrap ratio-16x9 garantiza responsividad del iframe.
+         Bootstrap ratio ratio-16x9 garantiza responsividad del iframe.
     ============================================================ -->
     <article class="py-5 text-center">
         <div class="container">
             <h2 class="mb-3">Video Relacionado</h2>
-            <p class="mb-4 text-secondary">Conoce más sobre el emprendimiento a través del siguiente video.</p>
+            <p class="mb-4 text-secondary">
+                Conoce más sobre el emprendimiento a través del siguiente video.
+            </p>
             <div class="ratio ratio-16x9 mx-auto" style="max-width: 700px;">
                 <iframe src="https://www.youtube.com/embed/wJ9ELHI9PMA"
-                        title="Narvi Collector Scale Models — Video del emprendimiento"
+                        title="Narvi Collector Scale Models"
                         allowfullscreen></iframe>
             </div>
         </div>
@@ -399,43 +439,174 @@
 
     <!-- ============================================================
          ASIDE: INFORMACIÓN COMPLEMENTARIA
-         Datos adicionales del negocio.
     ============================================================ -->
     <aside class="py-4 text-center">
         <div class="container">
             <h2 class="mb-3">Información Complementaria</h2>
             <div class="row justify-content-center g-3">
-                <div class="col-md-3">
-                    <div class="info-chip">🕐 Lunes a Sábado · 09:00–18:00</div>
-                </div>
-                <div class="col-md-3">
-                    <div class="info-chip">🎁 Promociones para clientes frecuentes</div>
-                </div>
-                <div class="col-md-3">
-                    <div class="info-chip">🚚 Envíos a nivel nacional</div>
-                </div>
+                <div class="col-md-3"><div class="info-chip">🕐 Lunes a Sábado · 09:00–18:00</div></div>
+                <div class="col-md-3"><div class="info-chip">🎁 Promociones para clientes frecuentes</div></div>
+                <div class="col-md-3"><div class="info-chip">🚚 Envíos a nivel nacional</div></div>
             </div>
         </div>
     </aside>
 
 </main>
-<!-- {% endblock content %} -->
+<!-- ===== {% endblock content %} ===== -->
 
 
-<!-- ================================================================
-     {% block footer %} — PIE DE PÁGINA
-     Parte repetitiva: aparece igual en todas las páginas.
-     En base.html sería un bloque heredado o include fijo.
-================================================================ -->
+<!-- ===== {% block footer %} — Pie de página, parte fija repetitiva ===== -->
 <footer class="text-center py-4">
     <p><strong>Estudiante:</strong> Nancy Campos Basurto</p>
     <p><strong>Asignatura:</strong> Desarrollo de Aplicaciones Web</p>
     <p><strong>Año:</strong> 2026</p>
 </footer>
-<!-- {% endblock footer %} -->
+<!-- ===== {% endblock footer %} ===== -->
 
 
-<!-- Bootstrap JS — necesario para navbar colapsable y componentes -->
+<!-- ================================================================
+     MODAL Bootstrap #1 — "Sobre Nosotros"
+     Se abre con data-bs-toggle="modal" data-bs-target="#modalSobreNosotros"
+     desde el botón en la sección Quiénes Somos.
+================================================================ -->
+<div class="modal fade" id="modalSobreNosotros" tabindex="-1"
+     aria-labelledby="modalSobreNosotrosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-oscuro">
+
+            <div class="modal-header border-info">
+                <h5 class="modal-title text-info" id="modalSobreNosotrosLabel">
+                    📋 Sobre Narvi Collector Scale Models
+                </h5>
+                <!-- Botón Bootstrap para cerrar el modal -->
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <h6 class="text-info">🎯 Misión</h6>
+                        <p class="small">Ofrecer productos coleccionables únicos con acabados de alta calidad,
+                        satisfaciendo las necesidades de cada cliente con creatividad y dedicación.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-info">🔭 Visión</h6>
+                        <p class="small">Ser referente en Ecuador en el mercado de figuras coleccionables,
+                        modelos a escala e impresiones 3D personalizadas para el 2028.</p>
+                    </div>
+                    <div class="col-12">
+                        <h6 class="text-info">💎 Valores</h6>
+                        <div class="row g-2">
+                            <div class="col-6 col-md-3">
+                                <span class="badge bg-primary w-100 py-2">✨ Calidad</span>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <span class="badge bg-success w-100 py-2">🎨 Creatividad</span>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <span class="badge bg-warning text-dark w-100 py-2">🤝 Compromiso</span>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <span class="badge bg-info text-dark w-100 py-2">💡 Innovación</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-info">
+                <!-- Botón Bootstrap btn btn-secondary para cerrar -->
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cerrar</button>
+                <a href="#contacto" class="btn btn-info text-dark"
+                   data-bs-dismiss="modal">✉ Contáctanos</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================================================
+     MODAL Bootstrap #2 — Detalles de producto registrado
+     Se abre desde el botón "Detalles" de cada fila de la tabla.
+     El contenido lo llena script.js dinámicamente.
+================================================================ -->
+<div class="modal fade" id="modalDetalleProducto" tabindex="-1"
+     aria-labelledby="modalDetalleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-oscuro">
+
+            <div class="modal-header border-info">
+                <h5 class="modal-title text-info" id="modalDetalleLabel">
+                    📦 Detalle del Producto
+                </h5>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- El contenido se inyecta dinámicamente desde script.js -->
+                <p><strong class="text-info">Nombre:</strong>
+                   <span id="modal-nombre-producto"></span></p>
+                <p><strong class="text-info">Descripción:</strong>
+                   <span id="modal-descripcion-producto"></span></p>
+                <p><strong class="text-info">Categoría:</strong>
+                   <span id="modal-categoria-producto" class="badge bg-secondary"></span></p>
+            </div>
+
+            <div class="modal-footer border-info">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ================================================================
+     MODAL Bootstrap #3 — Confirmación de eliminación
+     Se abre desde el botón "Eliminar" de cada fila de la tabla.
+     script.js guarda el índice y lo usa al confirmar.
+================================================================ -->
+<div class="modal fade" id="modalConfirmarEliminar" tabindex="-1"
+     aria-labelledby="modalEliminarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-oscuro">
+
+            <div class="modal-header border-danger">
+                <h5 class="modal-title text-danger" id="modalEliminarLabel">
+                    ⚠️ Confirmar eliminación
+                </h5>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>¿Estás segura de que deseas eliminar el producto
+                   <strong id="modal-nombre-eliminar" class="text-danger"></strong>?
+                </p>
+                <p class="small text-secondary">Esta acción no se puede deshacer.</p>
+            </div>
+
+            <div class="modal-footer border-danger">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancelar</button>
+                <!-- Botón Bootstrap btn btn-danger para confirmar eliminación -->
+                <button type="button" id="btn-confirmar-eliminar"
+                        class="btn btn-danger fw-semibold">
+                    🗑 Sí, eliminar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap 5.3 JS Bundle (CDN) — incluye Popper para modales y navbar -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- Archivo JavaScript externo con toda la lógica dinámica -->
