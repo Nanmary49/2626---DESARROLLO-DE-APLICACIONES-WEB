@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block titulo %}Clientes — Narvi Collector Scale Models{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-1">👥 Módulo de Clientes</h2>
+            <p class="text-secondary mb-0">Registro de clientes del emprendimiento.</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-info">← Volver al Inicio</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-info mb-0">{{ clientes | length }}</h3>
+                    <small class="text-secondary">Total de clientes</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-success mb-0">
+                        {{ clientes | selectattr('tipo', 'equalto', 'Frecuente') | list | length }}
+                    </h3>
+                    <small class="text-secondary">Clientes frecuentes</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-warning mb-0">
+                        {{ clientes | selectattr('tipo', 'equalto', 'Nuevo') | list | length }}
+                    </h3>
+                    <small class="text-secondary">Clientes nuevos</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabla-wrapper mb-5">
+        <table class="table table-dark table-hover table-bordered mb-0 align-middle">
+            <thead>
+                <tr class="text-info text-center">
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Ciudad</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                <tr>
+                    <td class="text-center text-info fw-bold">{{ cliente.id }}</td>
+                    <td>{{ cliente.nombre }}</td>
+                    <td class="small">{{ cliente.correo }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>{{ cliente.ciudad }}</td>
+                    <td class="text-center">
+                        {% if cliente.tipo == 'Frecuente' %}
+                            <span class="badge bg-success">⭐ {{ cliente.tipo }}</span>
+                        {% elif cliente.tipo == 'Nuevo' %}
+                            <span class="badge bg-primary">🆕 {{ cliente.tipo }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ cliente.tipo }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4 p-4 modulo-nav rounded">
+        <h5 class="text-info mb-3">🔗 Otros módulos del sistema</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('productos') }}" class="btn btn-outline-info">📦 Productos</a>
+            <a href="{{ url_for('proveedores') }}" class="btn btn-outline-info">🏭 Proveedores</a>
+            <a href="{{ url_for('facturacion') }}" class="btn btn-outline-info">🧾 Facturación</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

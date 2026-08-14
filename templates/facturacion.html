@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block titulo %}Facturación — Narvi Collector Scale Models{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-1">🧾 Módulo de Facturación</h2>
+            <p class="text-secondary mb-0">Registro y seguimiento de facturas emitidas.</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-info">← Volver al Inicio</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-info mb-0">{{ facturas | length }}</h3>
+                    <small class="text-secondary">Total de facturas</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-success mb-0">
+                        {{ facturas | selectattr('estado', 'equalto', 'Pagada') | list | length }}
+                    </h3>
+                    <small class="text-secondary">Facturas pagadas</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-warning mb-0">${{ "%.2f"|format(total_general) }}</h3>
+                    <small class="text-secondary">Total facturado</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabla-wrapper mb-5">
+        <table class="table table-dark table-hover table-bordered mb-0 align-middle">
+            <thead>
+                <tr class="text-info text-center">
+                    <th>N° Factura</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th>Cant.</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for factura in facturas %}
+                <tr>
+                    <td class="text-center fw-bold text-info">{{ factura.id }}</td>
+                    <td>{{ factura.cliente }}</td>
+                    <td class="text-center">{{ factura.fecha }}</td>
+                    <td class="small">{{ factura.producto }}</td>
+                    <td class="text-center">{{ factura.cantidad }}</td>
+                    <td class="text-center text-success fw-semibold">${{ "%.2f"|format(factura.total) }}</td>
+                    <td class="text-center">
+                        {% if factura.estado == 'Pagada' %}
+                            <span class="badge bg-success">✓ Pagada</span>
+                        {% elif factura.estado == 'Pendiente' %}
+                            <span class="badge bg-warning text-dark">⏳ Pendiente</span>
+                        {% else %}
+                            <span class="badge bg-danger">✗ {{ factura.estado }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="table-active">
+                    <td colspan="5" class="text-end fw-bold text-info">TOTAL GENERAL:</td>
+                    <td class="text-center fw-bold text-warning fs-5">${{ "%.2f"|format(total_general) }}</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="p-4 modulo-nav rounded">
+        <h5 class="text-info mb-3">🔗 Otros módulos del sistema</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('productos') }}" class="btn btn-outline-info">📦 Productos</a>
+            <a href="{{ url_for('clientes') }}" class="btn btn-outline-info">👥 Clientes</a>
+            <a href="{{ url_for('proveedores') }}" class="btn btn-outline-info">🏭 Proveedores</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

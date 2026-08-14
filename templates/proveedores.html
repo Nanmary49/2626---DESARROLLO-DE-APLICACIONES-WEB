@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block titulo %}Proveedores — Narvi Collector Scale Models{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-1">🏭 Módulo de Proveedores</h2>
+            <p class="text-secondary mb-0">Gestión de proveedores y suministros.</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-info">← Volver al Inicio</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-info mb-0">{{ proveedores | length }}</h3>
+                    <small class="text-secondary">Total de proveedores</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-success mb-0">
+                        {{ proveedores | selectattr('estado', 'equalto', 'Activo') | list | length }}
+                    </h3>
+                    <small class="text-secondary">Proveedores activos</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabla-wrapper mb-4">
+        <table class="table table-dark table-hover table-bordered mb-0 align-middle">
+            <thead>
+                <tr class="text-info text-center">
+                    <th>#</th>
+                    <th>Empresa</th>
+                    <th>Contacto</th>
+                    <th>Correo</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proveedor in proveedores %}
+                <tr>
+                    <td class="text-center text-info fw-bold">{{ proveedor.id }}</td>
+                    <td class="fw-semibold">{{ proveedor.empresa }}</td>
+                    <td>{{ proveedor.contacto }}</td>
+                    <td class="small">{{ proveedor.correo }}</td>
+                    <td><span class="badge bg-secondary">{{ proveedor.categoria }}</span></td>
+                    <td class="text-center">
+                        {% if proveedor.estado == 'Activo' %}
+                            <span class="badge bg-success">✓ {{ proveedor.estado }}</span>
+                        {% else %}
+                            <span class="badge bg-danger">✗ {{ proveedor.estado }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h4 class="mt-4 mb-3 text-info">Vista en Tarjetas</h4>
+    <div class="row g-3">
+        {% for proveedor in proveedores %}
+        <div class="col-md-6">
+            <div class="card modulo-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h5 class="card-title text-info mb-1">🏭 {{ proveedor.empresa }}</h5>
+                        {% if proveedor.estado == 'Activo' %}
+                            <span class="badge bg-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactivo</span>
+                        {% endif %}
+                    </div>
+                    <p class="small text-secondary mb-1">👤 {{ proveedor.contacto }}</p>
+                    <p class="small mb-1">📧 {{ proveedor.correo }}</p>
+                    <p class="small mb-0">📦 {{ proveedor.categoria }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-5 p-4 modulo-nav rounded">
+        <h5 class="text-info mb-3">🔗 Otros módulos del sistema</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('productos') }}" class="btn btn-outline-info">📦 Productos</a>
+            <a href="{{ url_for('clientes') }}" class="btn btn-outline-info">👥 Clientes</a>
+            <a href="{{ url_for('facturacion') }}" class="btn btn-outline-info">🧾 Facturación</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block titulo %}Productos — Narvi Collector Scale Models{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-1">📦 Módulo de Productos</h2>
+            <p class="text-secondary mb-0">Catálogo de productos y servicios disponibles.</p>
+        </div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-info">← Volver al Inicio</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-info mb-0">{{ productos | length }}</h3>
+                    <small class="text-secondary">Total de productos</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-success mb-0">
+                        {{ productos | selectattr('estado', 'equalto', 'Disponible') | list | length }}
+                    </h3>
+                    <small class="text-secondary">Disponibles</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center modulo-card">
+                <div class="card-body py-3">
+                    <h3 class="text-warning mb-0">
+                        {{ productos | selectattr('estado', 'equalto', 'Últimas unidades') | list | length }}
+                    </h3>
+                    <small class="text-secondary">Últimas unidades</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabla-wrapper mb-4">
+        <table class="table table-dark table-hover table-bordered mb-0 align-middle">
+            <thead>
+                <tr class="text-info text-center">
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td class="text-center text-info fw-bold">{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td><span class="badge bg-secondary">{{ producto.categoria }}</span></td>
+                    <td class="text-center text-success fw-semibold">${{ "%.2f"|format(producto.precio) }}</td>
+                    <td class="text-center">{{ producto.stock }}</td>
+                    <td class="text-center">
+                        {% if producto.estado == 'Disponible' %}
+                            <span class="badge bg-success">{{ producto.estado }}</span>
+                        {% elif producto.estado == 'Últimas unidades' %}
+                            <span class="badge bg-warning text-dark">{{ producto.estado }}</span>
+                        {% else %}
+                            <span class="badge bg-danger">{{ producto.estado }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h4 class="mt-4 mb-3 text-info">Vista en Tarjetas</h4>
+    <div class="row g-3">
+        {% for producto in productos %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card modulo-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-info">{{ producto.nombre }}</h5>
+                    <p class="card-text small text-secondary">{{ producto.categoria }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="text-success fw-bold fs-5">${{ "%.2f"|format(producto.precio) }}</span>
+                        {% if producto.estado == 'Disponible' %}
+                            <span class="badge bg-success">{{ producto.estado }}</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">{{ producto.estado }}</span>
+                        {% endif %}
+                    </div>
+                    <small class="text-secondary">Stock: {{ producto.stock }} unidades</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-5 p-4 modulo-nav rounded">
+        <h5 class="text-info mb-3">🔗 Otros módulos del sistema</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('clientes') }}" class="btn btn-outline-info">👥 Clientes</a>
+            <a href="{{ url_for('proveedores') }}" class="btn btn-outline-info">🏭 Proveedores</a>
+            <a href="{{ url_for('facturacion') }}" class="btn btn-outline-info">🧾 Facturación</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
