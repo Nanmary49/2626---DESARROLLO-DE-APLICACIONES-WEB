@@ -8,9 +8,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h2 class="mb-1">📦 Módulo de Productos</h2>
-            <p class="text-secondary mb-0">Catálogo de productos y servicios disponibles.</p>
+            <p class="text-secondary mb-0">Catálogo de productos disponibles.</p>
         </div>
-        <a href="{{ url_for('index') }}" class="btn btn-outline-info">← Volver al Inicio</a>
+        <a href="/" class="btn btn-outline-info">← Volver al Inicio</a>
     </div>
 
     <div class="row g-3 mb-4">
@@ -26,7 +26,7 @@
             <div class="card text-center modulo-card">
                 <div class="card-body py-3">
                     <h3 class="text-success mb-0">
-                        {{ productos | selectattr('estado', 'equalto', 'Disponible') | list | length }}
+                        {{ productos | selectattr('stock', 'gt', 0) | list | length }}
                     </h3>
                     <small class="text-secondary">Disponibles</small>
                 </div>
@@ -35,10 +35,10 @@
         <div class="col-md-4">
             <div class="card text-center modulo-card">
                 <div class="card-body py-3">
-                    <h3 class="text-warning mb-0">
-                        {{ productos | selectattr('estado', 'equalto', 'Últimas unidades') | list | length }}
+                    <h3 class="text-danger mb-0">
+                        {{ productos | selectattr('stock', 'equalto', 0) | list | length }}
                     </h3>
-                    <small class="text-secondary">Últimas unidades</small>
+                    <small class="text-secondary">Agotados</small>
                 </div>
             </div>
         </div>
@@ -60,17 +60,15 @@
                 {% for producto in productos %}
                 <tr>
                     <td class="text-center text-info fw-bold">{{ producto.id }}</td>
-                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.nombre | title }}</td>
                     <td><span class="badge bg-secondary">{{ producto.categoria }}</span></td>
                     <td class="text-center text-success fw-semibold">${{ "%.2f"|format(producto.precio) }}</td>
                     <td class="text-center">{{ producto.stock }}</td>
                     <td class="text-center">
-                        {% if producto.estado == 'Disponible' %}
-                            <span class="badge bg-success">{{ producto.estado }}</span>
-                        {% elif producto.estado == 'Últimas unidades' %}
-                            <span class="badge bg-warning text-dark">{{ producto.estado }}</span>
+                        {% if producto.stock > 0 %}
+                            <span class="badge bg-success">Disponible</span>
                         {% else %}
-                            <span class="badge bg-danger">{{ producto.estado }}</span>
+                            <span class="badge bg-danger">Agotado</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -86,13 +84,13 @@
             <div class="card modulo-card h-100">
                 <div class="card-body">
                     <h5 class="card-title text-info">{{ producto.nombre }}</h5>
-                    <p class="card-text small text-secondary">{{ producto.categoria }}</p>
+                    <p class="card-text small text-secondary">{{ producto.categoria | upper }}</p>
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <span class="text-success fw-bold fs-5">${{ "%.2f"|format(producto.precio) }}</span>
-                        {% if producto.estado == 'Disponible' %}
-                            <span class="badge bg-success">{{ producto.estado }}</span>
+                        {% if producto.stock > 0 %}
+                            <span class="badge bg-success">Disponible</span>
                         {% else %}
-                            <span class="badge bg-warning text-dark">{{ producto.estado }}</span>
+                            <span class="badge bg-danger">Agotado</span>
                         {% endif %}
                     </div>
                     <small class="text-secondary">Stock: {{ producto.stock }} unidades</small>
@@ -103,11 +101,11 @@
     </div>
 
     <div class="mt-5 p-4 modulo-nav rounded">
-        <h5 class="text-info mb-3">🔗 Otros módulos del sistema</h5>
+        <h5 class="text-info mb-3">🔗 Otros módulos</h5>
         <div class="d-flex flex-wrap gap-2">
-            <a href="{{ url_for('clientes') }}" class="btn btn-outline-info">👥 Clientes</a>
-            <a href="{{ url_for('proveedores') }}" class="btn btn-outline-info">🏭 Proveedores</a>
-            <a href="{{ url_for('facturacion') }}" class="btn btn-outline-info">🧾 Facturación</a>
+            <a href="/clientes" class="btn btn-outline-info">👥 Clientes</a>
+            <a href="/proveedores" class="btn btn-outline-info">🏭 Proveedores</a>
+            <a href="/facturacion" class="btn btn-outline-info">🧾 Facturación</a>
         </div>
     </div>
 

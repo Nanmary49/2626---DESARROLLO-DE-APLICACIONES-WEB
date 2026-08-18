@@ -1,191 +1,236 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Narvi Collector Scale Models</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
 
-<header class="text-center py-4">
-    <h1>Sistema de Gestión de Figuras de Colección</h1>
-    <h2>Plataforma para administrar productos, clientes y ventas en línea</h2>
-    <h3>Desarrollado por Nancy Campos Basurto</h3>
-</header>
+{% block titulo %}Narvi Collector Scale Models — Inicio{% endblock %}
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+{% block content %}
+
+<section id="inicio" class="py-5 seccion-hero">
+    <div class="container text-center">
+        <h2 class="display-4 text-info fw-bold mb-3">Bienvenido a Narvi Collector Scale Models</h2>
+        <p class="lead mb-4">
+            Plataforma diseñada para administrar productos, clientes y ventas
+            de figuras coleccionables, modelos a escala e impresiones 3D personalizadas.
+        </p>
+        <a href="#catalogo" class="btn btn-primary btn-lg m-2">🗂 Ver Catálogo</a>
+        <a href="/productos" class="btn btn-warning btn-lg m-2">📦 Sistema</a>
+        <a href="#contacto" class="btn btn-outline-light btn-lg m-2">✉ Contactar</a>
+    </div>
+</section>
+
+<section id="quienes" class="py-5">
     <div class="container">
-        <a class="navbar-brand fw-bold text-info" href="{{ url_for('index') }}">🎨 Narvi Models</a>
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#menuPrincipal"
-                aria-controls="menuPrincipal"
-                aria-expanded="false"
-                aria-label="Abrir menú">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="menuPrincipal">
-            <ul class="navbar-nav ms-auto gap-1">
-                <li class="nav-item"><a class="nav-link active" href="#inicio">🏠 Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="#quienes">ℹ Quiénes Somos</a></li>
-                <li class="nav-item"><a class="nav-link" href="#catalogo">🗂 Catálogo</a></li>
-                <li class="nav-item"><a class="nav-link" href="#gestion">⚙ Gestión</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contacto">✉ Contacto</a></li>
-                <li class="nav-item"><span class="nav-link text-secondary">|</span></li>
-                <li class="nav-item"><a class="nav-link text-warning" href="{{ url_for('productos') }}">📦 Módulos</a></li>
-            </ul>
+        <h2 class="text-center mb-4">Quiénes Somos</h2>
+        <div class="row align-items-center g-4">
+            <div class="col-md-5 text-center">
+                <img src="{{ url_for('static', filename='img/narvi.jpg') }}"
+                     alt="Narvi Collector Scale Models"
+                     class="img-fluid rounded shadow-lg img-narvi">
+            </div>
+            <div class="col-md-7">
+                <p>
+                    <strong class="text-info">Narvi Collector Scale Models</strong>
+                    es un emprendimiento dedicado al diseño, pintura y comercialización
+                    de figuras coleccionables, modelos a escala y creaciones personalizadas.
+                </p>
+                <p class="mt-3">
+                    Trabajamos con miniaturas, impresiones 3D, restauración de figuras y
+                    proyectos especiales elaborados cuidadosamente para cada cliente.
+                </p>
+            </div>
         </div>
     </div>
-</nav>
+</section>
 
-<main>
+<section id="catalogo" class="py-5 seccion-oscura">
+    <div class="container">
+        <h2 class="text-center mb-2">Catálogo de Servicios</h2>
+        <p class="text-center text-secondary mb-4">Servicios y productos disponibles.</p>
+        <div id="contenedor-catalogo" class="row g-3"></div>
+    </div>
+</section>
 
-    <section id="inicio" class="py-5 seccion-hero">
-        <div class="container text-center">
-            <h2 class="display-4 text-info fw-bold mb-3">Bienvenido a Narvi Collector Scale Models</h2>
-            <p class="lead mb-4">
-                Plataforma diseñada para administrar productos, clientes y ventas
-                de figuras coleccionables, modelos a escala e impresiones 3D personalizadas.
-            </p>
-            <a href="#catalogo" class="btn btn-primary btn-lg m-2">🗂 Ver Catálogo</a>
-            <a href="#gestion" class="btn btn-outline-info btn-lg m-2">⚙ Gestionar</a>
-            <a href="{{ url_for('productos') }}" class="btn btn-warning btn-lg m-2">📦 Sistema</a>
-            <a href="#contacto" class="btn btn-outline-light btn-lg m-2">✉ Contactar</a>
-        </div>
-    </section>
-
-    <section id="quienes" class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-4">Quiénes Somos</h2>
-            <div class="row align-items-center g-4">
-                <div class="col-md-5 text-center">
-                    <img src="{{ url_for('static', filename='img/narvi.jpg') }}"
-                         alt="Narvi Collector Scale Models"
-                         class="img-fluid rounded shadow-lg img-narvi">
-                </div>
-                <div class="col-md-7">
-                    <p>
-                        <strong class="text-info">Narvi Collector Scale Models</strong>
-                        es un emprendimiento dedicado al diseño, pintura y comercialización
-                        de figuras coleccionables, modelos a escala y creaciones personalizadas.
-                    </p>
-                    <p class="mt-3">
-                        Trabajamos con miniaturas, impresiones 3D, restauración de figuras y
-                        proyectos especiales elaborados cuidadosamente para cada cliente.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="catalogo" class="py-5 seccion-oscura">
-        <div class="container">
-            <h2 class="text-center mb-2">Catálogo de Servicios</h2>
-            <p class="text-center text-secondary mb-4">Servicios y productos disponibles.</p>
-            <div id="contenedor-catalogo" class="row g-3"></div>
-        </div>
-    </section>
-
-    <section id="gestion" class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-2">Gestión de Productos</h2>
-            <p class="text-center text-secondary mb-4">Registra, visualiza y elimina productos dinámicamente.</p>
-            <div class="row justify-content-center g-4">
-                <div class="col-lg-5 col-md-6">
-                    <div class="card-formulario p-4">
-                        <h5 class="mb-3 fw-bold text-info">➕ Registrar nuevo producto</h5>
-                        <div id="alerta-global" class="alert d-none" role="alert"></div>
-                        <form id="formulario-producto" novalidate>
-                            <div class="mb-3">
-                                <label for="campo-nombre" class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
-                                <input type="text" id="campo-nombre" class="form-control campo-oscuro" placeholder="Ej: Figura Goku" maxlength="100" autocomplete="off">
-                                <div id="error-nombre" class="invalid-feedback"></div>
-                                <div id="ok-nombre" class="valid-feedback"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="campo-descripcion" class="form-label fw-semibold">Descripción <span class="text-danger">*</span></label>
-                                <textarea id="campo-descripcion" class="form-control campo-oscuro" rows="3" placeholder="Descripción del producto" maxlength="300"></textarea>
-                                <div class="form-text text-end texto-gris"><span id="contador-caracteres">0</span>/300</div>
-                                <div id="error-descripcion" class="invalid-feedback"></div>
-                                <div id="ok-descripcion" class="valid-feedback"></div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="campo-categoria" class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
-                                <select id="campo-categoria" class="form-select campo-oscuro">
-                                    <option value="">-- Selecciona --</option>
-                                    <option value="Figuras Coleccionables">Figuras Coleccionables</option>
-                                    <option value="Modelos a Escala">Modelos a Escala</option>
-                                    <option value="Impresiones 3D">Impresiones 3D</option>
-                                    <option value="Pintura Profesional">Pintura Profesional</option>
-                                    <option value="Restauración">Restauración</option>
-                                    <option value="Artículos Exclusivos">Artículos Exclusivos</option>
-                                </select>
-                                <div id="error-categoria" class="invalid-feedback"></div>
-                                <div id="ok-categoria" class="valid-feedback"></div>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" id="btn-registrar" class="btn btn-primary py-2 fw-semibold">➕ Agregar Producto</button>
-                            </div>
-                        </form>
-                        <div id="spinner-registro" class="text-center mt-3 d-none">
-                            <div class="spinner-border text-info" role="status"><span class="visually-hidden">Procesando...</span></div>
-                            <p class="text-info small mt-1">Registrando producto...</p>
+<section id="gestion" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-2">Gestión de Productos</h2>
+        <p class="text-center text-secondary mb-4">Registra, visualiza y elimina productos dinámicamente.</p>
+        <div class="row justify-content-center g-4">
+            <div class="col-lg-5 col-md-6">
+                <div class="card-formulario p-4">
+                    <h5 class="mb-3 fw-bold text-info">➕ Registrar nuevo producto</h5>
+                    <div id="alerta-global" class="alert d-none" role="alert"></div>
+                    <form id="formulario-producto" novalidate>
+                        <div class="mb-3">
+                            <label for="campo-nombre" class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" id="campo-nombre" class="form-control campo-oscuro" placeholder="Ej: Figura Goku" maxlength="100" autocomplete="off">
+                            <div id="error-nombre" class="invalid-feedback"></div>
+                            <div id="ok-nombre" class="valid-feedback"></div>
                         </div>
+                        <div class="mb-3">
+                            <label for="campo-descripcion" class="form-label fw-semibold">Descripción <span class="text-danger">*</span></label>
+                            <textarea id="campo-descripcion" class="form-control campo-oscuro" rows="3" placeholder="Descripción del producto" maxlength="300"></textarea>
+                            <div class="form-text text-end texto-gris"><span id="contador-caracteres">0</span>/300</div>
+                            <div id="error-descripcion" class="invalid-feedback"></div>
+                            <div id="ok-descripcion" class="valid-feedback"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="campo-categoria" class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
+                            <select id="campo-categoria" class="form-select campo-oscuro">
+                                <option value="">-- Selecciona --</option>
+                                <option value="Figuras Coleccionables">Figuras Coleccionables</option>
+                                <option value="Modelos a Escala">Modelos a Escala</option>
+                                <option value="Impresiones 3D">Impresiones 3D</option>
+                                <option value="Pintura Profesional">Pintura Profesional</option>
+                                <option value="Restauración">Restauración</option>
+                                <option value="Artículos Exclusivos">Artículos Exclusivos</option>
+                            </select>
+                            <div id="error-categoria" class="invalid-feedback"></div>
+                            <div id="ok-categoria" class="valid-feedback"></div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" id="btn-registrar" class="btn btn-primary py-2 fw-semibold">➕ Agregar Producto</button>
+                        </div>
+                    </form>
+                    <div id="spinner-registro" class="text-center mt-3 d-none">
+                        <div class="spinner-border text-info" role="status">
+                            <span class="visually-hidden">Procesando...</span>
+                        </div>
+                        <p class="text-info small mt-1">Registrando producto...</p>
                     </div>
                 </div>
-                <div class="col-lg-7 col-md-6">
-                    <div class="bloque-contador text-center mb-3 py-3 rounded">
-                        <span class="fw-semibold fs-5">Total de productos registrados:</span>
-                        <span id="numero-registros" class="badge bg-primary ms-2 fs-5">0</span>
-                    </div>
-                    <div class="tabla-wrapper mb-4">
-                        <table class="table table-dark table-hover table-bordered mb-0 align-middle">
-                            <thead>
-                                <tr class="text-info text-center">
-                                    <th>#</th><th>Nombre</th><th>Categoría</th><th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabla-cuerpo"></tbody>
-                        </table>
-                    </div>
-                    <div id="lista-productos" class="row g-3"></div>
+            </div>
+            <div class="col-lg-7 col-md-6">
+                <div class="bloque-contador text-center mb-3 py-3 rounded">
+                    <span class="fw-semibold fs-5">Total de productos registrados:</span>
+                    <span id="numero-registros" class="badge bg-primary ms-2 fs-5">0</span>
+                </div>
+                <div class="tabla-wrapper mb-4">
+                    <table class="table table-dark table-hover table-bordered mb-0 align-middle">
+                        <thead>
+                            <tr class="text-info text-center">
+                                <th>#</th><th>Nombre</th><th>Categoría</th><th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-cuerpo"></tbody>
+                    </table>
+                </div>
+                <div id="lista-productos" class="row g-3"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contacto" class="py-5 seccion-oscura">
+    <div class="container">
+        <h2 class="text-center mb-4">Contacto</h2>
+        <div class="row g-4">
+            <div class="col-md-5">
+                <h4 class="text-info mb-3">Información de Contacto</h4>
+                <p>📧 <strong>Correo:</strong> narvicollectors@gmail.com</p>
+                <p>📞 <strong>Teléfono:</strong> +593 99 999 9999</p>
+                <p>📍 <strong>Dirección:</strong> Quito, Ecuador</p>
+                <div class="redes mt-4 d-flex flex-wrap gap-2">
+                    <a href="https://www.instagram.com/narvi_collectorscalemodels" target="_blank" class="btn btn-primary">📷 Instagram</a>
+                    <a href="https://www.tiktok.com/@narvicollectors.e" target="_blank" class="btn btn-info text-dark">🎵 TikTok</a>
+                    <a href="https://youtu.be/wJ9ELHI9PMA" target="_blank" class="btn btn-danger">▶ YouTube</a>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-formulario p-4">
+                    <h5 class="text-info mb-3">✉ Envíanos un mensaje</h5>
+                    <div id="alerta-contacto" class="alert d-none" role="alert"></div>
+                    <form id="formulario-contacto" novalidate>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="contacto-nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+                                <input type="text" id="contacto-nombre" class="form-control campo-oscuro" placeholder="Tu nombre">
+                                <div id="error-contacto-nombre" class="invalid-feedback"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="contacto-correo" class="form-label">Correo <span class="text-danger">*</span></label>
+                                <input type="email" id="contacto-correo" class="form-control campo-oscuro" placeholder="ejemplo@correo.com">
+                                <div id="error-contacto-correo" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contacto-asunto" class="form-label">Asunto <span class="text-danger">*</span></label>
+                            <input type="text" id="contacto-asunto" class="form-control campo-oscuro" placeholder="Asunto">
+                            <div id="error-contacto-asunto" class="invalid-feedback"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contacto-mensaje" class="form-label">Mensaje <span class="text-danger">*</span></label>
+                            <textarea id="contacto-mensaje" class="form-control campo-oscuro" rows="4" placeholder="Tu mensaje"></textarea>
+                            <div id="error-contacto-mensaje" class="invalid-feedback"></div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success fw-semibold">✉ Enviar Mensaje</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section id="contacto" class="py-5 seccion-oscura">
-        <div class="container">
-            <h2 class="text-center mb-4">Contacto</h2>
-            <div class="row g-4">
-                <div class="col-md-5">
-                    <h4 class="text-info mb-3">Información de Contacto</h4>
-                    <p>📧 <strong>Correo:</strong> narvicollectors@gmail.com</p>
-                    <p>📞 <strong>Teléfono:</strong> +593 99 999 9999</p>
-                    <p>📍 <strong>Dirección:</strong> Quito, Ecuador</p>
-                    <div class="redes mt-4 d-flex flex-wrap gap-2">
-                        <a href="https://www.instagram.com/narvi_collectorscalemodels" target="_blank" class="btn btn-primary">📷 Instagram</a>
-                        <a href="https://www.tiktok.com/@narvicollectors.e" target="_blank" class="btn btn-info text-dark">🎵 TikTok</a>
-                        <a href="https://youtu.be/wJ9ELHI9PMA" target="_blank" class="btn btn-danger">▶ YouTube</a>
-                    </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="card-formulario p-4">
-                        <h5 class="text-info mb-3">✉ Envíanos un mensaje</h5>
-                        <div id="alerta-contacto" class="alert d-none" role="alert"></div>
-                        <form id="formulario-contacto" novalidate>
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
-                                    <label for="contacto-nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
-                                    <input type="text" id="contacto-nombre" class="form-control campo-oscuro" placeholder="Tu nombre">
-                                    <div id="error-contacto-nombre" class="invalid-feedback"></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="contacto-correo" class="form-label">Correo <span class="text-danger">*</span></label>
-                                    <input type="email" id="contacto-correo" class="form-control campo-oscuro" placeholder="ejemplo@correo.com">
-                                    <div id="error-contacto-correo" class="invalid-feedback"></div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
+<article class="py-5 text-center">
+    <div class="container">
+        <h2 class="mb-3">Video Relacionado</h2>
+        <div class="ratio ratio-16x9 mx-auto" style="max-width: 700px;">
+            <iframe src="https://www.youtube.com/embed/wJ9ELHI9PMA"
+                    title="Narvi Collector Scale Models" allowfullscreen></iframe>
+        </div>
+    </div>
+</article>
+
+<aside class="py-4 text-center">
+    <div class="container">
+        <h2 class="mb-3">Información Complementaria</h2>
+        <div class="row justify-content-center g-3">
+            <div class="col-md-3"><div class="info-chip">🕐 Lunes a Sábado · 09:00-18:00</div></div>
+            <div class="col-md-3"><div class="info-chip">🎁 Promociones para clientes frecuentes</div></div>
+            <div class="col-md-3"><div class="info-chip">🚚 Envíos a nivel nacional</div></div>
+        </div>
+    </div>
+</aside>
+
+<div class="modal fade" id="modalDetalleProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-oscuro">
+            <div class="modal-header border-info">
+                <h5 class="modal-title text-info">📦 Detalle del Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong class="text-info">Nombre:</strong> <span id="modal-nombre-producto"></span></p>
+                <p><strong class="text-info">Descripción:</strong> <span id="modal-descripcion-producto"></span></p>
+                <p><strong class="text-info">Categoría:</strong> <span id="modal-categoria-producto" class="badge bg-secondary"></span></p>
+            </div>
+            <div class="modal-footer border-info">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-oscuro">
+            <div class="modal-header border-danger">
+                <h5 class="modal-title text-danger">⚠️ Confirmar eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Deseas eliminar <strong id="modal-nombre-eliminar" class="text-danger"></strong>?</p>
+            </div>
+            <div class="modal-footer border-danger">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btn-confirmar-eliminar" class="btn btn-danger">🗑 Sí, eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

@@ -13,6 +13,7 @@
         <a href="{{ url_for('index') }}" class="btn btn-outline-info">← Volver al Inicio</a>
     </div>
 
+    <!-- Tarjetas de resumen -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card text-center modulo-card">
@@ -42,6 +43,7 @@
         </div>
     </div>
 
+    <!-- Tabla de facturas -->
     <div class="tabla-wrapper mb-5">
         <table class="table table-dark table-hover table-bordered mb-0 align-middle">
             <thead>
@@ -59,11 +61,13 @@
                 {% for factura in facturas %}
                 <tr>
                     <td class="text-center fw-bold text-info">{{ factura.id }}</td>
-                    <td>{{ factura.cliente }}</td>
+                    <td>{{ factura.cliente | title }}</td>
                     <td class="text-center">{{ factura.fecha }}</td>
                     <td class="small">{{ factura.producto }}</td>
                     <td class="text-center">{{ factura.cantidad }}</td>
-                    <td class="text-center text-success fw-semibold">${{ "%.2f"|format(factura.total) }}</td>
+                    <td class="text-center text-success fw-semibold">
+                        ${{ "%.2f"|format(factura.total) }}
+                    </td>
                     <td class="text-center">
                         {% if factura.estado == 'Pagada' %}
                             <span class="badge bg-success">✓ Pagada</span>
@@ -79,13 +83,16 @@
             <tfoot>
                 <tr class="table-active">
                     <td colspan="5" class="text-end fw-bold text-info">TOTAL GENERAL:</td>
-                    <td class="text-center fw-bold text-warning fs-5">${{ "%.2f"|format(total_general) }}</td>
+                    <td class="text-center fw-bold text-warning fs-5">
+                        ${{ "%.2f"|format(total_general) }}
+                    </td>
                     <td></td>
                 </tr>
             </tfoot>
         </table>
     </div>
 
+    <!-- Navegación entre módulos -->
     <div class="p-4 modulo-nav rounded">
         <h5 class="text-info mb-3">🔗 Otros módulos del sistema</h5>
         <div class="d-flex flex-wrap gap-2">

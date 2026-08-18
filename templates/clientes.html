@@ -10,7 +10,7 @@
             <h2 class="mb-1">👥 Módulo de Clientes</h2>
             <p class="text-secondary mb-0">Registro de clientes del emprendimiento.</p>
         </div>
-        <a href="{{ url_for('index') }}" class="btn btn-outline-info">← Volver al Inicio</a>
+        <a href="/" class="btn btn-outline-info">← Volver al Inicio</a>
     </div>
 
     <div class="row g-3 mb-4">
@@ -60,8 +60,8 @@
                 {% for cliente in clientes %}
                 <tr>
                     <td class="text-center text-info fw-bold">{{ cliente.id }}</td>
-                    <td>{{ cliente.nombre }}</td>
-                    <td class="small">{{ cliente.correo }}</td>
+                    <td>{{ cliente.nombre | title }}</td>
+                    <td class="small">{{ cliente.correo | lower }}</td>
                     <td>{{ cliente.telefono }}</td>
                     <td>{{ cliente.ciudad }}</td>
                     <td class="text-center">
@@ -80,11 +80,11 @@
     </div>
 
     <div class="mt-4 p-4 modulo-nav rounded">
-        <h5 class="text-info mb-3">🔗 Otros módulos del sistema</h5>
+        <h5 class="text-info mb-3">🔗 Otros módulos</h5>
         <div class="d-flex flex-wrap gap-2">
-            <a href="{{ url_for('productos') }}" class="btn btn-outline-info">📦 Productos</a>
-            <a href="{{ url_for('proveedores') }}" class="btn btn-outline-info">🏭 Proveedores</a>
-            <a href="{{ url_for('facturacion') }}" class="btn btn-outline-info">🧾 Facturación</a>
+            <a href="/productos" class="btn btn-outline-info">📦 Productos</a>
+            <a href="/proveedores" class="btn btn-outline-info">🏭 Proveedores</a>
+            <a href="/facturacion" class="btn btn-outline-info">🧾 Facturación</a>
         </div>
     </div>
 
