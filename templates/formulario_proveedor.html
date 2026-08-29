@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nuevo Proveedor — Narvi Collector Scale Models{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-1">🏭 {{ titulo }}</h2>
+            <p class="text-secondary mb-0">Completa el formulario para registrar un proveedor.</p>
+        </div>
+        <a href="/proveedores" class="btn btn-outline-info">← Volver a Proveedores</a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card-formulario p-4">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} mb-3">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/proveedores/nuevo" novalidate>
+
+                    {{ form.hidden_tag() }}
+
+                    <!-- Empresa y Contacto -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            {{ form.empresa.label(class="form-label fw-semibold") }}
+                            {{ form.empresa(class="form-control campo-oscuro" + (" is-invalid" if form.empresa.errors else ""), placeholder="Nombre de la empresa") }}
+                            {% if form.empresa.errors %}
+                                {% for error in form.empresa.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.contacto.label(class="form-label fw-semibold") }}
+                            {{ form.contacto(class="form-control campo-oscuro" + (" is-invalid" if form.contacto.errors else ""), placeholder="Nombre del contacto") }}
+                            {% if form.contacto.errors %}
+                                {% for error in form.contacto.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Correo y Teléfono -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            {{ form.correo.label(class="form-label fw-semibold") }}
+                            {{ form.correo(class="form-control campo-oscuro" + (" is-invalid" if form.correo.errors else ""), placeholder="correo@empresa.com") }}
+                            {% if form.correo.errors %}
+                                {% for error in form.correo.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.telefono.label(class="form-label fw-semibold") }}
+                            {{ form.telefono(class="form-control campo-oscuro" + (" is-invalid" if form.telefono.errors else ""), placeholder="+593 2 222 3344") }}
+                            {% if form.telefono.errors %}
+                                {% for error in form.telefono.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Categoría y Estado -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            {{ form.categoria.label(class="form-label fw-semibold") }}
+                            {{ form.categoria(class="form-select campo-oscuro" + (" is-invalid" if form.categoria.errors else "")) }}
+                            {% if form.categoria.errors %}
+                                {% for error in form.categoria.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.estado.label(class="form-label fw-semibold") }}
+                            {{ form.estado(class="form-select campo-oscuro" + (" is-invalid" if form.estado.errors else "")) }}
+                            {% if form.estado.errors %}
+                                {% for error in form.estado.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary fw-semibold px-4">
+                            💾 Guardar Proveedor
+                        </button>
+                        <a href="/proveedores" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

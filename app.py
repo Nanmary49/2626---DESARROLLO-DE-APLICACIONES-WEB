@@ -1,6 +1,22 @@
-from flask import Flask, render_template
+# ================================================================
+# app.py — Narvi Collector Scale Models
+# Semana 11: Flask-WTF, WTForms y validación de formularios
+# ================================================================
+
+from flask import Flask, render_template, redirect, url_for, flash
+from forms.producto_form import ProductoForm
+from forms.cliente_form import ClienteForm
+from forms.proveedor_form import ProveedorForm
+from forms.facturacion_form import FacturacionForm
 
 app = Flask(__name__)
+
+# SECRET_KEY requerida para protección CSRF de Flask-WTF
+app.config['SECRET_KEY'] = 'narvi-secret-key-2026'
+
+# ================================================================
+# DATOS DE EJEMPLO — Sin base de datos (Semana 11)
+# ================================================================
 
 productos_demo = [
     {'id': 1, 'nombre': 'Figura Goku Ultra Instinto', 'categoria': 'Figuras Coleccionables', 'precio': 85.00, 'stock': 5},
@@ -34,6 +50,9 @@ facturas_demo = [
     {'id': 'F-005', 'cliente': 'Roberto Suarez', 'fecha': '2026-07-28', 'producto': 'Figura Naruto Sage Mode', 'cantidad': 1, 'total': 95.00, 'estado': 'Pendiente'},
 ]
 
+# ================================================================
+# RUTA PRINCIPAL
+# ================================================================
 @app.route('/')
 def index():
     return render_template('index.html',
@@ -44,6 +63,9 @@ def index():
         info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
     )
 
+# ================================================================
+# RUTAS DE PRODUCTOS
+# ================================================================
 @app.route('/productos')
 def productos():
     return render_template('productos.html',
@@ -55,6 +77,34 @@ def productos():
         info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
     )
 
+@app.route('/productos/nuevo', methods=['GET', 'POST'])
+def nuevo_producto():
+    form = ProductoForm()
+    if form.validate_on_submit():
+        nuevo = {
+            'id': len(productos_demo) + 1,
+            'nombre': form.nombre.data,
+            'descripcion': form.descripcion.data,
+            'categoria': form.categoria.data,
+            'precio': form.precio.data,
+            'stock': form.stock.data
+        }
+        productos_demo.append(nuevo)
+        flash('Producto registrado correctamente.', 'success')
+        return redirect(url_for('productos'))
+    return render_template('formulario_producto.html',
+        form=form,
+        titulo='Nuevo Producto',
+        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
+        estudiante='Nancy Campos Basurto',
+        asignatura='Desarrollo de Aplicaciones Web',
+        anio='2026',
+        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+    )
+
+# ================================================================
+# RUTAS DE CLIENTES
+# ================================================================
 @app.route('/clientes')
 def clientes():
     return render_template('clientes.html',
@@ -66,6 +116,34 @@ def clientes():
         info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
     )
 
+@app.route('/clientes/nuevo', methods=['GET', 'POST'])
+def nuevo_cliente():
+    form = ClienteForm()
+    if form.validate_on_submit():
+        nuevo = {
+            'id': len(clientes_demo) + 1,
+            'nombre': form.nombre.data,
+            'correo': form.correo.data,
+            'telefono': form.telefono.data,
+            'ciudad': form.ciudad.data,
+            'tipo': form.tipo.data
+        }
+        clientes_demo.append(nuevo)
+        flash('Cliente registrado correctamente.', 'success')
+        return redirect(url_for('clientes'))
+    return render_template('formulario_cliente.html',
+        form=form,
+        titulo='Nuevo Cliente',
+        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
+        estudiante='Nancy Campos Basurto',
+        asignatura='Desarrollo de Aplicaciones Web',
+        anio='2026',
+        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+    )
+
+# ================================================================
+# RUTAS DE PROVEEDORES
+# ================================================================
 @app.route('/proveedores')
 def proveedores():
     return render_template('proveedores.html',
@@ -77,12 +155,67 @@ def proveedores():
         info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
     )
 
+@app.route('/proveedores/nuevo', methods=['GET', 'POST'])
+def nuevo_proveedor():
+    form = ProveedorForm()
+    if form.validate_on_submit():
+        nuevo = {
+            'id': len(proveedores_demo) + 1,
+            'empresa': form.empresa.data,
+            'contacto': form.contacto.data,
+            'correo': form.correo.data,
+            'telefono': form.telefono.data,
+            'categoria': form.categoria.data,
+            'estado': form.estado.data
+        }
+        proveedores_demo.append(nuevo)
+        flash('Proveedor registrado correctamente.', 'success')
+        return redirect(url_for('proveedores'))
+    return render_template('formulario_proveedor.html',
+        form=form,
+        titulo='Nuevo Proveedor',
+        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
+        estudiante='Nancy Campos Basurto',
+        asignatura='Desarrollo de Aplicaciones Web',
+        anio='2026',
+        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+    )
+
+# ================================================================
+# RUTAS DE FACTURACIÓN
+# ================================================================
 @app.route('/facturacion')
 def facturacion():
     total_general = sum(f['total'] for f in facturas_demo)
     return render_template('facturacion.html',
         facturas=facturas_demo,
         total_general=total_general,
+        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
+        estudiante='Nancy Campos Basurto',
+        asignatura='Desarrollo de Aplicaciones Web',
+        anio='2026',
+        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+    )
+
+@app.route('/facturacion/nuevo', methods=['GET', 'POST'])
+def nueva_factura():
+    form = FacturacionForm()
+    if form.validate_on_submit():
+        nueva = {
+            'id': 'F-00' + str(len(facturas_demo) + 1),
+            'cliente': form.cliente.data,
+            'fecha': '2026-08-18',
+            'producto': form.producto.data,
+            'cantidad': form.cantidad.data,
+            'total': form.total.data,
+            'estado': form.estado.data
+        }
+        facturas_demo.append(nueva)
+        flash('Factura registrada correctamente.', 'success')
+        return redirect(url_for('facturacion'))
+    return render_template('formulario_facturacion.html',
+        form=form,
+        titulo='Nueva Factura',
         nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
         estudiante='Nancy Campos Basurto',
         asignatura='Desarrollo de Aplicaciones Web',

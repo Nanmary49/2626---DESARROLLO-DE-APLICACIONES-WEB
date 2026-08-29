@@ -10,8 +10,19 @@
             <h2 class="mb-1">📦 Módulo de Productos</h2>
             <p class="text-secondary mb-0">Catálogo de productos disponibles.</p>
         </div>
-        <a href="/" class="btn btn-outline-info">← Volver al Inicio</a>
+        <div class="d-flex gap-2">
+            <a href="/productos/nuevo" class="btn btn-success">➕ Nuevo Producto</a>
+            <a href="/" class="btn btn-outline-info">← Inicio</a>
+        </div>
     </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mb-3">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     <div class="row g-3 mb-4">
         <div class="col-md-4">
@@ -77,30 +88,7 @@
         </table>
     </div>
 
-    <h4 class="mt-4 mb-3 text-info">Vista en Tarjetas</h4>
-    <div class="row g-3">
-        {% for producto in productos %}
-        <div class="col-md-4 col-sm-6">
-            <div class="card modulo-card h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-info">{{ producto.nombre }}</h5>
-                    <p class="card-text small text-secondary">{{ producto.categoria | upper }}</p>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <span class="text-success fw-bold fs-5">${{ "%.2f"|format(producto.precio) }}</span>
-                        {% if producto.stock > 0 %}
-                            <span class="badge bg-success">Disponible</span>
-                        {% else %}
-                            <span class="badge bg-danger">Agotado</span>
-                        {% endif %}
-                    </div>
-                    <small class="text-secondary">Stock: {{ producto.stock }} unidades</small>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-    <div class="mt-5 p-4 modulo-nav rounded">
+    <div class="mt-4 p-4 modulo-nav rounded">
         <h5 class="text-info mb-3">🔗 Otros módulos</h5>
         <div class="d-flex flex-wrap gap-2">
             <a href="/clientes" class="btn btn-outline-info">👥 Clientes</a>

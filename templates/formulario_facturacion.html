@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nueva Factura — Narvi Collector Scale Models{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-1">🧾 {{ titulo }}</h2>
+            <p class="text-secondary mb-0">Completa el formulario para registrar una factura.</p>
+        </div>
+        <a href="/facturacion" class="btn btn-outline-info">← Volver a Facturación</a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card-formulario p-4">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} mb-3">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/facturacion/nuevo" novalidate>
+
+                    {{ form.hidden_tag() }}
+
+                    <!-- Cliente y Producto -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            {{ form.cliente.label(class="form-label fw-semibold") }}
+                            {{ form.cliente(class="form-control campo-oscuro" + (" is-invalid" if form.cliente.errors else ""), placeholder="Nombre del cliente") }}
+                            {% if form.cliente.errors %}
+                                {% for error in form.cliente.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.producto.label(class="form-label fw-semibold") }}
+                            {{ form.producto(class="form-control campo-oscuro" + (" is-invalid" if form.producto.errors else ""), placeholder="Nombre del producto") }}
+                            {% if form.producto.errors %}
+                                {% for error in form.producto.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Cantidad y Total -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            {{ form.cantidad.label(class="form-label fw-semibold") }}
+                            {{ form.cantidad(class="form-control campo-oscuro" + (" is-invalid" if form.cantidad.errors else ""), placeholder="1") }}
+                            {% if form.cantidad.errors %}
+                                {% for error in form.cantidad.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.total.label(class="form-label fw-semibold") }}
+                            {{ form.total(class="form-control campo-oscuro" + (" is-invalid" if form.total.errors else ""), placeholder="0.00") }}
+                            {% if form.total.errors %}
+                                {% for error in form.total.errors %}
+                                    <div class="invalid-feedback">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="mb-4">
+                        {{ form.estado.label(class="form-label fw-semibold") }}
+                        {{ form.estado(class="form-select campo-oscuro" + (" is-invalid" if form.estado.errors else "")) }}
+                        {% if form.estado.errors %}
+                            {% for error in form.estado.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary fw-semibold px-4">
+                            💾 Guardar Factura
+                        </button>
+                        <a href="/facturacion" class="btn btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
