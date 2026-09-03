@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h2 class="mb-1">📦 Módulo de Productos</h2>
-            <p class="text-secondary mb-0">Catálogo de productos disponibles.</p>
+            <p class="text-secondary mb-0">Catálogo de productos almacenados en la base de datos.</p>
         </div>
         <div class="d-flex gap-2">
             <a href="/productos/nuevo" class="btn btn-success">➕ Nuevo Producto</a>
@@ -16,6 +16,7 @@
         </div>
     </div>
 
+    <!-- Mensajes flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -24,6 +25,7 @@
         {% endif %}
     {% endwith %}
 
+    <!-- Tarjetas de resumen -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card text-center modulo-card">
@@ -37,7 +39,13 @@
             <div class="card text-center modulo-card">
                 <div class="card-body py-3">
                     <h3 class="text-success mb-0">
-                        {{ productos | selectattr('stock', 'gt', 0) | list | length }}
+                        {% set disponibles = [] %}
+                        {% for p in productos %}
+                            {% if p['stock'] > 0 %}
+                                {% set _ = disponibles.append(p) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ disponibles | length }}
                     </h3>
                     <small class="text-secondary">Disponibles</small>
                 </div>
@@ -47,7 +55,13 @@
             <div class="card text-center modulo-card">
                 <div class="card-body py-3">
                     <h3 class="text-danger mb-0">
-                        {{ productos | selectattr('stock', 'equalto', 0) | list | length }}
+                        {% set agotados = [] %}
+                        {% for p in productos %}
+                            {% if p['stock'] == 0 %}
+                                {% set _ = agotados.append(p) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ agotados | length }}
                     </h3>
                     <small class="text-secondary">Agotados</small>
                 </div>
@@ -55,12 +69,14 @@
         </div>
     </div>
 
+    <!-- Tabla de productos desde SQLite -->
     <div class="tabla-wrapper mb-4">
         <table class="table table-dark table-hover table-bordered mb-0 align-middle">
             <thead>
                 <tr class="text-info text-center">
                     <th>#</th>
                     <th>Nombre</th>
+                    <th>Descripción</th>
                     <th>Categoría</th>
                     <th>Precio</th>
                     <th>Stock</th>
@@ -68,26 +84,39 @@
                 </tr>
             </thead>
             <tbody>
-                {% for producto in productos %}
-                <tr>
-                    <td class="text-center text-info fw-bold">{{ producto.id }}</td>
-                    <td>{{ producto.nombre | title }}</td>
-                    <td><span class="badge bg-secondary">{{ producto.categoria }}</span></td>
-                    <td class="text-center text-success fw-semibold">${{ "%.2f"|format(producto.precio) }}</td>
-                    <td class="text-center">{{ producto.stock }}</td>
-                    <td class="text-center">
-                        {% if producto.stock > 0 %}
-                            <span class="badge bg-success">Disponible</span>
-                        {% else %}
-                            <span class="badge bg-danger">Agotado</span>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
+                {% if productos %}
+                    {% for producto in productos %}
+                    <tr>
+                        <td class="text-center text-info fw-bold">{{ producto['id'] }}</td>
+                        <td>{{ producto['nombre'] | title }}</td>
+                        <td class="small text-secondary">{{ producto['descripcion'] }}</td>
+                        <td><span class="badge bg-secondary">{{ producto['categoria'] }}</span></td>
+                        <td class="text-center text-success fw-semibold">
+                            ${{ "%.2f"|format(producto['precio']) }}
+                        </td>
+                        <td class="text-center">{{ producto['stock'] }}</td>
+                        <td class="text-center">
+                            {% if producto['stock'] > 0 %}
+                                <span class="badge bg-success">✓ Disponible</span>
+                            {% else %}
+                                <span class="badge bg-danger">✗ Agotado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-secondary fst-italic py-4">
+                            No hay productos registrados. 
+                            <a href="/productos/nuevo" class="text-info">Registra el primero aquí.</a>
+                        </td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
 
+    <!-- Navegación entre módulos -->
     <div class="mt-4 p-4 modulo-nav rounded">
         <h5 class="text-info mb-3">🔗 Otros módulos</h5>
         <div class="d-flex flex-wrap gap-2">

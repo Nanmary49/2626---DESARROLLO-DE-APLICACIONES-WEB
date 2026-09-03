@@ -1,8 +1,10 @@
 # ================================================================
 # app.py — Narvi Collector Scale Models
-# Semana 11: Flask-WTF, WTForms y validación de formularios
+# Semana 12: Persistencia con SQLite
 # ================================================================
 
+import sqlite3
+import os
 from flask import Flask, render_template, redirect, url_for, flash
 from forms.producto_form import ProductoForm
 from forms.cliente_form import ClienteForm
@@ -10,23 +12,93 @@ from forms.proveedor_form import ProveedorForm
 from forms.facturacion_form import FacturacionForm
 
 app = Flask(__name__)
-
-# SECRET_KEY requerida para protección CSRF de Flask-WTF
 app.config['SECRET_KEY'] = 'narvi-secret-key-2026'
 
-# ================================================================
-# DATOS DE EJEMPLO — Sin base de datos (Semana 11)
-# ================================================================
+# Ruta de la base de datos SQLite
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'data', 'narvi.db')
 
-productos_demo = [
-    {'id': 1, 'nombre': 'Figura Goku Ultra Instinto', 'categoria': 'Figuras Coleccionables', 'precio': 85.00, 'stock': 5},
-    {'id': 2, 'nombre': 'Tanque Sherman WWII 1:35', 'categoria': 'Modelos a Escala', 'precio': 120.00, 'stock': 3},
-    {'id': 3, 'nombre': 'Impresion 3D Dragon Personalizado', 'categoria': 'Impresiones 3D', 'precio': 60.00, 'stock': 0},
-    {'id': 4, 'nombre': 'Figura Naruto Sage Mode', 'categoria': 'Figuras Coleccionables', 'precio': 95.00, 'stock': 2},
-    {'id': 5, 'nombre': 'Busto Iron Man Pintado', 'categoria': 'Pintura Profesional', 'precio': 150.00, 'stock': 0},
-    {'id': 6, 'nombre': 'Restauracion Figura Vintage', 'categoria': 'Restauracion', 'precio': 45.00, 'stock': 10},
-]
 
+# ================================================================
+# FUNCIÓN: Conectar a la base de datos SQLite
+# ================================================================
+def get_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+# ================================================================
+# FUNCIÓN: Inicializar la base de datos y crear tablas
+# Se ejecuta una vez al iniciar la aplicación.
+# CREATE TABLE IF NOT EXISTS evita errores al reiniciar.
+# ================================================================
+def init_db():
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Tabla de productos
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS productos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            descripcion TEXT NOT NULL,
+            categoria TEXT NOT NULL,
+            precio REAL NOT NULL,
+            stock INTEGER NOT NULL
+        )
+    ''')
+
+    # Tabla de clientes
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS clientes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            correo TEXT NOT NULL,
+            telefono TEXT NOT NULL,
+            ciudad TEXT NOT NULL,
+            tipo TEXT NOT NULL
+        )
+    ''')
+
+    # Tabla de proveedores
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS proveedores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            empresa TEXT NOT NULL,
+            contacto TEXT NOT NULL,
+            correo TEXT NOT NULL,
+            telefono TEXT NOT NULL,
+            categoria TEXT NOT NULL,
+            estado TEXT NOT NULL
+        )
+    ''')
+
+    # Tabla de facturas
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS facturas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cliente TEXT NOT NULL,
+            fecha TEXT NOT NULL,
+            producto TEXT NOT NULL,
+            cantidad INTEGER NOT NULL,
+            total REAL NOT NULL,
+            estado TEXT NOT NULL
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+
+# Inicializar base de datos al arrancar la app
+init_db()
+
+
+# ================================================================
+# DATOS DEMO para clientes, proveedores y facturas
+# (mientras no tienen persistencia completa)
+# ================================================================
 clientes_demo = [
     {'id': 1, 'nombre': 'Carlos Mendoza', 'correo': 'carlos@email.com', 'telefono': '+593 98 111 2233', 'ciudad': 'Quito', 'tipo': 'Frecuente'},
     {'id': 2, 'nombre': 'Ana Lucia Torres', 'correo': 'ana@email.com', 'telefono': '+593 99 444 5566', 'ciudad': 'Guayaquil', 'tipo': 'Nuevo'},
@@ -45,62 +117,80 @@ proveedores_demo = [
 facturas_demo = [
     {'id': 'F-001', 'cliente': 'Carlos Mendoza', 'fecha': '2026-07-15', 'producto': 'Figura Goku Ultra Instinto', 'cantidad': 1, 'total': 85.00, 'estado': 'Pagada'},
     {'id': 'F-002', 'cliente': 'Ana Lucia Torres', 'fecha': '2026-07-18', 'producto': 'Tanque Sherman WWII 1:35', 'cantidad': 1, 'total': 120.00, 'estado': 'Pagada'},
-    {'id': 'F-003', 'cliente': 'Diego Ramirez', 'fecha': '2026-07-22', 'producto': 'Impresion 3D Dragon Personalizado', 'cantidad': 2, 'total': 120.00, 'estado': 'Pendiente'},
+    {'id': 'F-003', 'cliente': 'Diego Ramirez', 'fecha': '2026-07-22', 'producto': 'Impresion 3D Dragon', 'cantidad': 2, 'total': 120.00, 'estado': 'Pendiente'},
     {'id': 'F-004', 'cliente': 'Maria Fernanda Paz', 'fecha': '2026-07-25', 'producto': 'Busto Iron Man Pintado', 'cantidad': 1, 'total': 150.00, 'estado': 'Pagada'},
     {'id': 'F-005', 'cliente': 'Roberto Suarez', 'fecha': '2026-07-28', 'producto': 'Figura Naruto Sage Mode', 'cantidad': 1, 'total': 95.00, 'estado': 'Pendiente'},
 ]
+
+
+# ================================================================
+# CONTEXTO GLOBAL para todas las plantillas
+# ================================================================
+def contexto():
+    return {
+        'nombre_sistema': 'Sistema de Gestion de Figuras de Coleccion',
+        'estudiante': 'Nancy Campos Basurto',
+        'asignatura': 'Desarrollo de Aplicaciones Web',
+        'anio': '2026',
+        'info_sistema': {
+            'descripcion': 'Sistema web para gestion de figuras coleccionables',
+            'version': '3.0'
+        }
+    }
+
 
 # ================================================================
 # RUTA PRINCIPAL
 # ================================================================
 @app.route('/')
 def index():
-    return render_template('index.html',
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
-    )
+    return render_template('index.html', **contexto())
+
 
 # ================================================================
-# RUTAS DE PRODUCTOS
+# RUTAS DE PRODUCTOS — Con SQLite
 # ================================================================
 @app.route('/productos')
 def productos():
+    conn = get_db()
+    cursor = conn.cursor()
+    # SELECT: Recuperar todos los productos de la base de datos
+    cursor.execute('SELECT * FROM productos ORDER BY id DESC')
+    productos_db = cursor.fetchall()
+    conn.close()
     return render_template('productos.html',
-        productos=productos_demo,
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+        productos=productos_db,
+        **contexto()
     )
+
 
 @app.route('/productos/nuevo', methods=['GET', 'POST'])
 def nuevo_producto():
     form = ProductoForm()
     if form.validate_on_submit():
-        nuevo = {
-            'id': len(productos_demo) + 1,
-            'nombre': form.nombre.data,
-            'descripcion': form.descripcion.data,
-            'categoria': form.categoria.data,
-            'precio': form.precio.data,
-            'stock': form.stock.data
-        }
-        productos_demo.append(nuevo)
+        conn = get_db()
+        cursor = conn.cursor()
+        # INSERT: Guardar producto en SQLite con parámetros ?
+        cursor.execute('''
+            INSERT INTO productos (nombre, descripcion, categoria, precio, stock)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (
+            form.nombre.data,
+            form.descripcion.data,
+            form.categoria.data,
+            form.precio.data,
+            form.stock.data
+        ))
+        conn.commit()
+        conn.close()
         flash('Producto registrado correctamente.', 'success')
         return redirect(url_for('productos'))
     return render_template('formulario_producto.html',
         form=form,
         titulo='Nuevo Producto',
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+        **contexto()
     )
+
 
 # ================================================================
 # RUTAS DE CLIENTES
@@ -109,12 +199,9 @@ def nuevo_producto():
 def clientes():
     return render_template('clientes.html',
         clientes=clientes_demo,
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+        **contexto()
     )
+
 
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
 def nuevo_cliente():
@@ -134,12 +221,9 @@ def nuevo_cliente():
     return render_template('formulario_cliente.html',
         form=form,
         titulo='Nuevo Cliente',
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+        **contexto()
     )
+
 
 # ================================================================
 # RUTAS DE PROVEEDORES
@@ -148,12 +232,9 @@ def nuevo_cliente():
 def proveedores():
     return render_template('proveedores.html',
         proveedores=proveedores_demo,
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+        **contexto()
     )
+
 
 @app.route('/proveedores/nuevo', methods=['GET', 'POST'])
 def nuevo_proveedor():
@@ -174,12 +255,9 @@ def nuevo_proveedor():
     return render_template('formulario_proveedor.html',
         form=form,
         titulo='Nuevo Proveedor',
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+        **contexto()
     )
+
 
 # ================================================================
 # RUTAS DE FACTURACIÓN
@@ -190,12 +268,9 @@ def facturacion():
     return render_template('facturacion.html',
         facturas=facturas_demo,
         total_general=total_general,
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+        **contexto()
     )
+
 
 @app.route('/facturacion/nuevo', methods=['GET', 'POST'])
 def nueva_factura():
@@ -216,12 +291,9 @@ def nueva_factura():
     return render_template('formulario_facturacion.html',
         form=form,
         titulo='Nueva Factura',
-        nombre_sistema='Sistema de Gestion de Figuras de Coleccion',
-        estudiante='Nancy Campos Basurto',
-        asignatura='Desarrollo de Aplicaciones Web',
-        anio='2026',
-        info_sistema={'descripcion': 'Sistema web para gestion de figuras coleccionables', 'version': '2.0'}
+        **contexto()
     )
+
 
 if __name__ == '__main__':
     app.run(debug=True)
