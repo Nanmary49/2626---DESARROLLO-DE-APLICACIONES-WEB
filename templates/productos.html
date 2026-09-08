@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h2 class="mb-1">📦 Módulo de Productos</h2>
-            <p class="text-secondary mb-0">Catálogo de productos almacenados en la base de datos.</p>
+            <p class="text-secondary mb-0">Gestión completa de productos — MySQL.</p>
         </div>
         <div class="d-flex gap-2">
             <a href="/productos/nuevo" class="btn btn-success">➕ Nuevo Producto</a>
@@ -39,13 +39,13 @@
             <div class="card text-center modulo-card">
                 <div class="card-body py-3">
                     <h3 class="text-success mb-0">
-                        {% set disponibles = [] %}
+                        {% set count = 0 %}
                         {% for p in productos %}
                             {% if p['stock'] > 0 %}
-                                {% set _ = disponibles.append(p) %}
+                                {% set count = count + 1 %}
                             {% endif %}
                         {% endfor %}
-                        {{ disponibles | length }}
+                        {{ count }}
                     </h3>
                     <small class="text-secondary">Disponibles</small>
                 </div>
@@ -55,13 +55,13 @@
             <div class="card text-center modulo-card">
                 <div class="card-body py-3">
                     <h3 class="text-danger mb-0">
-                        {% set agotados = [] %}
+                        {% set count2 = 0 %}
                         {% for p in productos %}
                             {% if p['stock'] == 0 %}
-                                {% set _ = agotados.append(p) %}
+                                {% set count2 = count2 + 1 %}
                             {% endif %}
                         {% endfor %}
-                        {{ agotados | length }}
+                        {{ count2 }}
                     </h3>
                     <small class="text-secondary">Agotados</small>
                 </div>
@@ -69,18 +69,18 @@
         </div>
     </div>
 
-    <!-- Tabla de productos desde SQLite -->
+    <!-- Tabla con SELECT, UPDATE, DELETE -->
     <div class="tabla-wrapper mb-4">
         <table class="table table-dark table-hover table-bordered mb-0 align-middle">
             <thead>
                 <tr class="text-info text-center">
                     <th>#</th>
                     <th>Nombre</th>
-                    <th>Descripción</th>
                     <th>Categoría</th>
                     <th>Precio</th>
                     <th>Stock</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -89,7 +89,6 @@
                     <tr>
                         <td class="text-center text-info fw-bold">{{ producto['id'] }}</td>
                         <td>{{ producto['nombre'] | title }}</td>
-                        <td class="small text-secondary">{{ producto['descripcion'] }}</td>
                         <td><span class="badge bg-secondary">{{ producto['categoria'] }}</span></td>
                         <td class="text-center text-success fw-semibold">
                             ${{ "%.2f"|format(producto['precio']) }}
@@ -102,12 +101,29 @@
                                 <span class="badge bg-danger">✗ Agotado</span>
                             {% endif %}
                         </td>
+                        <td class="text-center">
+                            <!-- Botón Editar — UPDATE -->
+                            <a href="/productos/editar/{{ producto['id'] }}"
+                               class="btn btn-warning btn-sm me-1">
+                                ✏️ Editar
+                            </a>
+                            <!-- Formulario Eliminar — DELETE -->
+                            <form action="/productos/eliminar/{{ producto['id'] }}"
+                                  method="POST"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('¿Estás segura de eliminar este producto?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    🗑 Eliminar
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
                         <td colspan="7" class="text-center text-secondary fst-italic py-4">
-                            No hay productos registrados. 
+                            No hay productos registrados.
                             <a href="/productos/nuevo" class="text-info">Registra el primero aquí.</a>
                         </td>
                     </tr>
