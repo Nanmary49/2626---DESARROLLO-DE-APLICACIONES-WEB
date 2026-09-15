@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block titulo %}Iniciar Sesión — Narvi Collector Scale Models{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-5 col-md-7">
+
+            <div class="card-formulario p-4">
+                <div class="text-center mb-4">
+                    <h2 class="text-info fw-bold">🔐 Iniciar Sesión</h2>
+                    <p class="text-secondary">Accede al sistema de gestión</p>
+                </div>
+
+                <!-- Mensajes flash -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/login" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <!-- Campo usuario -->
+                    <div class="mb-3">
+                        {{ form.usuario.label(class="form-label fw-semibold") }}
+                        {{ form.usuario(class="form-control campo-oscuro" + (" is-invalid" if form.usuario.errors else ""), placeholder="Tu nombre de usuario") }}
+                        {% if form.usuario.errors %}
+                            {% for error in form.usuario.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <!-- Campo contraseña -->
+                    <div class="mb-4">
+                        {{ form.password.label(class="form-label fw-semibold") }}
+                        {{ form.password(class="form-control campo-oscuro" + (" is-invalid" if form.password.errors else ""), placeholder="Tu contraseña") }}
+                        {% if form.password.errors %}
+                            {% for error in form.password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary fw-semibold py-2">
+                            🔐 Iniciar Sesión
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-secondary small">
+                            ¿No tienes cuenta?
+                            <a href="/registro" class="text-info">Regístrate aquí</a>
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block titulo %}Dashboard — Narvi Collector Scale Models{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- Bienvenida al usuario autenticado -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="mb-1">🏠 Dashboard</h2>
+            <p class="text-secondary mb-0">
+                Bienvenido, <strong class="text-info">{{ current_user.usuario }}</strong>.
+                Gestiona el sistema desde aquí.
+            </p>
+        </div>
+        <a href="/logout" class="btn btn-outline-danger">
+            🚪 Cerrar Sesión
+        </a>
+    </div>
+
+    <!-- Tarjetas de resumen del sistema -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center modulo-card h-100">
+                <div class="card-body py-4">
+                    <h2 class="text-info mb-1">{{ total_productos }}</h2>
+                    <p class="text-secondary mb-3">Productos</p>
+                    <a href="/productos" class="btn btn-outline-info btn-sm">Ver módulo</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center modulo-card h-100">
+                <div class="card-body py-4">
+                    <h2 class="text-success mb-1">{{ total_clientes }}</h2>
+                    <p class="text-secondary mb-3">Clientes</p>
+                    <a href="/clientes" class="btn btn-outline-success btn-sm">Ver módulo</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center modulo-card h-100">
+                <div class="card-body py-4">
+                    <h2 class="text-warning mb-1">{{ total_proveedores }}</h2>
+                    <p class="text-secondary mb-3">Proveedores</p>
+                    <a href="/proveedores" class="btn btn-outline-warning btn-sm">Ver módulo</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6">
+            <div class="card text-center modulo-card h-100">
+                <div class="card-body py-4">
+                    <h2 class="text-danger mb-1">{{ total_facturas }}</h2>
+                    <p class="text-secondary mb-3">Facturas</p>
+                    <a href="/facturacion" class="btn btn-outline-danger btn-sm">Ver módulo</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="p-4 modulo-nav rounded mb-4">
+        <h5 class="text-info mb-3">⚡ Accesos rápidos</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="/productos/nuevo"   class="btn btn-success">➕ Nuevo Producto</a>
+            <a href="/clientes/nuevo"    class="btn btn-success">➕ Nuevo Cliente</a>
+            <a href="/proveedores/nuevo" class="btn btn-success">➕ Nuevo Proveedor</a>
+            <a href="/facturacion/nuevo" class="btn btn-success">➕ Nueva Factura</a>
+        </div>
+    </div>
+
+    <!-- Información del usuario -->
+    <div class="card modulo-card p-3">
+        <p class="mb-1">
+            👤 <strong class="text-info">Usuario activo:</strong>
+            {{ current_user.usuario }}
+        </p>
+        <p class="mb-0">
+            🔒 <strong class="text-info">Estado:</strong>
+            <span class="badge bg-success">Autenticado</span>
+        </p>
+    </div>
+
+</div>
+{% endblock %}
