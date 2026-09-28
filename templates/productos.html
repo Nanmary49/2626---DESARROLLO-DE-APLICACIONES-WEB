@@ -8,15 +8,14 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h2 class="mb-1">📦 Módulo de Productos</h2>
-            <p class="text-secondary mb-0">Gestión completa de productos — MySQL.</p>
+            <p class="text-secondary mb-0">Gestión completa de productos — PostgreSQL.</p>
         </div>
         <div class="d-flex gap-2">
             <a href="/productos/nuevo" class="btn btn-success">➕ Nuevo Producto</a>
-            <a href="/" class="btn btn-outline-info">← Inicio</a>
+            <a href="/dashboard" class="btn btn-outline-info">← Dashboard</a>
         </div>
     </div>
 
-    <!-- Mensajes flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -25,7 +24,7 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Tarjetas de resumen -->
+    <!-- Tarjetas resumen -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card text-center modulo-card">
@@ -41,9 +40,7 @@
                     <h3 class="text-success mb-0">
                         {% set count = 0 %}
                         {% for p in productos %}
-                            {% if p['stock'] > 0 %}
-                                {% set count = count + 1 %}
-                            {% endif %}
+                            {% if p[5] > 0 %}{% set count = count + 1 %}{% endif %}
                         {% endfor %}
                         {{ count }}
                     </h3>
@@ -57,9 +54,7 @@
                     <h3 class="text-danger mb-0">
                         {% set count2 = 0 %}
                         {% for p in productos %}
-                            {% if p['stock'] == 0 %}
-                                {% set count2 = count2 + 1 %}
-                            {% endif %}
+                            {% if p[5] == 0 %}{% set count2 = count2 + 1 %}{% endif %}
                         {% endfor %}
                         {{ count2 }}
                     </h3>
@@ -69,13 +64,14 @@
         </div>
     </div>
 
-    <!-- Tabla con SELECT, UPDATE, DELETE -->
+    <!-- Tabla productos -->
     <div class="tabla-wrapper mb-4">
         <table class="table table-dark table-hover table-bordered mb-0 align-middle">
             <thead>
                 <tr class="text-info text-center">
                     <th>#</th>
                     <th>Nombre</th>
+                    <th>Descripción</th>
                     <th>Categoría</th>
                     <th>Precio</th>
                     <th>Stock</th>
@@ -85,46 +81,37 @@
             </thead>
             <tbody>
                 {% if productos %}
-                    {% for producto in productos %}
+                    {% for p in productos %}
                     <tr>
-                        <td class="text-center text-info fw-bold">{{ producto['id'] }}</td>
-                        <td>{{ producto['nombre'] | title }}</td>
-                        <td><span class="badge bg-secondary">{{ producto['categoria'] }}</span></td>
-                        <td class="text-center text-success fw-semibold">
-                            ${{ "%.2f"|format(producto['precio']) }}
-                        </td>
-                        <td class="text-center">{{ producto['stock'] }}</td>
+                        <td class="text-center text-info fw-bold">{{ p[0] }}</td>
+                        <td>{{ p[1] | title }}</td>
+                        <td class="small text-secondary">{{ p[2] }}</td>
+                        <td><span class="badge bg-secondary">{{ p[3] }}</span></td>
+                        <td class="text-center text-success fw-semibold">${{ "%.2f"|format(p[4]) }}</td>
+                        <td class="text-center">{{ p[5] }}</td>
                         <td class="text-center">
-                            {% if producto['stock'] > 0 %}
+                            {% if p[5] > 0 %}
                                 <span class="badge bg-success">✓ Disponible</span>
                             {% else %}
                                 <span class="badge bg-danger">✗ Agotado</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <!-- Botón Editar — UPDATE -->
-                            <a href="/productos/editar/{{ producto['id'] }}"
-                               class="btn btn-warning btn-sm me-1">
-                                ✏️ Editar
-                            </a>
-                            <!-- Formulario Eliminar — DELETE -->
-                            <form action="/productos/eliminar/{{ producto['id'] }}"
-                                  method="POST"
-                                  style="display:inline;"
-                                  onsubmit="return confirm('¿Estás segura de eliminar este producto?');">
+                            <a href="/productos/editar/{{ p[0] }}"
+                               class="btn btn-warning btn-sm me-1">✏️ Editar</a>
+                            <form action="/productos/eliminar/{{ p[0] }}"
+                                  method="POST" style="display:inline;"
+                                  onsubmit="return confirm('¿Eliminar este producto?');">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    🗑 Eliminar
-                                </button>
+                                <button type="submit" class="btn btn-danger btn-sm">🗑 Eliminar</button>
                             </form>
                         </td>
                     </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="7" class="text-center text-secondary fst-italic py-4">
-                            No hay productos registrados.
-                            <a href="/productos/nuevo" class="text-info">Registra el primero aquí.</a>
+                        <td colspan="8" class="text-center text-secondary fst-italic py-4">
+                            No hay productos. <a href="/productos/nuevo" class="text-info">Registra el primero.</a>
                         </td>
                     </tr>
                 {% endif %}
@@ -132,7 +119,6 @@
         </table>
     </div>
 
-    <!-- Navegación entre módulos -->
     <div class="mt-4 p-4 modulo-nav rounded">
         <h5 class="text-info mb-3">🔗 Otros módulos</h5>
         <div class="d-flex flex-wrap gap-2">
