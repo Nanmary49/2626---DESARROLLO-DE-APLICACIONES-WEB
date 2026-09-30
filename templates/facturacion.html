@@ -1,39 +1,79 @@
 {% extends "base.html" %}
-
 {% block titulo %}Facturación — Narvi Collector Scale Models{% endblock %}
-
 {% block content %}
 <div class="container">
-
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h2 class="mb-1">🧾 Módulo de Facturación</h2>
             <p class="text-secondary mb-0">Gestión de facturas — PostgreSQL.</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="/facturacion/nuevo" class="btn btn-success">➕ Nueva Factura</a>
-            <a href="/dashboard" class="btn btn-outline-info">← Dashboard</a>
+            <a href="{{ url_for('nueva_factura') }}" class="btn btn-success">➕ Nueva Factura</a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-info">← Dashboard</a>
         </div>
     </div>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} mb-3">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <!-- Tarjetas resumen -->
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="alert alert-{{ category }} mb-3" role="alert">{{ message }}</div>
+    {% endfor %}
     <div class="row g-3 mb-4">
         <div class="col-md-4">
-            <div class="card text-center modulo-card">
-                <div class="card-body py-3">
-                    <h3 class="text-info mb-0">{{ facturas | length }}</h3>
-                    <small class="text-secondary">Total facturas</small>
-                </div>
-            </div>
+            <div class="card text-center modulo-card"><div class="card-body py-3">
+                <h3 class="text-info mb-0">{{ facturas | length }}</h3>
+                <small class="text-secondary">Total facturas</small>
+            </div></div>
         </div>
         <div class="col-md-4">
-            <div class="card text-center modulo-card">
-                <div class="card-body
+            <div class="card text-center modulo-card"><div class="card-body py-3">
+                <h3 class="text-success mb-0">${{ '%.2f' | format(total_general) }}</h3>
+                <small class="text-secondary">Total registrado (todos los estados)</small>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center modulo-card"><div class="card-body py-3">
+                <h3 class="text-warning mb-0">{{ facturas | selectattr('6', 'equalto', 'Pendiente') | list | length }}</h3>
+                <small class="text-secondary">Facturas pendientes</small>
+            </div></div>
+        </div>
+    </div>
+    <div class="tabla-wrapper table-responsive mb-4">
+        <table class="table table-dark table-hover table-bordered mb-0 align-middle">
+            <thead><tr class="text-info text-center">
+                <th scope="col">#</th><th scope="col">Cliente</th><th scope="col">Fecha</th>
+                <th scope="col">Producto</th><th scope="col">Cantidad</th><th scope="col">Total</th>
+                <th scope="col">Estado</th><th scope="col">Acciones</th>
+            </tr></thead>
+            <tbody>
+            {% for f in facturas %}
+                <tr>
+                    <td class="text-center text-info fw-bold">{{ f[0] }}</td>
+                    <td>{{ f[1] }}</td><td>{{ f[2] }}</td><td>{{ f[3] }}</td>
+                    <td class="text-center">{{ f[4] }}</td>
+                    <td class="text-end">${{ '%.2f' | format(f[5]) }}</td>
+                    <td class="text-center">
+                        <span class="badge {{ 'bg-success' if f[6] == 'Pagada' else ('bg-warning text-dark' if f[6] == 'Pendiente' else 'bg-secondary') }}">{{ f[6] }}</span>
+                    </td>
+                    <td class="text-center">
+                        <form action="{{ url_for('eliminar_factura', id=f[0]) }}" method="POST" onsubmit="return confirm('¿Eliminar esta factura?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm">🗑 Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="8" class="text-center text-secondary py-4">
+                    No hay facturas registradas. <a href="{{ url_for('nueva_factura') }}" class="text-info">Registra la primera.</a>
+                </td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-4 p-4 modulo-nav rounded">
+        <h5 class="text-info mb-3">🔗 Otros módulos</h5>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('productos') }}" class="btn btn-outline-info">📦 Productos</a>
+            <a href="{{ url_for('clientes') }}" class="btn btn-outline-info">👥 Clientes</a>
+            <a href="{{ url_for('proveedores') }}" class="btn btn-outline-info">🏭 Proveedores</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
