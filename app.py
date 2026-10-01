@@ -5,6 +5,7 @@
 
 import os
 from contextlib import contextmanager
+import facturas_service
 from psycopg2.errors import ForeignKeyViolation, UniqueViolation
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_wtf.csrf import CSRFProtect
@@ -108,6 +109,10 @@ def init_db():
 
     # Migración aditiva: preserva los registros históricos sin inventar relaciones.
     cursor.execute("ALTER TABLE facturas ADD COLUMN IF NOT EXISTS id_producto INTEGER REFERENCES productos(id)")
+    cursor.execute("ALTER TABLE facturas ADD COLUMN IF NOT EXISTS precio_unitario NUMERIC(10,2)")
+    cursor.execute("ALTER TABLE facturas ADD COLUMN IF NOT EXISTS subtotal NUMERIC(10,2)")
+    cursor.execute("ALTER TABLE facturas ADD COLUMN IF NOT EXISTS iva NUMERIC(10,2)")
+    cursor.execute("ALTER TABLE facturas ADD COLUMN IF NOT EXISTS stock_aplicado BOOLEAN NOT NULL DEFAULT FALSE")
     conn.commit()
     cursor.close()
     conn.close()
@@ -232,7 +237,7 @@ MODULOS = {
     'productos': (ProductoForm, 'Producto', ['nombre', 'descripcion', 'categoria', 'precio', 'stock', 'id_proveedor']),
     'clientes': (ClienteForm, 'Cliente', ['nombre', 'correo', 'telefono', 'ciudad', 'tipo']),
     'proveedores': (ProveedorForm, 'Proveedor', ['empresa', 'contacto', 'correo', 'telefono', 'categoria', 'estado']),
-    'facturas': (FacturacionForm, 'Factura', ['id_cliente', 'id_producto', 'cantidad', 'total', 'estado']),
+    'facturas': (FacturacionForm, 'Factura', ['id_cliente', 'id_producto', 'cantidad', 'estado']),
 }
 
 @contextmanager
@@ -257,8 +262,10 @@ def opciones(form, tabla, cursor):
     elif tabla == 'facturas':
         cursor.execute('SELECT id, nombre FROM clientes ORDER BY nombre, id')
         form.id_cliente.choices = [(0, '-- Selecciona el cliente --')] + [(x[0], f'{x[1]} (#{x[0]})') for x in cursor.fetchall()]
-        cursor.execute('SELECT id, nombre FROM productos ORDER BY nombre, id')
-        form.id_producto.choices = [(0, '-- Selecciona el producto --')] + [(x[0], f'{x[1]} (#{x[0]})') for x in cursor.fetchall()]
+        cursor.execute('SELECT id, nombre, precio, stock FROM productos ORDER BY nombre, id')
+        registros = cursor.fetchall()
+        form.id_producto.choices = [(0, '-- Selecciona el producto --')] + [(x[0], f'{x[1]} — ${x[2]:.2f} sin IVA — Stock: {x[3]} (#{x[0]})') for x in registros]
+        form.precios = {str(x[0]): str(x[2]) for x in registros}
 
 
 def guardar_formulario(tabla, id=None):
@@ -273,6 +280,11 @@ def guardar_formulario(tabla, id=None):
                 if registro is None:
                     abort(404)
             opciones(form, tabla, cursor)
+            if tabla == 'facturas' and id is not None:
+                cursor.execute('SELECT id_producto, precio_unitario FROM facturas WHERE id=%s', (id,))
+                precio_anterior = cursor.fetchone()
+                if precio_anterior[0] and precio_anterior[1] is not None:
+                    form.precios[str(precio_anterior[0])] = str(precio_anterior[1])
             if request.method == 'GET' and registro is not None:
                 for columna, valor in zip(columnas, registro):
                     getattr(form, columna).data = (valor or 0) if columna.startswith('id_') else valor
@@ -282,20 +294,9 @@ def guardar_formulario(tabla, id=None):
                     valores[-1] = valores[-1] or None
                 campos = list(columnas)
                 if tabla == 'facturas':
-                    # Guardar IDs reales y conservar nombres como instantánea de la factura.
-                    cursor.execute('SELECT nombre FROM clientes WHERE id=%s', (form.id_cliente.data,))
-                    cliente = cursor.fetchone()
-                    cursor.execute('SELECT nombre FROM productos WHERE id=%s', (form.id_producto.data,))
-                    producto = cursor.fetchone()
-                    if cliente is None or producto is None:
-                        flash('El cliente o producto ya no existe. Vuelve a seleccionarlo.', 'warning')
-                        return redirect(request.path)
-                    campos += ['cliente', 'producto']
-                    valores += [cliente[0], producto[0]]
-                    if id is None:
-                        cursor.execute("SELECT CURRENT_DATE")
-                        campos.append('fecha')
-                        valores.append(cursor.fetchone()[0])
+                    factura_id = facturas_service.guardar(cursor, dict(zip(columnas, valores)), id)
+                    flash(f'Factura FAC-{factura_id:06d} guardada. Inventario actualizado.', 'success')
+                    return redirect(url_for('facturacion'))
                 if id is None:
                     marcas = ', '.join(['%s'] * len(campos))
                     cursor.execute(f"INSERT INTO {tabla} ({', '.join(campos)}) VALUES ({marcas})", tuple(valores))
@@ -304,6 +305,8 @@ def guardar_formulario(tabla, id=None):
                     cursor.execute(f"UPDATE {tabla} SET {asignaciones} WHERE id=%s", tuple(valores) + (id,))
                 flash(nombre + (' actualizado correctamente.' if id is not None else ' registrado correctamente.'), 'success')
                 return redirect(url_for('facturacion' if tabla == 'facturas' else tabla))
+    except facturas_service.ErrorFactura as error:
+        form.cantidad.errors = list(form.cantidad.errors) + [str(error)]
     except ForeignKeyViolation:
         flash('El registro relacionado cambió. Revisa la selección e intenta nuevamente.', 'warning')
         return redirect(request.path)
@@ -315,9 +318,13 @@ def guardar_formulario(tabla, id=None):
 def borrar_registro(tabla, id):
     try:
         with transaccion() as cursor:
-            cursor.execute(f'DELETE FROM {tabla} WHERE id=%s', (id,))
-            if cursor.rowcount == 0:
-                abort(404)
+            if tabla == 'facturas':
+                if not facturas_service.eliminar(cursor, id):
+                    abort(404)
+            else:
+                cursor.execute(f'DELETE FROM {tabla} WHERE id=%s', (id,))
+                if cursor.rowcount == 0:
+                    abort(404)
         flash('Registro eliminado correctamente.', 'success')
     except ForeignKeyViolation:
         flash('No se puede eliminar: este registro está relacionado con productos o facturas. Conserva su historial o modifica primero la relación.', 'warning')
@@ -356,7 +363,7 @@ def proveedores():
 def facturacion():
     with transaccion() as cursor:
         cursor.execute("""SELECT f.id, f.cliente, f.fecha, f.producto, f.cantidad,
-                          f.total, f.estado, c.nombre, f.id_producto
+                          f.total, f.estado, c.nombre, f.id_producto, f.subtotal, f.iva, f.precio_unitario
                           FROM facturas f LEFT JOIN clientes c ON c.id=f.id_cliente
                           ORDER BY f.id DESC""")
         registros = cursor.fetchall()
