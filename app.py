@@ -4,7 +4,9 @@
 # ================================================================
 
 import os
-from flask import Flask, render_template, redirect, url_for, flash, request
+from contextlib import contextmanager
+from psycopg2.errors import ForeignKeyViolation, UniqueViolation
+from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -104,6 +106,8 @@ def init_db():
         )
     ''')
 
+    # Migración aditiva: preserva los registros históricos sin inventar relaciones.
+    cursor.execute("ALTER TABLE facturas ADD COLUMN IF NOT EXISTS id_producto INTEGER REFERENCES productos(id)")
     conn.commit()
     cursor.close()
     conn.close()
@@ -223,294 +227,162 @@ def dashboard():
     )
 
 
-# ================================================================
-# MODULO PRODUCTOS — CRUD completo con PostgreSQL
-# ================================================================
+# CRUD: las tablas y columnas provienen exclusivamente de esta configuración.
+MODULOS = {
+    'productos': (ProductoForm, 'Producto', ['nombre', 'descripcion', 'categoria', 'precio', 'stock', 'id_proveedor']),
+    'clientes': (ClienteForm, 'Cliente', ['nombre', 'correo', 'telefono', 'ciudad', 'tipo']),
+    'proveedores': (ProveedorForm, 'Proveedor', ['empresa', 'contacto', 'correo', 'telefono', 'categoria', 'estado']),
+    'facturas': (FacturacionForm, 'Factura', ['id_cliente', 'id_producto', 'cantidad', 'total', 'estado']),
+}
+
+@contextmanager
+def transaccion():
+    conn = get_db()
+    cursor = conn.cursor()
+    try:
+        yield cursor
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def opciones(form, tabla, cursor):
+    if tabla == 'productos':
+        cursor.execute('SELECT id, empresa FROM proveedores ORDER BY empresa, id')
+        form.id_proveedor.choices = [(0, 'Sin proveedor asignado')] + [(x[0], f'{x[1]} (#{x[0]})') for x in cursor.fetchall()]
+    elif tabla == 'facturas':
+        cursor.execute('SELECT id, nombre FROM clientes ORDER BY nombre, id')
+        form.id_cliente.choices = [(0, '-- Selecciona el cliente --')] + [(x[0], f'{x[1]} (#{x[0]})') for x in cursor.fetchall()]
+        cursor.execute('SELECT id, nombre FROM productos ORDER BY nombre, id')
+        form.id_producto.choices = [(0, '-- Selecciona el producto --')] + [(x[0], f'{x[1]} (#{x[0]})') for x in cursor.fetchall()]
+
+
+def guardar_formulario(tabla, id=None):
+    clase, nombre, columnas = MODULOS[tabla]
+    form = clase()
+    try:
+        with transaccion() as cursor:
+            registro = None
+            if id is not None:
+                cursor.execute(f"SELECT {', '.join(columnas)} FROM {tabla} WHERE id=%s", (id,))
+                registro = cursor.fetchone()
+                if registro is None:
+                    abort(404)
+            opciones(form, tabla, cursor)
+            if request.method == 'GET' and registro is not None:
+                for columna, valor in zip(columnas, registro):
+                    getattr(form, columna).data = (valor or 0) if columna.startswith('id_') else valor
+            if form.validate_on_submit():
+                valores = [getattr(form, c).data for c in columnas]
+                if tabla == 'productos':
+                    valores[-1] = valores[-1] or None
+                campos = list(columnas)
+                if tabla == 'facturas':
+                    # Guardar IDs reales y conservar nombres como instantánea de la factura.
+                    cursor.execute('SELECT nombre FROM clientes WHERE id=%s', (form.id_cliente.data,))
+                    cliente = cursor.fetchone()
+                    cursor.execute('SELECT nombre FROM productos WHERE id=%s', (form.id_producto.data,))
+                    producto = cursor.fetchone()
+                    if cliente is None or producto is None:
+                        flash('El cliente o producto ya no existe. Vuelve a seleccionarlo.', 'warning')
+                        return redirect(request.path)
+                    campos += ['cliente', 'producto']
+                    valores += [cliente[0], producto[0]]
+                    if id is None:
+                        cursor.execute("SELECT CURRENT_DATE")
+                        campos.append('fecha')
+                        valores.append(cursor.fetchone()[0])
+                if id is None:
+                    marcas = ', '.join(['%s'] * len(campos))
+                    cursor.execute(f"INSERT INTO {tabla} ({', '.join(campos)}) VALUES ({marcas})", tuple(valores))
+                else:
+                    asignaciones = ', '.join(c + '=%s' for c in campos)
+                    cursor.execute(f"UPDATE {tabla} SET {asignaciones} WHERE id=%s", tuple(valores) + (id,))
+                flash(nombre + (' actualizado correctamente.' if id is not None else ' registrado correctamente.'), 'success')
+                return redirect(url_for('facturacion' if tabla == 'facturas' else tabla))
+    except ForeignKeyViolation:
+        flash('El registro relacionado cambió. Revisa la selección e intenta nuevamente.', 'warning')
+        return redirect(request.path)
+    return render_template('formulario_crud.html', form=form,
+                           titulo=('Editar ' if id is not None else 'Nuevo ') + nombre,
+                           modulo='facturacion' if tabla == 'facturas' else tabla, **contexto())
+
+
+def borrar_registro(tabla, id):
+    try:
+        with transaccion() as cursor:
+            cursor.execute(f'DELETE FROM {tabla} WHERE id=%s', (id,))
+            if cursor.rowcount == 0:
+                abort(404)
+        flash('Registro eliminado correctamente.', 'success')
+    except ForeignKeyViolation:
+        flash('No se puede eliminar: este registro está relacionado con productos o facturas. Conserva su historial o modifica primero la relación.', 'warning')
+    return redirect(url_for('facturacion' if tabla == 'facturas' else tabla))
+
 
 @app.route('/productos')
 @login_required
 def productos():
-    conn   = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM productos ORDER BY id DESC')
-    productos_db = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('productos.html', productos=productos_db, **contexto())
+    with transaccion() as cursor:
+        cursor.execute('SELECT * FROM productos ORDER BY id DESC')
+        registros = cursor.fetchall()
+    return render_template('productos.html', productos=registros, **contexto())
 
-
-@app.route('/productos/nuevo', methods=['GET', 'POST'])
-@login_required
-def nuevo_producto():
-    form = ProductoForm()
-    if form.validate_on_submit():
-        conn   = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO productos (nombre, descripcion, categoria, precio, stock)
-            VALUES (%s, %s, %s, %s, %s)
-        ''', (form.nombre.data, form.descripcion.data, form.categoria.data,
-              form.precio.data, form.stock.data))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Producto registrado correctamente.', 'success')
-        return redirect(url_for('productos'))
-    return render_template('formulario_producto.html',
-        form=form, titulo='Nuevo Producto', **contexto())
-
-
-@app.route('/productos/editar/<int:id>', methods=['GET', 'POST'])
-@login_required
-def editar_producto(id):
-    conn   = get_db()
-    cursor = conn.cursor()
-    form   = ProductoForm()
-    if request.method == 'GET':
-        cursor.execute('SELECT * FROM productos WHERE id = %s', (id,))
-        producto = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        if not producto:
-            flash('Producto no encontrado.', 'danger')
-            return redirect(url_for('productos'))
-        form.nombre.data      = producto[1]
-        form.descripcion.data = producto[2]
-        form.categoria.data   = producto[3]
-        form.precio.data      = producto[4]
-        form.stock.data       = producto[5]
-        return render_template('formulario_producto.html',
-            form=form, titulo='Editar Producto', **contexto())
-    if form.validate_on_submit():
-        cursor.execute('''
-            UPDATE productos SET nombre=%s, descripcion=%s, categoria=%s,
-            precio=%s, stock=%s WHERE id=%s
-        ''', (form.nombre.data, form.descripcion.data, form.categoria.data,
-              form.precio.data, form.stock.data, id))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Producto actualizado correctamente.', 'success')
-        return redirect(url_for('productos'))
-    cursor.close()
-    conn.close()
-    return render_template('formulario_producto.html',
-        form=form, titulo='Editar Producto', **contexto())
-
-
-@app.route('/productos/eliminar/<int:id>', methods=['POST'])
-@login_required
-def eliminar_producto(id):
-    conn   = get_db()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM productos WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    flash('Producto eliminado correctamente.', 'success')
-    return redirect(url_for('productos'))
-
-
-# ================================================================
-# MODULO CLIENTES — CRUD con PostgreSQL
-# ================================================================
 
 @app.route('/clientes')
 @login_required
 def clientes():
-    conn   = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM clientes ORDER BY id DESC')
-    clientes_db = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('clientes.html', clientes=clientes_db, **contexto())
+    with transaccion() as cursor:
+        cursor.execute('SELECT * FROM clientes ORDER BY id DESC')
+        registros = cursor.fetchall()
+    return render_template('clientes.html', clientes=registros, **contexto())
 
-
-@app.route('/clientes/nuevo', methods=['GET', 'POST'])
-@login_required
-def nuevo_cliente():
-    form = ClienteForm()
-    if form.validate_on_submit():
-        conn   = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO clientes (nombre, correo, telefono, ciudad, tipo)
-            VALUES (%s, %s, %s, %s, %s)
-        ''', (form.nombre.data, form.correo.data, form.telefono.data,
-              form.ciudad.data, form.tipo.data))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Cliente registrado correctamente.', 'success')
-        return redirect(url_for('clientes'))
-    return render_template('formulario_cliente.html',
-        form=form, titulo='Nuevo Cliente', **contexto())
-
-
-@app.route('/clientes/editar/<int:id>', methods=['GET', 'POST'])
-@login_required
-def editar_cliente(id):
-    conn   = get_db()
-    cursor = conn.cursor()
-    form   = ClienteForm()
-    if request.method == 'GET':
-        cursor.execute('SELECT * FROM clientes WHERE id = %s', (id,))
-        cliente = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        if not cliente:
-            flash('Cliente no encontrado.', 'danger')
-            return redirect(url_for('clientes'))
-        form.nombre.data   = cliente[1]
-        form.correo.data   = cliente[2]
-        form.telefono.data = cliente[3]
-        form.ciudad.data   = cliente[4]
-        form.tipo.data     = cliente[5]
-        return render_template('formulario_cliente.html',
-            form=form, titulo='Editar Cliente', **contexto())
-    if form.validate_on_submit():
-        cursor.execute('''
-            UPDATE clientes SET nombre=%s, correo=%s, telefono=%s,
-            ciudad=%s, tipo=%s WHERE id=%s
-        ''', (form.nombre.data, form.correo.data, form.telefono.data,
-              form.ciudad.data, form.tipo.data, id))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Cliente actualizado correctamente.', 'success')
-        return redirect(url_for('clientes'))
-    cursor.close()
-    conn.close()
-    return render_template('formulario_cliente.html',
-        form=form, titulo='Editar Cliente', **contexto())
-
-
-@app.route('/clientes/eliminar/<int:id>', methods=['POST'])
-@login_required
-def eliminar_cliente(id):
-    conn   = get_db()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM clientes WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    flash('Cliente eliminado correctamente.', 'success')
-    return redirect(url_for('clientes'))
-
-
-# ================================================================
-# MODULO PROVEEDORES — CRUD con PostgreSQL
-# ================================================================
 
 @app.route('/proveedores')
 @login_required
 def proveedores():
-    conn   = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM proveedores ORDER BY id DESC')
-    proveedores_db = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return render_template('proveedores.html', proveedores=proveedores_db, **contexto())
+    with transaccion() as cursor:
+        cursor.execute('SELECT * FROM proveedores ORDER BY id DESC')
+        registros = cursor.fetchall()
+    return render_template('proveedores.html', proveedores=registros, **contexto())
 
-
-@app.route('/proveedores/nuevo', methods=['GET', 'POST'])
-@login_required
-def nuevo_proveedor():
-    form = ProveedorForm()
-    if form.validate_on_submit():
-        conn   = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO proveedores (empresa, contacto, correo, telefono, categoria, estado)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        ''', (form.empresa.data, form.contacto.data, form.correo.data,
-              form.telefono.data, form.categoria.data, form.estado.data))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Proveedor registrado correctamente.', 'success')
-        return redirect(url_for('proveedores'))
-    return render_template('formulario_proveedor.html',
-        form=form, titulo='Nuevo Proveedor', **contexto())
-
-
-@app.route('/proveedores/eliminar/<int:id>', methods=['POST'])
-@login_required
-def eliminar_proveedor(id):
-    conn   = get_db()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM proveedores WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    flash('Proveedor eliminado correctamente.', 'success')
-    return redirect(url_for('proveedores'))
-
-
-# ================================================================
-# MODULO FACTURACION — CRUD con PostgreSQL y JOIN
-# ================================================================
 
 @app.route('/facturacion')
 @login_required
 def facturacion():
-    conn   = get_db()
-    cursor = conn.cursor()
-    # JOIN entre facturas y clientes
-    cursor.execute('''
-        SELECT f.id, f.cliente, f.fecha, f.producto,
-               f.cantidad, f.total, f.estado,
-               c.nombre as nombre_cliente
-        FROM facturas f
-        LEFT JOIN clientes c ON f.id_cliente = c.id
-        ORDER BY f.id DESC
-    ''')
-    facturas_db   = cursor.fetchall()
-    total_general = sum(f[5] for f in facturas_db)
-    cursor.close()
-    conn.close()
-    return render_template('facturacion.html',
-        facturas=facturas_db,
-        total_general=total_general,
-        **contexto()
-    )
+    with transaccion() as cursor:
+        cursor.execute("""SELECT f.id, f.cliente, f.fecha, f.producto, f.cantidad,
+                          f.total, f.estado, c.nombre, f.id_producto
+                          FROM facturas f LEFT JOIN clientes c ON c.id=f.id_cliente
+                          ORDER BY f.id DESC""")
+        registros = cursor.fetchall()
+    return render_template('facturacion.html', facturas=registros,
+                           total_general=sum(f[5] for f in registros), **contexto())
 
 
-@app.route('/facturacion/nuevo', methods=['GET', 'POST'])
-@login_required
-def nueva_factura():
-    form = FacturacionForm()
-    if form.validate_on_submit():
-        conn   = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO facturas (id_cliente, cliente, fecha, producto, cantidad, total, estado)
-            VALUES (%s, %s, CURRENT_DATE, %s, %s, %s, %s)
-        ''', (1, form.cliente.data, form.producto.data,
-              form.cantidad.data, form.total.data, form.estado.data))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        flash('Factura registrada correctamente.', 'success')
-        return redirect(url_for('facturacion'))
-    return render_template('formulario_facturacion.html',
-        form=form, titulo='Nueva Factura', **contexto())
+# Mantener las URLs y nombres de endpoints existentes.
+def registrar_crud(tabla, ruta, singular):
+    def nuevo():
+        return guardar_formulario(tabla)
+    def editar(id):
+        return guardar_formulario(tabla, id)
+    def eliminar(id):
+        return borrar_registro(tabla, id)
+    nuevo_endpoint = 'nueva_factura' if tabla == 'facturas' else 'nuevo_' + singular
+    app.add_url_rule(ruta + '/nuevo', nuevo_endpoint, login_required(nuevo), methods=['GET', 'POST'])
+    app.add_url_rule(ruta + '/editar/<int:id>', 'editar_' + singular, login_required(editar), methods=['GET', 'POST'])
+    app.add_url_rule(ruta + '/eliminar/<int:id>', 'eliminar_' + singular, login_required(eliminar), methods=['POST'])
 
 
-@app.route('/facturacion/eliminar/<int:id>', methods=['POST'])
-@login_required
-def eliminar_factura(id):
-    conn   = get_db()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM facturas WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    flash('Factura eliminada correctamente.', 'success')
-    return redirect(url_for('facturacion'))
+registrar_crud('productos', '/productos', 'producto')
+registrar_crud('clientes', '/clientes', 'cliente')
+registrar_crud('proveedores', '/proveedores', 'proveedor')
+registrar_crud('facturas', '/facturacion', 'factura')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=os.environ.get('FLASK_DEBUG') == '1')
