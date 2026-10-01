@@ -52,73 +52,18 @@
 </section>
 
 <section id="gestion" class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-2">Gestión de Productos</h2>
-        <p class="text-center text-secondary mb-4">Registra, visualiza y elimina productos dinámicamente.</p>
-        <div class="row justify-content-center g-4">
-            <div class="col-lg-5 col-md-6">
-                <div class="card-formulario p-4">
-                    <h5 class="mb-3 fw-bold text-info">➕ Registrar nuevo producto</h5>
-                    <div id="alerta-global" class="alert d-none" role="alert"></div>
-                    <form id="formulario-producto" novalidate>
-                        <div class="mb-3">
-                            <label for="campo-nombre" class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
-                            <input type="text" id="campo-nombre" class="form-control campo-oscuro" placeholder="Ej: Figura Goku" maxlength="100" autocomplete="off">
-                            <div id="error-nombre" class="invalid-feedback"></div>
-                            <div id="ok-nombre" class="valid-feedback"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="campo-descripcion" class="form-label fw-semibold">Descripción <span class="text-danger">*</span></label>
-                            <textarea id="campo-descripcion" class="form-control campo-oscuro" rows="3" placeholder="Descripción del producto" maxlength="300"></textarea>
-                            <div class="form-text text-end texto-gris"><span id="contador-caracteres">0</span>/300</div>
-                            <div id="error-descripcion" class="invalid-feedback"></div>
-                            <div id="ok-descripcion" class="valid-feedback"></div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="campo-categoria" class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
-                            <select id="campo-categoria" class="form-select campo-oscuro">
-                                <option value="">-- Selecciona --</option>
-                                <option value="Figuras Coleccionables">Figuras Coleccionables</option>
-                                <option value="Modelos a Escala">Modelos a Escala</option>
-                                <option value="Impresiones 3D">Impresiones 3D</option>
-                                <option value="Pintura Profesional">Pintura Profesional</option>
-                                <option value="Restauración">Restauración</option>
-                                <option value="Artículos Exclusivos">Artículos Exclusivos</option>
-                            </select>
-                            <div id="error-categoria" class="invalid-feedback"></div>
-                            <div id="ok-categoria" class="valid-feedback"></div>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" id="btn-registrar" class="btn btn-primary py-2 fw-semibold">➕ Agregar Producto</button>
-                        </div>
-                    </form>
-                    <div id="spinner-registro" class="text-center mt-3 d-none">
-                        <div class="spinner-border text-info" role="status">
-                            <span class="visually-hidden">Procesando...</span>
-                        </div>
-                        <p class="text-info small mt-1">Registrando producto...</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-7 col-md-6">
-                <div class="bloque-contador text-center mb-3 py-3 rounded">
-                    <span class="fw-semibold fs-5">Total de productos registrados:</span>
-                    <span id="numero-registros" class="badge bg-primary ms-2 fs-5">{{ total_productos }}</span>
-                </div>
-                <div class="tabla-wrapper mb-4">
-                    <table class="table table-dark table-hover table-bordered mb-0 align-middle">
-                        <thead>
-                            <tr class="text-info text-center">
-                                <th>#</th><th>Nombre</th><th>Categoría</th><th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-cuerpo"></tbody>
-                    </table>
-                </div>
-                <div id="lista-productos" class="row g-3"></div>
-            </div>
-        </div>
-    </div>
+  <div class="container text-center">
+    <h2>Gestión de Productos</h2>
+    {% if current_user.is_authenticated %}
+    <p>Administra los productos guardados en el sistema.</p>
+    <div class="bloque-contador p-3 mb-3">Total de productos registrados: <strong class="badge bg-primary fs-5">{{ total_productos }}</strong></div>
+    <a class="btn btn-primary" href="{{ url_for('nuevo_producto') }}">Agregar producto</a>
+    <a class="btn btn-outline-light" href="{{ url_for('productos') }}">Ver, editar y eliminar productos</a>
+    {% else %}
+    <p>Inicia sesión para administrar los productos.</p>
+    <a class="btn btn-primary" href="{{ url_for('login') }}">Iniciar sesión</a>
+    {% endif %}
+  </div>
 </section>
 
 <section id="contacto" class="py-5 seccion-oscura">
