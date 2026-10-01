@@ -10,11 +10,10 @@ from psycopg2.errors import ForeignKeyViolation, UniqueViolation
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from conexion.conexion import get_db
 from models import Usuario
 from forms.login_form import LoginForm
-from forms.usuario_form import UsuarioForm
 from forms.producto_form import ProductoForm
 from forms.cliente_form import ClienteForm
 from forms.proveedor_form import ProveedorForm
@@ -22,6 +21,27 @@ from forms.facturacion_form import FacturacionForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'narvi-secret-key-2026')
+
+# Solo las cuentas autorizadas pueden administrar el negocio.
+app.config['ADMIN_USERNAMES'] = frozenset(
+    name.strip() for name in os.environ.get('ADMIN_USERNAMES', 'admin').split(',') if name.strip()
+)
+
+def es_administrador(user):
+    return user.is_authenticated and user.usuario in app.config['ADMIN_USERNAMES']
+
+@app.context_processor
+def permisos_menu():
+    return {'admin_access': es_administrador(current_user)}
+
+@app.before_request
+def restringir_gestion():
+    # También bloquea sesiones antiguas de cuentas registradas públicamente.
+    if request.endpoint not in (None, 'static', 'index', 'login', 'logout', 'registro'):
+        if not current_user.is_authenticated:
+            return login_manager.unauthorized()
+        if not es_administrador(current_user):
+            return render_template('acceso_restringido.html', **contexto()), 403
 
 # Proteccion CSRF
 csrf = CSRFProtect(app)
@@ -158,12 +178,12 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
+    if es_administrador(current_user):
         return redirect(url_for('dashboard'))
     form = LoginForm()
     if form.validate_on_submit():
         user = Usuario.get_by_usuario(form.usuario.data)
-        if user and check_password_hash(user.password, form.password.data):
+        if user and check_password_hash(user.password, form.password.data) and es_administrador(user):
             login_user(user)
             flash('Bienvenido, ' + user.usuario + '!', 'success')
             return redirect(url_for('dashboard'))
@@ -174,30 +194,7 @@ def login():
 
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
-    if current_user.is_authenticated:
-        return redirect(url_for('dashboard'))
-    form = UsuarioForm()
-    if form.validate_on_submit():
-        conn   = get_db()
-        cursor = conn.cursor()
-        cursor.execute('SELECT id FROM usuarios WHERE usuario = %s', (form.usuario.data,))
-        existe = cursor.fetchone()
-        if existe:
-            flash('El nombre de usuario ya existe.', 'danger')
-            cursor.close()
-            conn.close()
-        else:
-            password_hash = generate_password_hash(form.password.data)
-            cursor.execute(
-                'INSERT INTO usuarios (usuario, password) VALUES (%s, %s)',
-                (form.usuario.data, password_hash)
-            )
-            conn.commit()
-            cursor.close()
-            conn.close()
-            flash('Usuario registrado. Ahora puedes iniciar sesion.', 'success')
-            return redirect(url_for('login'))
-    return render_template('registro.html', form=form, **contexto())
+    return render_template('acceso_restringido.html', **contexto()), 403
 
 
 @app.route('/logout')
