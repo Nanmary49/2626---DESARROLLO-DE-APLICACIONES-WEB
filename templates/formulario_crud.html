@@ -4,7 +4,7 @@
 <div class="container py-4">
   <div class="d-flex justify-content-between align-items-center mb-4"><h2>{{ titulo }}</h2><a class="btn btn-outline-info" href="{{ url_for(modulo) }}">← Volver</a></div>
   {% for category, message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>{% endfor %}
-  {% if modulo == 'facturacion' %}<p>Selecciona el cliente y el producto registrados. El total acordado se ingresa en dólares; este módulo registra facturas y no descuenta stock automáticamente.</p><p><a href="{{ url_for('nuevo_cliente') }}">Registrar cliente</a> · <a href="{{ url_for('nuevo_producto') }}">Registrar producto</a></p>{% endif %}
+  {% if modulo == 'facturacion' %}<p>Selecciona el cliente y el producto registrados. El subtotal se calcula con el precio del producto, más IVA del 15 %. Las facturas pagadas y pendientes descuentan stock; anularlas o eliminarlas devuelve sus unidades. Al editar se conserva el precio original del mismo producto.</p><p><a href="{{ url_for('nuevo_cliente') }}">Registrar cliente</a> · <a href="{{ url_for('nuevo_producto') }}">Registrar producto</a></p>{% endif %}
   <div class="card-formulario p-4 mx-auto" style="max-width:720px">
     <form method="POST" novalidate>
       {{ form.hidden_tag() }}
@@ -15,9 +15,36 @@
         {% for error in field.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
       </div>
       {% endfor %}
+      {% if modulo == 'facturacion' %}
+      <div class="border rounded p-3 mb-3" aria-live="polite">
+        <p>Subtotal: <strong id="factura-subtotal">$0.00</strong></p>
+        <p>IVA 15 %: <strong id="factura-iva">$0.00</strong></p>
+        <p class="mb-0">Total: <strong id="factura-total">$0.00</strong></p>
+      </div>
+      <p class="text-info">El número FAC se asigna al guardar. El total definitivo y las existencias se validan en el servidor.</p>
+      {% endif %}
       <button class="btn btn-primary" type="submit">Guardar cambios</button>
       <a class="btn btn-secondary" href="{{ url_for(modulo) }}">Cancelar</a>
     </form>
   </div>
 </div>
+{% endblock %}
+{% block scripts %}
+{% if modulo == 'facturacion' %}
+<script>
+const preciosFactura = {{ form.precios | tojson }};
+function actualizarImportes() {
+    const precio = Number(preciosFactura[document.getElementById('id_producto').value] || 0);
+    const cantidad = Number(document.getElementById('cantidad').value);
+    const subtotal = Number.isInteger(cantidad) && cantidad > 0 ? Math.round(precio * 100) * cantidad : 0;
+    const iva = Math.round(subtotal * 15 / 100);
+    document.getElementById('factura-subtotal').textContent = '$' + (subtotal / 100).toFixed(2);
+    document.getElementById('factura-iva').textContent = '$' + (iva / 100).toFixed(2);
+    document.getElementById('factura-total').textContent = '$' + ((subtotal + iva) / 100).toFixed(2);
+}
+document.getElementById('id_producto').addEventListener('change', actualizarImportes);
+document.getElementById('cantidad').addEventListener('input', actualizarImportes);
+actualizarImportes();
+</script>
+{% endif %}
 {% endblock %}
