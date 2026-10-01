@@ -46,13 +46,14 @@
             {% for f in facturas %}
                 <tr>
                     <td class="text-center text-info fw-bold">{{ f[0] }}</td>
-                    <td>{{ f[1] }}</td><td>{{ f[2] }}</td><td>{{ f[3] }}</td>
+                    <td>{{ f[1] }}{% if not f[8] or f[7] != f[1] %}<br><span class="badge bg-warning text-dark">Revisar relación histórica</span>{% endif %}</td><td>{{ f[2] }}</td><td>{{ f[3] }}</td>
                     <td class="text-center">{{ f[4] }}</td>
                     <td class="text-end">${{ '%.2f' | format(f[5]) }}</td>
                     <td class="text-center">
                         <span class="badge {{ 'bg-success' if f[6] == 'Pagada' else ('bg-warning text-dark' if f[6] == 'Pendiente' else 'bg-secondary') }}">{{ f[6] }}</span>
                     </td>
                     <td class="text-center">
+                        <a class="btn btn-outline-warning btn-sm mb-1" href="{{ url_for('editar_factura', id=f[0]) }}">Editar</a>
                         <form action="{{ url_for('eliminar_factura', id=f[0]) }}" method="POST" onsubmit="return confirm('¿Eliminar esta factura?');">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-danger btn-sm">🗑 Eliminar</button>

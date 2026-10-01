@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }} — Narvi Models{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4"><h2>{{ titulo }}</h2><a class="btn btn-outline-info" href="{{ url_for(modulo) }}">← Volver</a></div>
+  {% for category, message in get_flashed_messages(with_categories=true) %}<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>{% endfor %}
+  {% if modulo == 'facturacion' %}<p>Selecciona el cliente y el producto registrados. El total acordado se ingresa en dólares; este módulo registra facturas y no descuenta stock automáticamente.</p><p><a href="{{ url_for('nuevo_cliente') }}">Registrar cliente</a> · <a href="{{ url_for('nuevo_producto') }}">Registrar producto</a></p>{% endif %}
+  <div class="card-formulario p-4 mx-auto" style="max-width:720px">
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      {% for field in form if field.type not in ['CSRFTokenField', 'HiddenField', 'SubmitField'] %}
+      <div class="mb-3">
+        {{ field.label(class='form-label fw-semibold') }}
+        {{ field(class=('form-select' if field.type == 'SelectField' else 'form-control') + ' campo-oscuro' + (' is-invalid' if field.errors else '')) }}
+        {% for error in field.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+      </div>
+      {% endfor %}
+      <button class="btn btn-primary" type="submit">Guardar cambios</button>
+      <a class="btn btn-secondary" href="{{ url_for(modulo) }}">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}
