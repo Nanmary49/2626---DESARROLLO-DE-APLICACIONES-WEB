@@ -27,7 +27,7 @@ conexion.conexion.get_db = isolated_db
 
 try:
     import app as module
-    module.app.config.update(TESTING=True, SECRET_KEY='only-for-isolated-tests')
+    module.app.config.update(TESTING=True, SECRET_KEY='only-for-isolated-tests', ADMIN_USERNAMES={'tester'})
 
     def query(statement, values=()):
         conn = isolated_db()
@@ -55,7 +55,11 @@ try:
             return self.client.post(path, data={**data, 'csrf_token': token}, follow_redirects=True)
 
         def register(self):
-            return self.post('/registro', dict(usuario='tester', password='Testing123!', confirmar='Testing123!'))
+            from werkzeug.security import generate_password_hash
+            conn = isolated_db()
+            with conn.cursor() as c:
+                c.execute('INSERT INTO usuarios (usuario,password) VALUES (%s,%s)', ('tester',generate_password_hash('Testing123!')))
+            conn.commit(); conn.close()
 
         def login(self):
             return self.post('/login', dict(usuario='tester', password='Testing123!'))
@@ -115,8 +119,7 @@ try:
             wrong=self.post('/login',dict(usuario='tester',password='wrong'))
             self.assertIn('incorrectos',wrong.text)
             self.assertEqual(self.client.post('/login',data={}).status_code,400)
-            duplicate=self.register()
-            self.assertIn('ya existe',duplicate.text)
+            self.assertEqual(self.client.get('/registro').status_code,403)
             self.assertEqual(query('SELECT COUNT(*) FROM usuarios')[0][0],1)
             self.assertNotEqual(query('SELECT password FROM usuarios')[0][0],'Testing123!')
             self.login()
