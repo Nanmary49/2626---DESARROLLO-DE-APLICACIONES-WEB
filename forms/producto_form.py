@@ -4,8 +4,8 @@
 # ================================================================
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, FloatField, IntegerField, SelectField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms import StringField, TextAreaField, DecimalField, IntegerField, SelectField
+from wtforms.validators import DataRequired, InputRequired, Length, NumberRange
 
 class ProductoForm(FlaskForm):
     """
@@ -35,12 +35,13 @@ class ProductoForm(FlaskForm):
         ('Articulos Exclusivos', 'Artículos Exclusivos'),
     ])
 
-    precio = FloatField('Precio ($)', validators=[
+    precio = DecimalField('Precio ($)', validators=[
         DataRequired(message='El precio es obligatorio.'),
-        NumberRange(min=0.01, message='El precio debe ser mayor a 0.')
+        NumberRange(min=0.01, max=99999999.99, message='El precio debe ser mayor a 0.')
     ])
 
     stock = IntegerField('Stock disponible', validators=[
-        DataRequired(message='El stock es obligatorio.'),
-        NumberRange(min=0, message='El stock no puede ser negativo.')
+        InputRequired(message='El stock es obligatorio.'),
+        NumberRange(min=0, max=2147483647, message='El stock no puede ser negativo.')
     ])
+    id_proveedor = SelectField('Proveedor', coerce=int, choices=[])
