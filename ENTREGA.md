@@ -39,3 +39,8 @@ Cobertura: login, contraseña incorrecta, registro duplicado, hash, protección 
 ## Datos existentes
 
 Los clientes y productos de las facturas anteriores deben revisarse por su propietario cuando estén marcados; no se adivinan asociaciones. Antes de usar el sistema fuera de la demostración académica, configurar credenciales nuevas si alguna contraseña estuvo previamente publicada en el historial del repositorio.
+
+
+## Acceso público y administración
+El catálogo, Quiénes somos y Contacto son públicos. El registro público está cerrado (403). Solo las cuentas incluidas en ADMIN_USERNAMES pueden iniciar sesión administrativa y acceder a los módulos, incluso si otra cuenta conserva una sesión anterior. Por defecto se autoriza únicamente el usuario existente admin; no se cambia su contraseña. ADMIN_USERNAMES acepta nombres exactos separados por comas y debe configurarse exclusivamente por el responsable del despliegue.
+Pruebas de acceso sin base de datos: `python tests/test_access.py` (6 casos). Las pruebas PostgreSQL crean su usuario autorizado directamente en el esquema aislado; no usan registro público.
