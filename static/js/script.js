@@ -51,7 +51,7 @@ var indiceAEliminar = -1;
 // ================================================================
 // Variable global: contador total de productos registrados
 // ================================================================
-var totalRegistros = 0;
+var totalRegistros = Number((document.getElementById('numero-registros') || {}).textContent) || 0;
 
 
 // ================================================================
