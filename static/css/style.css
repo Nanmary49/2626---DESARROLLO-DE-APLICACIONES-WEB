@@ -289,6 +289,10 @@ h2, #contacto h4, .card-formulario .form-label { color:var(--narvi-gold); }
 .seccion-hero { min-height:430px; background:radial-gradient(circle at 50% 20%,#3b3020 0%,#171612 38%,var(--narvi-bg) 75%); border-bottom:1px solid var(--narvi-line); }
 .seccion-hero h2 { color:var(--narvi-ink); font-size:clamp(2.3rem,5vw,4.8rem); letter-spacing:-.055em; }
 .seccion-hero .lead { max-width:700px; margin:0 auto; color:var(--narvi-muted); }
+.seccion-hero .btn { min-width:180px; border-radius:999px; padding:.85rem 1.35rem; font-weight:700; letter-spacing:.01em; box-shadow:0 10px 24px rgba(0,0,0,.24); transition:transform .2s ease,box-shadow .2s ease,background .2s ease; }
+.seccion-hero .btn:hover { transform:translateY(-3px); box-shadow:0 14px 30px rgba(0,0,0,.38); }
+.seccion-hero .btn-outline-light { color:var(--narvi-ink); border-color:rgba(255,255,255,.5); background:rgba(255,255,255,.08); }
+.seccion-hero .btn-outline-light:hover { color:#17130d; background:var(--narvi-ink); border-color:var(--narvi-ink); }
 .seccion-oscura { background:#151411; border-color:var(--narvi-line); }
 .btn-primary,.btn-warning { background:var(--narvi-gold); border-color:var(--narvi-gold); color:#17130d; }
 .btn-primary:hover,.btn-warning:hover { background:#e0c48b; border-color:#e0c48b; color:#17130d; }
