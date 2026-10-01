@@ -134,7 +134,13 @@ def contexto():
 # ================================================================
 @app.route('/')
 def index():
-    return render_template('index.html', **contexto())
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) FROM productos')
+    total_productos = cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
+    return render_template('index.html', total_productos=total_productos, **contexto())
 
 
 # ================================================================

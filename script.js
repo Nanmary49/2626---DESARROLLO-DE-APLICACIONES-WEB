@@ -13,22 +13,22 @@
 // Se renderiza dinámicamente con forEach (estructura repetitiva).
 // ================================================================
 var catalogoServicios = [
-    { id:1, icono:'🎭', titulo:'Figuras Coleccionables',
+    { id:1, icono:'🎭', titulo:'Figuras Coleccionables', imagen:'figuras-coleccionables.jpg',
       descripcion:'Figuras de anime y personajes exclusivos pintadas a mano para coleccionistas exigentes.',
       badge:'bg-primary' },
-    { id:2, icono:'🪖', titulo:'Modelos a Escala',
+    { id:2, icono:'🪖', titulo:'Modelos a Escala', imagen:'modelos-a-escala.jpg',
       descripcion:'Réplicas y modelos militares elaborados con gran detalle y precisión histórica.',
       badge:'bg-success' },
-    { id:3, icono:'🖨️', titulo:'Impresiones 3D',
+    { id:3, icono:'🖨️', titulo:'Impresiones 3D', imagen:'impresiones-3d.jpg',
       descripcion:'Diseños personalizados mediante tecnología de impresión 3D de alta resolución.',
       badge:'bg-warning text-dark' },
-    { id:4, icono:'🎨', titulo:'Pintura Profesional',
+    { id:4, icono:'🎨', titulo:'Pintura Profesional', imagen:'pintura-profesional.jpg',
       descripcion:'Acabados de alta calidad con aerógrafo y pintura acrílica para miniaturas.',
       badge:'bg-danger' },
-    { id:5, icono:'🔧', titulo:'Restauración',
+    { id:5, icono:'🔧', titulo:'Restauración', imagen:'restauracion.jpg',
       descripcion:'Recuperación y mantenimiento especializado de figuras coleccionables dañadas.',
       badge:'bg-info text-dark' },
-    { id:6, icono:'⭐', titulo:'Artículos Exclusivos',
+    { id:6, icono:'⭐', titulo:'Artículos Exclusivos', imagen:'articulos-exclusivos.jpg',
       descripcion:'Piezas únicas de edición limitada para coleccionistas y aficionados al modelismo.',
       badge:'bg-secondary' }
 ];
@@ -51,7 +51,7 @@ var indiceAEliminar = -1;
 // ================================================================
 // Variable global: contador total de productos registrados
 // ================================================================
-var totalRegistros = 0;
+var totalRegistros = Number((document.getElementById('numero-registros') || {}).textContent) || 0;
 
 
 // ================================================================
@@ -123,6 +123,12 @@ document.addEventListener('DOMContentLoaded', function () {
             var cardBody = document.createElement('div');
             cardBody.className = 'card-body d-flex flex-column';
 
+            var image = document.createElement('img');
+            image.className = 'card-catalogo-imagen';
+            image.src = '/static/img/' + servicio.imagen;
+            image.alt = servicio.titulo;
+            image.loading = 'lazy';
+
             var titulo = document.createElement('h5');
             titulo.className = 'card-title';
             titulo.textContent = servicio.icono + ' ' + servicio.titulo;
@@ -136,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
             badge.className = 'badge ' + servicio.badge + ' mt-auto';
             badge.textContent = 'Servicio #' + servicio.id;
 
+            card.appendChild(image);
             cardBody.appendChild(titulo);
             cardBody.appendChild(descripcion);
             cardBody.appendChild(badge);
