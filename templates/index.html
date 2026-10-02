@@ -8,11 +8,11 @@
     <div class="container text-center">
         <h2 class="display-4 text-info fw-bold mb-3">Bienvenido a Narvi Collector Scale Models</h2>
         <p class="lead mb-4">
-            Plataforma diseñada para administrar productos, clientes y ventas
-            de figuras coleccionables, modelos a escala e impresiones 3D personalizadas.
+            Figuras coleccionables, modelos a escala e impresiones 3D personalizadas.
+            Descubre piezas creadas con dedicación y atención al detalle.
         </p>
         <a href="#catalogo" class="btn btn-primary btn-lg m-2">🗂 Ver Catálogo</a>
-        <a href="/productos" class="btn btn-warning btn-lg m-2">📦 Sistema</a>
+        {% if admin_access %}<a href="/dashboard" class="btn btn-warning btn-lg m-2">📦 Administración</a>{% endif %}
         <a href="#contacto" class="btn btn-outline-light btn-lg m-2">✉ Contactar</a>
     </div>
 </section>
@@ -51,10 +51,11 @@
     </div>
 </section>
 
+{% if admin_access %}
 <section id="gestion" class="py-5">
   <div class="container text-center">
     <h2>Gestión de Productos</h2>
-    {% if current_user.is_authenticated %}
+    {% if admin_access %}
     <p>Administra los productos guardados en el sistema.</p>
     <div class="bloque-contador p-3 mb-3">Total de productos registrados: <strong class="badge bg-primary fs-5">{{ total_productos }}</strong></div>
     <a class="btn btn-primary" href="{{ url_for('nuevo_producto') }}">Agregar producto</a>
@@ -65,6 +66,8 @@
     {% endif %}
   </div>
 </section>
+
+{% endif %}
 
 <section id="contacto" class="py-5 seccion-oscura">
     <div class="container">

@@ -22,7 +22,7 @@
                     <a class="nav-link" href="/">🏠 Inicio</a>
                 </li>
 
-                {% if current_user.is_authenticated %}
+                {% if admin_access %}
                     <!-- Menú para usuarios autenticados -->
                     <li class="nav-item">
                         <a class="nav-link" href="/dashboard">📊 Dashboard</a>
@@ -50,13 +50,13 @@
                         </a>
                     </li>
                 {% else %}
-                    <!-- Menú para usuarios no autenticados -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">🔐 Iniciar Sesión</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/registro">📝 Registrarse</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/#quienes">Quiénes somos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#catalogo">Catálogo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#contacto">Contacto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">🔐 Administración</a></li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="/logout">Cerrar sesión</a></li>
+                    {% endif %}
                 {% endif %}
 
             </ul>
